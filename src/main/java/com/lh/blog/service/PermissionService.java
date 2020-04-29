@@ -2,6 +2,7 @@ package com.lh.blog.service;
 
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.PermissionDAO;
+import com.lh.blog.filter.URLHelper;
 import com.lh.blog.util.PageUtil;
 import com.lh.blog.util.RestPageImpl;
 import com.lh.blog.util.SpringContextUtils;
@@ -88,8 +89,7 @@ public class PermissionService {
 
     public void fill(List<Permission> permissions){
         PermissionService permissionService = SpringContextUtils.getBean(PermissionService.class);
-        for (Permission permission:
-             permissions) {
+        for (Permission permission: permissions) {
             permissionService.fill(permission);
         }
     }
@@ -105,12 +105,14 @@ public class PermissionService {
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
 
     /**
-     * 判断是否需要拦截 以/admin/为标准
+     * 判断是否需要拦截
      * @param url 拦截URI
      * @return
      */
     public boolean needInterceptor(String url) {
-        List<String> urls = moduleService.listURL();
+        // 从缓存拿维护路径
+        List<String> urls = URLHelper.getUrls();
+//        List<String> urls = moduleService.listURL();
         for (String target : urls) {
             if (url.equals(target) || "/admin/".equals(url)) {
                 return true;
@@ -118,20 +120,22 @@ public class PermissionService {
         }
         return false;
     }
-    // 格式化URL所对应的权限 “模块路径 - 操作”
+    /**
+     *  格式化URL所对应的权限 “模块路径 - 操作”
+     *  优化空间复杂度，初始化map时指定大小，避免动态扩展，占用内存
+     */
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public HashMap<String, List<Operation>> formatPermission(List<Permission> permissions) {
-        HashMap<String, List<Operation>> map = new HashMap<>();
+        HashMap<String, List<Operation>> map = new HashMap<>(100);
         for (Permission permission : permissions) {
             String url;
             Module module = permission.getModule();
             Operation operation = permission.getOperation();
-            // 模块为祖先模块，加上斜杠
-            if (moduleService.hasChild(module)) {
+            // 祖先模块，加上斜杠
+            boolean isParent = moduleService.hasChild(module);
+            if (isParent) {
                 url = module.getUrl() + (module.getPid() == 0 ? "/" : "");
-            }
-            // 模块为子模块
-            else {
+            } else {
                 url = moduleService.getChildURL(module.getUrl());
             }
             // 加入路径对应的操作
@@ -148,33 +152,26 @@ public class PermissionService {
         return map;
     }
 
+    /**
+     * 判断是否有权限
+     * @param mid 管理员ID
+     * @param url 资源
+     * @param method 操作
+     * @return
+     */
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
-    public boolean hasPermission(String name, String url, String method, Manager manager) {
+    public boolean hasPermission(int mid, String url, String method) {
         PermissionService permissionService = SpringContextUtils.getBean(PermissionService.class);
         // 获取权限
-        List<Permission> permissions = rolePermissionService.listPermissionByManager(name);
-        permissionService.fill(permissions);
+        List<Permission> permissions = rolePermissionService.listPermissionByManager(mid);
         HashMap<String, List<Operation>> map = permissionService.formatPermission(permissions);
+        // 优化代码，去除无关逻辑，直接判断
         for (String key : map.keySet()) {
-            //
+            // 找到资源
             if (key.equals(url)) {
                 for (Operation val: map.get(key)) {
+                    // 找到操作
                     if (val.getName().equals(method)) {
-                        String uri = url.substring(url.lastIndexOf("/"),url.length());
-                        List<Module> modules = moduleService.getByURL(uri);
-                        Module module = null;
-                        if(modules.size()==1)
-                            module = modules.get(0);
-                        else
-                        {
-                            String parent = url.substring(0,url.indexOf(uri));
-                            parent = parent.substring(parent.lastIndexOf("/"),parent.length());
-                            Module module1 = moduleService.getByURL(parent).get(0);
-                            for (Module module2: modules) {
-                                if(module2.getPid()==module1.getPid())
-                                    module=module1;
-                            }
-                        }
                         return true;
                     }
                 }

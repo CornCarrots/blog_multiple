@@ -1,22 +1,38 @@
 package com.lh.blog.es;
+import cn.hutool.core.io.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CiLin {
-	public static HashMap<String, List<String>> keyWord_Identifier_HashMap;//<关键词，编号List集合>哈希
+
+	private static Logger logger = LoggerFactory.getLogger(CiLin.class);
+	// “=”代表“相等”、“同义”
+	private static final String CILIN_SYM = "=";
+	// “#”代表“不等”、“同类”，属于相关词语；
+	private static final String CILIN_SYMCLASS = "#";
+    // “@”代表“自我封闭”、“独立”，它在词典中既没有同义词，也没有相关词。
+    private static final String CILIN_SYMNOT = "@";
+
+	// 同义词
 	public static final String TYPE_SYM = "sym";
+    public static List<List<String>> sym_words;
+	// 近义词
 	public static final String TYPE_SYMCLASS = "sym_class";
+    public static List<List<String>> sym_class_words;
+
 	public int zero_KeyWord_Depth = 12;
+	public static HashMap<String, List<String>> keyWord_Identifier_HashMap;//<关键词，编号List集合>哈希
 	public static HashMap<String, Integer> first_KeyWord_Depth_HashMap;//<第一层编号，深度>哈希
 	public static HashMap<String, Integer> second_KeyWord_Depth_HashMap;//<前二层编号，深度>哈希
 	public static HashMap<String, Integer> third_KeyWord_Depth_HashMap;//<前三层编号，深度>哈希
 	public static HashMap<String, Integer> fourth_KeyWord_Depth_HashMap;//<前四层编号，深度>哈希
-	public static List<List<String>> sym_words;//同义词
-	public static List<List<String>> sym_class_words;//同类词
-	//public HashMap<String, HashSet<String>> ciLin_Sort_keyWord_HashMap = new HashMap<String, HashSet<String>>();//<(同义词)编号，关键词Set集合>哈希
+ 	public HashMap<String, HashSet<String>> ciLin_Sort_keyWord_HashMap = new HashMap<String, HashSet<String>>();//<(同义词)编号，关键词Set集合>哈希
 	
-	static{
+//	static{
 //		keyWord_Identifier_HashMap = new HashMap<String, List<String>>();
 //		first_KeyWord_Depth_HashMap = new HashMap<String, Integer>();
 //		second_KeyWord_Depth_HashMap = new HashMap<String, Integer>();
@@ -24,118 +40,60 @@ public class CiLin {
 //		fourth_KeyWord_Depth_HashMap = new HashMap<String, Integer>();
 //        sym_words = Collections.synchronizedList(new ArrayList<>());
 //        sym_class_words = Collections.synchronizedList(new ArrayList<>());
-//		initCiLin();
-		init();
-	}
+//	}
 
-	public static void init(){
-        sym_words = Collections.synchronizedList(new ArrayList<>());
-        sym_class_words = Collections.synchronizedList(new ArrayList<>());
-	    try {
-            String str = null;
-            String[] strs = null;
-            BufferedReader inFile = new BufferedReader(new InputStreamReader(new FileInputStream("cilin/synonyms.txt"), "utf-8"));// 读取文本
-            while ((str = inFile.readLine()) != null){
-                strs = str.split(" ");
-                String first = strs[0];
-                List<String> strings = new ArrayList<>();
-                if (first.indexOf("=") > 0){
-                    for (int j = 1; j < strs.length; j++) {
-                        strings.add(strs[j]);
-                    }
-                    sym_words.add(strings);
-                }else if (first.indexOf("#") > 0){
-                    for (int j = 1; j < strs.length; j++) {
-                        strings.add(strs[j]);
-                    }
-                    sym_class_words.add(strings);
-                }
-            }
-            inFile.close();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-	//3.初始化词林相关
-	public static void initCiLin(){
-		int i;
-		String str = null;
-		String[] strs = null;
-		List<String> list = null;
-		BufferedReader inFile = null;
+	/**
+	 * 初始化同义词
+	 */
+	public static void initWords() throws IOException {
+		sym_words = Collections.synchronizedList(new ArrayList<>());
+		sym_class_words = Collections.synchronizedList(new ArrayList<>());
 		try {
-			File file = new File("cilin/keyWord_Identifier_HashMap.txt");
-			//初始化<关键词， 编号set>哈希
-			inFile = new BufferedReader(new InputStreamReader(new FileInputStream("cilin/keyWord_Identifier_HashMap.txt"), "utf-8"));// 读取文本
-			while((str = inFile.readLine()) != null){
-				strs = str.split(" ");
-				list = new Vector<String>();
-				for (i = 1; i < strs.length; i++) 
-					list.add(strs[i]);
-				keyWord_Identifier_HashMap.put(strs[0], list);
-			}
-			
-			//初始化<第一层编号，高度>哈希
-			inFile.close();
-			inFile = new BufferedReader(new InputStreamReader(new FileInputStream("cilin/first_KeyWord_Depth_HashMap.txt"), "utf-8"));// 读取文本
-			while ((str = inFile.readLine()) != null){
-				strs = str.split(" ");
-				first_KeyWord_Depth_HashMap.put(strs[0], Integer.valueOf(strs[1]));
-			}
-			
-			//初始化<前二层编号，高度>哈希
-			inFile.close();
-			inFile = new BufferedReader(new InputStreamReader(new FileInputStream("cilin/second_KeyWord_Depth_HashMap.txt"), "utf-8"));// 读取文本
-			while ((str = inFile.readLine()) != null){
-				strs = str.split(" ");
-				second_KeyWord_Depth_HashMap.put(strs[0], Integer.valueOf(strs[1]));
-			}
-			
-			//初始化<前三层编号，高度>哈希
-			inFile.close();
-			inFile = new BufferedReader(new InputStreamReader(new FileInputStream("cilin/third_KeyWord_Depth_HashMap.txt"), "utf-8"));// 读取文本
-			while ((str = inFile.readLine()) != null){
-				strs = str.split(" ");
-				third_KeyWord_Depth_HashMap.put(strs[0], Integer.valueOf(strs[1]));
-			}
-		
-			//初始化<前四层编号，高度>哈希
-			inFile.close();
-			inFile = new BufferedReader(new InputStreamReader(new FileInputStream("cilin/fourth_KeyWord_Depth_HashMap.txt"), "utf-8"));// 读取文本
-			while ((str = inFile.readLine()) != null){
-				strs = str.split(" ");
-				fourth_KeyWord_Depth_HashMap.put(strs[0], Integer.valueOf(strs[1]));
-			}
-			inFile.close();
-
-			//初始化同义词
-			inFile = new BufferedReader(new InputStreamReader(
-					new FileInputStream("cilin/synonyms.txt"), "utf-8"));
-			while ((str = inFile.readLine()) != null){
+			String str;
+			String[] strs;
+			String filename = "cilin/synonyms.txt";
+			BufferedReader inFile = new BufferedReader(FileUtil.getReader(filename, "utf-8"));
+			while ((str = inFile.readLine()) != null) {
 				strs = str.split(" ");
 				String first = strs[0];
 				List<String> strings = new ArrayList<>();
-                // 词林中，“=”代表“相等”、“同义”，“#”代表“不等”、“同类”，属于相关词语；
-				// “@”代表“自我封闭”、“独立”，它在词典中既没有同义词，也没有相关词。
-                if (first.indexOf("=") > 0){
+
+				if (first.indexOf(CILIN_SYM) > 0) {
 					for (int j = 1; j < strs.length; j++) {
 						strings.add(strs[j]);
 					}
 					sym_words.add(strings);
-				}else if (first.indexOf("#") > 0){
+				} else if (first.indexOf(CILIN_SYMCLASS) > 0) {
 					for (int j = 1; j < strs.length; j++) {
 						strings.add(strs[j]);
 					}
 					sym_class_words.add(strings);
 				}
 			}
+			logger.info("[init words] success!");
 			inFile.close();
-			
+		} catch (IOException e) {
+			logger.error("[init words] fail!", e);
+			throw e;
+		}
+	}
+
+	//3.初始化词林相关
+	public static void initCiLin(){
+		try {
+//			File file = new File("cilin/keyWord_Identifier_HashMap.txt");
+			//初始化<关键词， 编号set>哈希
+			readFile("cilin/keyWord_Identifier_HashMap.txt");
+			//初始化<第一层编号，高度>哈希
+			readFile("cilin/first_KeyWord_Depth_HashMap.txt");
+			//初始化<前二层编号，高度>哈希
+			readFile("cilin/second_KeyWord_Depth_HashMap.txt");
+			//初始化<前三层编号，高度>哈希
+			readFile("cilin/third_KeyWord_Depth_HashMap.txt");
+			//初始化<前四层编号，高度>哈希
+			readFile("cilin/fourth_KeyWord_Depth_HashMap.txt");
+			//初始化同义词
+			readFile("cilin/synonyms.txt");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -171,6 +129,29 @@ public class CiLin {
 			}
 		}
 		return result;
+	}
+
+	private static void readFile(String filename)  {
+		// 读取文本
+		BufferedReader inFile = null;
+		try {
+			inFile = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "utf-8"));
+			String str = "";
+			while ((str = inFile.readLine()) != null){
+				String[] strs = str.split(" ");
+				fourth_KeyWord_Depth_HashMap.put(strs[0], Integer.valueOf(strs[1]));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (inFile != null) {
+					inFile.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	//根据两个关键词计算相似度
 	public static double calcWordsSimilarity(String key1, String key2){

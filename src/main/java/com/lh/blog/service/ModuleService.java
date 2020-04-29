@@ -1,13 +1,17 @@
 package com.lh.blog.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.lh.blog.bean.Module;
 import com.lh.blog.bean.Operation;
 import com.lh.blog.bean.Permission;
 import com.lh.blog.bean.Role;
 import com.lh.blog.dao.ModuleDAO;
+import com.lh.blog.filter.URLHelper;
 import com.lh.blog.util.PageUtil;
 import com.lh.blog.util.RestPageImpl;
 import com.lh.blog.util.SpringContextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,6 +31,9 @@ import java.util.Map;
 @Service
 @CacheConfig(cacheNames = "modules")
 public class ModuleService {
+
+    private static Logger logger = LoggerFactory.getLogger(ModuleService.class);
+
     @Autowired
     ModuleDAO moduleDAO;
     @Autowired
@@ -199,54 +206,83 @@ public class ModuleService {
         return moduleDAO.findAllByPid(pid,sort);
     }
 
+    /**
+     * 判断是否父模块
+     * @param module
+     * @return
+     */
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public boolean hasChild(Module module) {
         int mid = module.getId();
         return moduleDAO.countAllByPid(mid) != 0;
     }
 
-    // 获取维护的模块路径
+    /**
+     * 获取维护模块的路径
+     * 进行优化 因为数据只需要读不需要写，无需保证数据一致性
+     * Redis缓存 换成本地缓存，减少网络带宽
+     * */
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
+    @Deprecated
     public List<String> listURL() {
-        ModuleService moduleService = SpringContextUtils.getBean(ModuleService.class);
-        List<String> urls = new ArrayList<>();
-        for (Module module : moduleService.listRoot()) {
-            String url = "";
-            url += module.getUrl();
-            if (hasChild(module)) {
-                urls.addAll(moduleService.listURLByParent(url,module.getId()));
+        try {
+            ModuleService moduleService = SpringContextUtils.getBean(ModuleService.class);
+            List<String> urls = new ArrayList<>();
+            // 获取根路径
+            List<Module> roots = moduleService.listRoot();
+            for (Module root : roots) {
+                StringBuilder rootURL = new StringBuilder(root.getUrl());
+                // 拼装路径
+                List<String> paths = moduleService.listURLByParent(rootURL,root.getId());
+                urls.addAll(paths);
             }
-            else
-            {
-                urls.add(url);
-            }
+            logger.info("[拼装维护路径成功] {}条路径", urls.size());
+            return urls;
+        }catch (Exception e){
+            logger.error("[拼装维护路径失败]", e);
+            return CollectionUtil.newArrayList();
         }
-        return urls;
     }
 
-    // 由父模块获取路径
+    /**
+     * 递归获取路径 应用树的深度遍历算法
+     * @param parentURL 父路径
+     * @param pid
+     * @return
+     */
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
-    public List<String> listURLByParent(String s, int pid) {
-        ModuleService moduleService = SpringContextUtils.getBean(ModuleService.class);
-        List<String> urls = new ArrayList<>();
-        for (Module module : moduleService.listByParent(pid)) {
-            s += module.getUrl();
-            // 递归获取
-            if (hasChild(module)) {
-                urls.addAll(moduleService.listURLByParent(s, module.getId()));
+    public List<String> listURLByParent(StringBuilder parentURL, int pid) {
+        try {
+            ModuleService moduleService = SpringContextUtils.getBean(ModuleService.class);
+            List<String> urls = new ArrayList<>();
+            List<Module> childs = moduleService.listByParent(pid);
+            for (Module child : childs) {
+                // 获取子模块路径
+                String childURL = child.getUrl();
+                parentURL.append(childURL);
+                boolean isParent = hasChild(child);
+                // 父节点，递归获取子节点
+                if (isParent) {
+                    urls.addAll(moduleService.listURLByParent(parentURL, child.getId()));
+                }
+                // 加入子节点
+                else {
+                    urls.add(parentURL.toString());
+                }
+                // 返回上一场
+                int last = parentURL.lastIndexOf("/");
+                parentURL.delete(last, parentURL.length());
             }
-            else {
-                urls.add(s);
-            }
-            s=s.substring(0,s.lastIndexOf("/"));
+            return urls;
+        }catch (Exception e){
+            return CollectionUtil.newArrayList();
         }
-        return urls;
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public String getChildURL(String url) {
-        ModuleService moduleService = SpringContextUtils.getBean(ModuleService.class);
-        for (String trueUrl: moduleService.listURL()) {
+        List<String> urls = URLHelper.getUrls();
+        for (String trueUrl: urls) {
             if(trueUrl.contains(url) && trueUrl.endsWith(url)) {
                 return trueUrl;
             }

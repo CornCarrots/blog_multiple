@@ -43,17 +43,20 @@ public class URLPathMatchingFilter extends HttpMethodPermissionFilter {
             logger.info("[校验登录成功]: {} login success", subject.getPrincipal());
         }
 
+        // 检查资源路径
         // 看看这个路径权限里有没有维护，如果没有维护，一律放行(也可以改为一律不放行)
         boolean needInterceptor = permissionService.needInterceptor(requestURI);
         if (!needInterceptor) {
-            logger.info("[校验路径] uri:{} method:{} ,not protected", requestURI, requestMethod);
+            logger.info("[校验资源路径] uri:{} method:{} ,not protected", requestURI, requestMethod);
             return true;
         } else {
-            logger.info("[校验路径] uri:{} method:{} , protected", requestURI, requestMethod);
+            logger.info("[校验资源路径] uri:{} method:{} , protected", requestURI, requestMethod);
             // 看看有没有权限,有则放行
             Manager manager = (Manager) subject.getSession().getAttribute("manager");
-            boolean hasPermission = permissionService.hasPermission(subject.getPrincipal().toString(), requestURI, requestMethod,manager);
-
+            // 进行优化，直接用管理员id就可以，
+            // 不要再通过名字，节省SQL查询的开销 776ms -> 710ms
+            boolean hasPermission = permissionService.hasPermission(manager.getId(), requestURI, requestMethod);
+//            boolean hasPermission = permissionService.hasPermission(manager.getId(), requestURI, requestMethod);
             if (hasPermission) {
                 logger.info("[校验权限] uri:{} method:{} manager:{}, success", requestURI, requestMethod, manager.getId());
                 return true;

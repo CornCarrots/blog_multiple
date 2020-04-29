@@ -64,18 +64,22 @@ public class RolePermissionService {
         return rolePermissions;
     }
 
+    /**
+     * 获取某个管理员的权限
+     * @param mid 管理员ID
+     * @return
+     */
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
-    public List<Permission> listPermissionByManager(String username) {
+    public List<Permission> listPermissionByManager(int mid) {
         RolePermissionService rolePermissionService = SpringContextUtils.getBean(RolePermissionService.class);
         List<Permission> permissions = new ArrayList<>();
-        Manager manager = managerService.getByName(username);
-        List<ManagerRole> managerRoles = managerRoleService.listByManager(manager.getId());
-        for (ManagerRole managerRole:
-                managerRoles) {
+        List<ManagerRole> managerRoles = managerRoleService.listByManager(mid);
+        // 获取所有角色
+        for (ManagerRole managerRole: managerRoles) {
             int rid = managerRole.getRid();
+            // 获取所有权限
             List<RolePermission> rolePermissionList = rolePermissionService.listByRole(rid);
-            for (RolePermission rolePermission:
-                    rolePermissionList) {
+            for (RolePermission rolePermission: rolePermissionList) {
                 rolePermissionService.fillRolePermission(rolePermission);
                 permissions.add(rolePermission.getPermission());
             }
