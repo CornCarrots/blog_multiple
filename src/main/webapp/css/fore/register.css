@@ -1,0 +1,37 @@
+.login{
+    width: 100%;
+    margin: 0 auto -17px;
+    height: 600px;
+}
+.login img{
+    z-index:-1;
+    width: 100%;
+    height: 589px;
+    overflow: hidden;
+    opacity: 0.8;
+
+}
+.login .loginDiv{
+    width: 550px;
+    height: 450px;
+    position: absolute;
+    right: 410px;
+    top: 340px;
+    padding: 0 43px;
+    text-align: center;
+    background: linen;
+}
+
+.login .loginDiv table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px;
+    table-layout: fixed;
+}
+.login .loginDiv table tbody tr td:first-child{
+    width: 20%;
+    text-align: right;
+}
+.login .loginDiv .radio{
+    margin: 0 40px;
+}

@@ -1,0 +1,100 @@
+<div class="userRight pull-left" th:fragment="html">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#following" data-toggle="tab">关注</a></li>
+        <li><a href="#fellow" data-toggle="tab">粉丝</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="following">
+            <div class="table back_user_list_table back_message_list_table1">
+                <div v-for="following in followings" style="margin: 10px">
+                    <img :src="getImage(following.img)" alt="user_profile">
+                    <div style="padding-top: 20px">
+                        <a :href="getUser(following.id)">{{following.nickName}}</a>
+                        <p>
+                            <i class="fa fa-mail-forward"></i>邮箱： {{following.email}}
+                        </p>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="pageDiv1" th:fragment="html" style="text-align: center">
+                <nav>
+                    <ul class="pagination">
+                        <li :class="{ disabled: pages_following.first }">
+                            <a href="#first" @click="jump('first',1)">«</a>
+                        </li>
+                        <li :class="{ disabled: !pages_following.hasPrevious }">
+                            <a href="#prev" @click="jump('pre',1)">‹</a>
+                        </li>
+
+                        <li v-for="i in pages_following.navigatepageNums">
+                            <a href="#no" @click="jumpByNumber(i-1,1)">
+                                {{i}}
+                            </a>
+                        </li>
+
+                        <li :class="{ disabled: !pages_following.hasNext }">
+                            <a href="#next" @click="jump('next',1)">›</a>
+                        </li>
+                        <li :class="{ disabled: pages_following.last }">
+                            <a href="#last" @click="jump('last',1)"> »</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="notfound_list1">
+                <div style="text-align: center">
+                    <h1 style="color: #fa5555;margin: 50px auto">还没有关注的人哦</h1>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="fellow">
+            <div class="table back_user_list_table back_message_list_table1">
+                <div v-for="fellow in fellows" style="margin: 10px">
+                    <img :src="getImage(fellow.img)" alt="user_profile">
+                    <div style="padding-top: 20px">
+                        <a :href="getUser(fellow.id)">{{fellow.nickName}}</a>
+                        <p>
+                            <i class="fa fa-mail-forward"></i>邮箱： {{fellow.email}}
+                        </p>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="pageDiv2" th:fragment="html" style="text-align: center">
+                <nav>
+                    <ul class="pagination">
+                        <li :class="{ disabled: pages_fellow.first }">
+                            <a href="#first" @click="jump('first',2)">«</a>
+                        </li>
+                        <li :class="{ disabled: !pages_fellow.hasPrevious }">
+                            <a href="#prev" @click="jump('pre',2)">‹</a>
+                        </li>
+
+                        <li v-for="i in pages_fellow.navigatepageNums">
+                            <a href="#no" @click="jumpByNumber(i-1,2)">
+                                {{i}}
+                            </a>
+                        </li>
+
+                        <li :class="{ disabled: !pages_fellow.hasNext }">
+                            <a href="#next" @click="jump('next',2)">›</a>
+                        </li>
+                        <li :class="{ disabled: pages_fellow.last }">
+                            <a href="#last" @click="jump('last',2)"> »</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="notfound_list2">
+                <div style="text-align: center">
+                    <h1 style="color: #fa5555;margin: 50px auto">还没有粉丝哦</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

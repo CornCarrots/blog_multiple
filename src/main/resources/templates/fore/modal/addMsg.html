@@ -1,0 +1,24 @@
+<div th:fragment="html" class="container">
+    <div id="addMessageModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addMessageModel"
+         aria-hidden="true">
+        <div class="modal-dialog addMessageModelDialog">
+            <div class="modal-content addMessageModelContent">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button" @click="closeButton"><span aria-hidden="true">×</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="text-align: center">发私信</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="lead">
+            <textarea maxlength="200" class="form-control" contenteditable="true" rows="3"
+                      placeholder="想说什么？？？" v-model="msg.text"></textarea>
+                        <p>剩余字数：<span style="color: red">{{200-msg.text.length}}</span>字</p>
+                        <button class="btn btn-info" @click="sendButton">发送私信</button>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

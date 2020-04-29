@@ -1,0 +1,71 @@
+<div class="MainText" th:fragment="html">
+    <div class="text_title">
+        <span class="text_title_left">
+            <a href="#comment">
+                <i class="fa fa-comment-o"></i>
+                <br>
+                <span>{{article.comment}}</span>
+            </a>
+            <a href="javascript:void(0)" @click="startArticle" :class="article.hasStart?'yes':'no'">
+                <i class="fa" :class="article.hasStart?'fa-star':'fa-star-o'"></i>
+                <br>
+                <!--<span v-show="article.hasStart">已收藏 {{article.start}}</span>-->
+                <span>{{article.start}}</span>
+            </a>
+            <a href="javascript:void(0)" @click="likeArticle" :class="article.hasLike?'yes':'no'">
+                <i class="fa" :class="article.hasLike?'fa-thumbs-up':'fa-thumbs-o-up'"></i>
+                <br>
+                <!--<span v-if="article.hasLike">已点赞 {{article.like}}</span>-->
+                <span>{{article.like}}</span>
+            </a>
+        </span>
+        <span class="text_title_right">
+        <div class="social-share"></div>
+        </span>
+    </div>
+    <div class="text_main">
+        <div class="text_main_title no-print">
+            {{article.title}}
+        </div>
+        <div class="text_category no-print" style="margin-left: 40px">
+            <i class="fa fa-user"></i>：<span>{{article.user.nickName}}</span>
+            <i class="fa fa-eye"></i>：<span>{{article.view}}</span>
+            <i class="fa fa-clock-o"></i>：<span>{{article.createDate | formatDateFilter}}</span>
+            <i class="fa fa-address-book" v-if="article.specialty" style="color: #fa5555"></i><span v-if="article.specialty">权威认证</span>
+        </div>
+
+        <div class="alert alert-warning text_main_summary no-print" role="alert">摘要：{{article.summary}}</div>
+        <div class="text_main_container" v-html="article.text"></div>
+        <div class="text_tag no-print">
+            <!--标签：<span v-for="tag in article.tags"><a :href="getTag(tag.id)">{{tag.name}} </a></span>-->
+            标签：<span v-for="tag in article.tags"><a>{{tag.name}} </a></span>
+        </div>
+    </div>
+    <!--<div class="text_category">-->
+        <!--<div class="alert alert-info text_main_summary" role="alert" v-if="!has">私密区域：请在下面评论区中评论一句话，包含-->
+            <!--<span class="text-danger">{{key}}</span>-->
+            <!--中的其中至少一个字</div>-->
+        <!--<div class="alert alert-info text_main_summary" role="alert" v-if="has">私密区域： <span class="text-danger">{{article.secret}}</span></div>-->
+        <!--&lt;!&ndash;标签：<span v-for="tag in article.tags"><a :href="getTag(tag.id)">{{tag.name}} </a></span>&ndash;&gt;-->
+    <!--</div>-->
+    <div class="text_good">
+        <button class="btn btn-success" @click="addChicken">
+            <i class="fa fa-cutlery" style="color: white">给博主加个鸡腿</i>
+        </button>
+        <button class="btn btn-danger" @click="PDFButton">
+            <i class="fa fa-book" style="color: white">制作电子书</i>
+        </button>
+    </div>
+    <!--<ul class="pager">-->
+        <!--<li class="previous" :class="{ disabled: !articles.hasPrevious }">-->
+            <!--<a href="#prev" @click="go('pre')">上一页</a>-->
+        <!--</li>-->
+        <!--<li class="next" :class="{ disabled: !articles.hasNext }">-->
+            <!--<a href="#next" @click="go('next')">下一页</a>-->
+        <!--</li>-->
+    <!--</ul>-->
+    <!--<ul class="pager">-->
+    <!--<li :class="{ disabled: !articles.hasPrevious }"><a  href="#prev" @click="go('pre')">上一页</a></li>-->
+    <!--<li :class="{ disabled: !articles.hasNext }"><a  href="#next" @click="go('next')">下一页</a></li>-->
+    <!--</ul>-->
+</div>

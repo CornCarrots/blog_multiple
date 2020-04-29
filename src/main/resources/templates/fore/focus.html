@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fore/include/header::html('浩说')"></head>
+<link rel="stylesheet" th:href="@{/css/fore/home.css}">
+<body>
+<div th:replace="fore/include/top::html" ></div>
+<div th:replace="fore/include/navigation::html" ></div>
+
+</nav>
+<div class="main">
+    <div class="bottom_navigate">
+        <ul class="breadcrumb">
+            <li><a th:href="@{/home}">首页</a></li>
+            <li class="active">我关注的</li>
+        </ul>
+    </div>
+    <div th:replace="fore/include/right::html" ></div>
+    <div th:replace="fore/category/page::html" ></div>
+    <div class="notfound_list">
+        <div style="text-align: center">
+            <h1 style="color: #fa5555;margin: 50px auto;font-size: 20px">你关注的博主还没有发表文章</h1>
+            <h1 style="color: #fa5555;margin: 50px auto;font-size: 20px">请先去浏览其他文章吧，（づ￣3￣）づ╭❤～</h1>
+        </div>
+    </div>
+</div>
+<div th:replace="fore/include/footer::html" ></div>
+<script th:src="@{/js/fore/focus.js}" ></script>
+</body>

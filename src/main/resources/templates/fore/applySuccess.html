@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fore/include/header::html('浩说')"></head>
+<link rel="stylesheet" th:href="@{/css/fore/register.css}">
+<body>
+<div th:replace="fore/include/top::html" ></div>
+<div th:replace="fore/include/navigation::html" ></div>
+
+</nav>
+<div class="main">
+    <div class="bottom_navigate">
+        <ul class="breadcrumb">
+            <li><a th:href="@{/home}">首页</a></li>
+            <li class="active">申请友链</li>
+        </ul>
+    </div>
+    <div th:replace="fore/link/success::html" ></div>
+</div>
+<div th:replace="fore/include/footer::html" ></div>
+</body>

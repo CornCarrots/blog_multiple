@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="back/include/header::html('链接管理')"></head>
+<link rel="stylesheet" th:href="@{/css/include/checkbox/awesome-bootstrap-checkbox.css}">
+<link rel="stylesheet" th:href="@{/css/include/select/bootstrap-select.min.css}">
+<link rel="stylesheet" th:href="@{/css/back/category.css}">
+<body>
+<div th:replace="back/include/top::html"></div>
+<div th:replace="back/include/side::html"></div>
+<div class="container">
+    <div class="back_art_category_list">
+        <ol class="breadcrumb">
+            <li><a th:href="@{/admin}"><i class="fa fa-home">首页</i></a></li>
+            <li class="active">所有链接</li>
+        </ol>
+        <div style="margin-bottom: 10px;width: 100%">
+            <button class="btn btn-danger" @click="deleteAllButton"><i class="fa fa-trash-o"> 批量删除</i></button>
+            <div id="search">
+                <div class="input-group">
+                    <input class="form-control" type="text" v-model.lazy="key">
+                    <span class="input-group-btn">
+                         <button class="btn btn-info" type="button" @click="search"><i class="fa fa-search"> 搜索</i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered table-hover table-striped table-condensed back_art_category_list_table">
+            <thead>
+            <tr>
+                <th id="checkAllTH">
+                    <div class="checkbox checkbox-success checkbox-inline">
+                        <input type="checkbox" id="checkAll" value="">
+                        <label for="checkAll"></label>
+                    </div>
+                </th>
+                <th>ID</th>
+                <th>链接名称</th>
+                <th>url</th>
+                <th>描述</th>
+                <th>邮箱</th>
+                <th>申请时间</th>
+                <th>状态</th>
+                <th>编辑</th>
+                <th>删除</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="link in links">
+                <td class="checkOne">
+                    <div class="checkbox checkbox-success checkbox-inline">
+                        <input type="checkbox" :id=link.id :value=link.id name="linkCheckbox">
+                        <label :for=link.id></label>
+                    </div>
+                </td>
+                <td>{{link.id}}</td>
+                <td>{{link.name}}</td>
+                <td>{{link.url}}</td>
+                <td>{{link.describe}}</td>
+                <td>{{link.email}}</td>
+                <td>{{link.createDate | formatDateFilter}}</td>
+                <td><span class="label" :class="link.status==0?'label-success':'label-danger'">{{link.status | statusFilter}}</span></td>
+                <td v-if="link.status==0" @click="unCheckButton(link.id)"><a href="#no"><span class="fa fa-close"></span></a></td>
+                <td v-if="link.status==1" @click="checkButton(link.id)"><a href="#no"><span class="fa fa-check"></span></a></td>
+                <td><a href="#no" @click="deleteLink(link.id)"><span class="fa fa-trash"></span></a></td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:replace="back/include/404_list::html('友链')"></div>
+        <div th:replace="back/include/404_search::html('{{key}}','友链')"></div>
+    </div>
+    <div th:replace="back/include/page::html"></div>
+</div>
+<div th:replace="back/include/footer::html"></div>
+<script th:src="@{/js/include/select/bootstrap-select.js}"></script>
+<script th:src="@{/js/back/link.js}"></script>
+</body>

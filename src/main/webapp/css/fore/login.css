@@ -1,0 +1,33 @@
+.login{
+    width: 100%;
+    margin: 0 auto -17px;
+    height: 600px;
+}
+.login img{
+    z-index:-1;
+    width: 100%;
+    height: 589px;
+    overflow: hidden;
+    opacity: 0.8;
+
+}
+.login .loginDiv{
+    width: 393px;
+    height: 300px;
+    position: absolute;
+    right: 470px;
+    top:415px;
+    padding: 0 43px;
+    text-align: center;
+    background: linen;
+}
+.login .loginDiv .input-group{
+    margin: 20px 0;
+    width: 309px;
+}
+.login .loginDiv .graySpan{
+    width: 90%;
+    margin: 25px auto 30px;
+    color: #5e5e5e;
+    font-size: 12px;
+}

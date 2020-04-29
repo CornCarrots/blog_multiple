@@ -1,0 +1,48 @@
+<div th:fragment="html" class="container">
+    <div id="addCategoryModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addCategoryModel"
+         aria-hidden="true">
+        <div class="modal-dialog addCategoryModelDialog">
+            <div class="modal-content addCategoryModelContent" style="height: 285px">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="text-align: center">添加分类</h4>
+                </div>
+                <form id="addForm" onsubmit="return false;" @submit="addCategory">
+
+                <div class="modal-body">
+                    <div class="back_category_add">
+                        <table class="addTable">
+                            <tr>
+                                <td>分类名称：</td>
+                                <td><input type="text" class="form-control validate[required,maxSize[10]]" placeholder="请输入分类名称"
+                                           v-model="category.name"></td>
+                            </tr>
+                            <tr>
+                                <td>父级分类：</td>
+                                <td>
+                                    <div class="dropdown bootstrap-select">
+                                        <select class="selectpicker validate[required]" id="addSelect" data-style="btn-success"
+                                                tabindex="-98" v-model="category.pid"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>分类图片：</td>
+                                <td><input type="file" class="form-control" @change="setFile($event)"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer" style="text-align: center">
+                    <button class="btn btn-default" type="submit">提交</button>
+                    <button data-dismiss="modal" class="btn btn-default" type="button">取消</button>
+                </div>
+                <div class="clearfix"></div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+</div>

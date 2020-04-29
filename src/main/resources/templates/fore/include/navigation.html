@@ -1,0 +1,31 @@
+<nav th:fragment="html" xmlns:th="http://www.thymeleaf.org" class="navigation">
+    <div class="top_navigate">
+        <span class="top_navigate_span">
+            <i class="fa fa-navicon"></i>
+            分类
+        </span>
+        <span style="display: inline-block;width: 2px;height: 13px;background-color: #fa5555"></span>
+        <span th:each="cat:${application.parentCategories}">
+            <a tabindex="-1" href="#no" class="categoryButton"  th:attr="cid=${cat.id}" th:text="${cat.name}"></a></li>
+            <span style="display: inline-block;width: 2px;height: 13px;background-color: #fa5555"></span>
+        </span>
+        <div class="top_navigate_right">
+            <span class="top_navigate_span">
+            <i class="fa fa-flag"></i>
+            <a th:href="@{/focus}">我的关注</a>
+        </span>
+            <span style="margin:0 10px;display: inline-block;width: 2px;height: 13px;background-color: #fa5555"></span>
+            <span class="top_navigate_span">
+            <i class="fa fa-heart"></i>
+            <a th:href="@{/likes}">我喜欢的</a>
+        </span>
+
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+    <div class="myHot">
+        <span class="fa fa-volume-up">最新公告：</span>
+        <span><a href="javascript:void(0);" onclick="noticeClick(this)" th:attr="nid=${application.notice.id}" th:text="${application.notice.title}"></a></span>
+    </div>
+</nav>

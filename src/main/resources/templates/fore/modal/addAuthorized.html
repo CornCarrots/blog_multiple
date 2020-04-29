@@ -1,0 +1,43 @@
+<div th:fragment="html" class="container">
+    <div id="addAuthorizedModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addMessageModel"
+         aria-hidden="true">
+        <div class="modal-dialog addMessageModelDialog">
+            <div class="modal-content addMessageModelContent">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button" @click="closeAuthButton"><span aria-hidden="true">×</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="text-align: center">申请认证</h4>
+                </div>
+                <form id="addForm" onsubmit="return false;" @submit="addAuth">
+                    <div class="modal-body">
+                        <table>
+                            <tr>
+                                <td>所属学校、企业或相关企业：</td>
+                                <td>
+                                    <input id="name" type="text" name="name" class="form-control validate[required]" placeholder="请输入您的机构名" v-model.trim="authorized.name">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>描述：</td>
+                                <td><input type="text" class="form-control validate[required]" placeholder="请输入您的申请原因" v-model.trim="authorized.desc"></td>
+                            </tr>
+                            <tr>
+                                <td>认证邮箱：</td>
+                                <td><input type="email" class="form-control" placeholder="请输入您的认证邮箱" v-model.trim="authorized.email"></td>
+                            </tr>
+                            <tr>
+                                <td>上传图片：</td>
+                                <td><input type="file" class="form-control" @change="setFile($event)"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer" style="text-align: center">
+                        <button class="btn btn-default" type="submit">申请认证</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

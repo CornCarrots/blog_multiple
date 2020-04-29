@@ -1,0 +1,124 @@
+<div class="information pull-right" th:fragment="html">
+    <!--<div class="info_author">-->
+    <!--<div class="info_title">-->
+    <!--<span class="fa fa-th-list info_title_tag"></span>-->
+    <!--<span class="separate"></span>-->
+    <!--<span>关于本站</span>-->
+    <!--</div>-->
+    <!--<div class="info_author_information">-->
+    <!--<img th:src="@{/image/option/image.jpg}" alt="" width="120px" height="115px"-->
+    <!--class="pull-left">-->
+    <!--<div class="info_author_name" th:text="${application.options[3].value}"></div>-->
+    <!--<div class="info_author_introduction" th:text="${application.options[2].value}"></div>-->
+    <!--</div>-->
+    <!--<div class="clearfix"></div>-->
+    <!--<div class="info_author_all">-->
+    <!--<span th:text="'文章 '+${application.articleSum}"></span>-->
+    <!--<span class="separate"></span>-->
+    <!--<span th:text="'留言 '+${application.commentSum}"></span>-->
+    <!--</div>-->
+    <!--</div>-->
+    <div class="info_hot">
+        <div class="leaderboard">
+            <h1>
+                <svg class="ico-cup">
+                    <use xlink:href="#cup"></use>
+                </svg>
+                <i class="fa fa-pencil-square-o"></i>热评文章
+            </h1>
+            <ol>
+                <li th:each="art:${application.top_articles}">
+                    <a href="javascript:void(0);" onclick="articleClick(this)" th:id="${art.id}">
+                        <mark th:text="${art.title}"></mark>
+                    </a>
+                    <!--<small>315</small>-->
+                </li>
+            </ol>
+        </div>
+    </div>
+    <!--<div class="info_title">-->
+    <!--<span class="fa fa-th-list info_title_tag"></span>-->
+    <!--<span class="separate"></span>-->
+    <!--<span>热评文章</span>-->
+    <!--</div>-->
+    <!--<div>-->
+    <!--<ul>-->
+    <!--<li th:each="art:${application.top_articles}">-->
+    <!--<a href="javascript:void(0);" onclick="articleClick(this)" th:aid="${art.id}"  th:text="${art.title}"></a>-->
+    <!--</li>-->
+    <!--</ul>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <div class="info_comment">
+        <div class="leaderboard">
+            <h1>
+                <svg class="ico-cup">
+                    <use xlink:href="#cup"></use>
+                </svg>
+                <i class="fa fa-comments"></i>近期评论
+            </h1>
+            <ol>
+                <li th:each="com:${application.top_comments}">
+                    <mark style="padding: 10px 50px">
+                        <img width="30px" height="30px" th:src="@{${com.user.img}}" alt="">
+                        <a href="javascript:void(0);" onclick="userClick(this)" th:attr="uid=${com.uid}"
+                           th:text="${com.user.nickName}"></a>:
+                        <!--<a href="javascript:void(0);" onclick="commentClick(this)" th:aid="${com.aid}" th:cid="${com.id}" th:if="${#strings.length(com.text)>8}" th:utext="${#strings.substring(com.text,0,8)}+'...'"></a>-->
+                        <!--<a href="javascript:void(0);" onclick="commentClick(this)"   th:attr="aid=${com.aid},cid=${com.id}"  th:if="${#strings.length(com.text)>8}" th:utext="${#strings.substring(com.text,0,20)}"></a>-->
+                        <a href="javascript:void(0);" onclick="commentClick(this)"  th:attr="aid=${com.aid},cid=${com.id}" th:if="${#strings.length(com.text)>8}" th:text="字数过长不予显示"></a>
+                        <a href="javascript:void(0);" onclick="commentClick(this)"   th:attr="aid=${com.aid},cid=${com.id}" th:if="${#strings.length(com.text)<=8}" th:utext="${com.text}"></a>
+                    </mark>
+                    <!--<small>315</small>-->
+                </li>
+            </ol>
+        </div>
+        <!--<div class="info_title">-->
+        <!--<span class="fa fa-th-list info_title_tag"></span>-->
+        <!--<span class="separate"></span>-->
+        <!--<span>近期评论</span>-->
+        <!--</div>-->
+        <!--<div class="info_comment_myComment">-->
+        <!--<ul>-->
+        <!--<li th:each="com:${application.top_comments}">-->
+        <!--<img width="30px" height="30px" th:src="@{'/image/profile_user/'+${com.user.id}+'.jpg'}" alt="">-->
+        <!--<a  href="javascript:void(0);" onclick="userClick(this)" th:uid="${com.uid}" th:text="${com.user.nickName}"></a>:-->
+        <!--<a  href="javascript:void(0);" onclick="commentClick(this)" th:aid="${com.aid}" th:cid="${com.id}" th:utext="${com.text}"></a>-->
+        <!--</li>-->
+        <!--</ul>-->
+        <!--</div>-->
+    </div>
+    <div class="info_tag">
+        <div class="leaderboard">
+            <h1>
+                <svg class="ico-cup">
+                    <use xlink:href="#cup"></use>
+                </svg>
+                <i class="fa fa-th-list"></i>热门标签
+            </h1>
+            <div class="info_tag_myTag">
+                    <a href="javascript:void(0);" onclick="tagClick(this)"th:each="tag:${application.tags}" th:id="${tag.id}" >
+
+                        <button class="btn btn-danger"th:text="${tag.name}">
+                        </button>
+
+                    </a>
+
+                <!--<span th:each="tag:${application.tags}">-->
+                    <!--<a href="javascript:void(0);" onclick="tagClick(this)" th:tid="${tag.id}" th:text="${tag.name}"></a>-->
+                <!--</span>-->
+            </div>
+        </div>
+        <!--<div class="info_title">-->
+        <!--<span class="fa fa-th-list info_title_tag"></span>-->
+        <!--<span class="separate"></span>-->
+        <!--<span>所有标签</span>-->
+        <!--</div>-->
+        <!--<div class="info_tag_myTag">-->
+        <!--<span th:each="tag:${application.tags}">-->
+        <!--<a href="javascript:void(0);" onclick="tagClick(this)" th:tid="${tag.id}" th:text="${tag.name}"></a>-->
+        <!--</span>-->
+        <!--</div>-->
+    </div>
+</div>
+

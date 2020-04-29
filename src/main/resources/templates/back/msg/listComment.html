@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="back/include/header::html('评论管理')"></head>
+<link rel="stylesheet" th:href="@{/css/include/checkbox/awesome-bootstrap-checkbox.css}">
+<link rel="stylesheet" th:href="@{/css/include/select/bootstrap-select.min.css}">
+<link rel="stylesheet" th:href="@{/css/back/message.css}">
+<body>
+<div th:replace="back/include/top::html"></div>
+<div th:replace="back/include/side::html"></div>
+<div class="container">
+    <div class="back_message_list">
+        <ol class="breadcrumb">
+            <li><a th:href="@{/admin}"><i class="fa fa-home">首页</i></a></li>
+            <li class="active">评论列表</li>
+        </ol>
+        <div style="margin-bottom: 10px;width: 100%">
+            <button class="btn btn-danger" @click="deleteAllButton"><i class="fa fa-trash-o"> 批量删除</i></button>
+            <div id="search">
+                <div class="input-group">
+                    <input class="form-control" type="text" v-model.lazy="key">
+                    <span class="input-group-btn">
+                         <button class="btn btn-info" @click="search"><i class="fa fa-search"> 搜索</i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered table-hover table-striped table-condensed back_message_list_table">
+            <thead>
+            <tr>
+                <th id="checkAllTH">
+                    <div class="checkbox checkbox-success checkbox-inline">
+                        <input type="checkbox" id="checkAll" value="">
+                        <label for="checkAll"></label>
+                    </div>
+                </th>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>留言时间</th>
+                <th width="30%">留言文章</th>
+                <th width="30%">留言内容</th>
+                <th>查看</th>
+                <th>状态</th>
+                <th colspan="2">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="comment in comments">
+                <td class="checkOne">
+                    <div class="checkbox checkbox-success checkbox-inline">
+                        <input type="checkbox" :id=comment.id :value=comment.id name="messageCheckBox">
+                        <label :for=comment.id></label>
+                    </div>
+                </td>
+                <td>{{comment.id}}</td>
+                <td>{{comment.user.name}}</td>
+                <td>{{comment.createDate | formatDateFilter}}</td>
+                <td v-if="comment.article.title.length>30"><a :href="getArticle(comment.article.id)">{{comment.article.title | subStringFilter(0,30) }}...</a></td>
+                <td v-if="comment.article.title.length<=30"><a :href="getArticle(comment.article.id)">{{comment.article.title }}</a></td>
+                <td v-if="comment.text.length>40">字数过长不予显示</td>
+                <td v-if="comment.text.length<=40" v-html="comment.text"></td>
+                <td><a href="#no" @click="detailButton(comment.id)"><span class="fa fa-eye"></span></a></td>
+                <td><span class="label" :class="comment.status==0?'label-success':'label-danger'">{{comment.status | statusFilter}}</span></td>
+                <td v-if="comment.status==0||comment.status==2" @click="unCheckButton(comment.id)"><a href="#no"><span class="fa fa-close"></span></a></td>
+                <td v-if="comment.status==1" @click="checkButton(comment.id)"><a href="#no"><span class="fa fa-check"></span></a></td>
+                <td><a href="#no" @click="deleteButton(comment.id)"><span class="fa fa-trash"></span></a></td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:replace="back/include/404_list::html('评论')"></div>
+        <div th:replace="back/include/404_search::html('{{key}}','评论')"></div>
+    </div>
+    <div th:replace="back/include/page::html"></div>
+    <div th:replace="back/modal/getComment::html"></div>
+</div>
+<div th:replace="back/include/footer::html"></div>
+<script th:src="@{/js/include/select/bootstrap-select.js}"></script>
+<script th:src="@{/js/back/comment.js}"></script>
+</body>

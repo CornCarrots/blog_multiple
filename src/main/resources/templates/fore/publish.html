@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fore/include/header::html('浩说')"></head>
+<link rel="stylesheet" th:href="@{/css/include/checkbox/awesome-bootstrap-checkbox.css}">
+<link rel="stylesheet" th:href="@{/css/include/select/bootstrap-select.min.css}">
+<link rel="stylesheet" th:href="@{/js/include/kindeditor/themes/default/default.css}">
+<link rel="stylesheet" th:href="@{/css/fore/user.css}">
+<body>
+<div th:replace="fore/include/top::html" ></div>
+<div th:replace="fore/include/navigation::html" ></div>
+<div class="main">
+    <div class="bottom_navigate">
+        <ul class="breadcrumb">
+            <li><a th:href="@{/home}">首页</a></li>
+            <li class="active">发表博客</li>
+        </ul>
+    </div>
+    <div class="user">
+        <div class="userLeft pull-left">
+            <ul class="nav nav-pills nav-stacked" style="border:1px dotted #ddd;border-radius: 10px">
+                <li role="presentation"><a th:href="@{/setting}">个人资料</a></li>
+                <li role="presentation" class="active"><a th:href="@{/publish}">发表博客</a></li>
+                <li role="presentation"><a th:href="@{/allArticle}">所有博客</a></li>
+                <li role="presentation"><a th:href="@{/allUser}">圈子</a></li>
+                <li role="presentation"><a th:href="@{/allCategory}">管理分类</a></li>
+                <li role="presentation"><a th:href="@{/allTag}">管理标签</a></li>
+                <li role="presentation"><a th:href="@{/history}">浏览记录</a></li>
+                <li role="presentation"><a th:href="@{/msg}">我的信息</a></li>
+                <li role="presentation"><a th:href="@{/allStart}">我的收藏</a></li>
+
+            </ul>
+        </div>
+        <div th:replace="fore/user/publish::html" ></div>
+        <div th:replace="fore/modal/addTag::html"></div>
+    </div>
+
+</div>
+<div th:replace="fore/include/footer::html" ></div>
+<script th:src="@{/js/include/select/bootstrap-select.js}"></script>
+<script th:src="@{/js/include/kindeditor/kindeditor-all.js}"></script>
+<script th:src="@{/js/include/kindeditor/lang/zh-CN.js}"></script>
+<script th:src="@{/js/fore/publish.js}" ></script>
+</body>

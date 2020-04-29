@@ -1,0 +1,16 @@
+<div class="MainText" th:fragment="html">
+    <div class="text_main" style="height: 500px">
+        <div class="text_main_title">
+            {{notice.title}}
+        </div>
+        <div class="text_category" style="margin-left: 40px">
+            <i class="fa fa-user"></i>：<span>站长</span>
+            <i class="fa fa-clock-o"></i>：<span>{{notice.createDate | formatDateFilter}}</span>
+        </div>
+        <div class="text_main_container" v-html="notice.text" ></div>
+
+    </div>
+    <div class="text_category">
+        最后更新时间：{{notice.updateDate | formatDateFilter}}
+    </div>
+</div>

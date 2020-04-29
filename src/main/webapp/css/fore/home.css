@@ -1,0 +1,130 @@
+
+.myarticle{
+    width: 68%;
+}
+.mainContext{
+    margin: 10px;
+    height: 200px;
+    padding: 20px 10px;
+    position: relative;
+    border: 1px solid #e8ebeb;
+    color: #5e5e5e;
+
+}
+.mainContext a{
+    color: black;
+    text-decoration: none;
+}
+.mainContext a:hover{
+    color: #fa5555;
+}
+.mainContext .context_title{
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+    text-indent: 1em;
+}
+.mainContext .context_text{
+    margin: 10px;
+    text-indent: 1em;
+}
+.mainContext .redBlock{
+    position: absolute;
+    left: 0;
+    top: 20px;
+    background-color: #c40000;
+    width: 6px;
+    height: 30px;
+}
+.mainContext .newBlock{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 0;
+    background-color: #c40000;
+    color: white;
+    text-align: center;
+    width: 35px;
+    height: 20px;
+}
+.mainContext .context_category{
+    width: 100px;
+    height: 20px;
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    background-color: #c40000;
+    text-align: center;
+}
+.mainContext .context_category a{
+    color: white;
+}
+.mainContext .context_category a:hover{
+    color: black;
+}
+.mainContext img{
+    width: 200px;
+    height: 150px;
+    margin-right: 10px;
+}
+.mainContext .context_info{
+    position: absolute;
+    bottom: 30px;
+    left: 230px;
+}
+.mainContext .context_info span{
+    margin: 5px;
+}
+.mainContext .context_info .context_comment a{
+    color: #fa5555;
+}
+.mainContext  .context_button{
+    position: absolute;
+    bottom: 30px;
+    right: 0px;
+
+}
+.mainContext  .context_button button{
+    width: 80px;
+    height: 30px;
+    outline: none;
+    color: white;
+    background-color:#fa5555 ;
+    border: 0 ;
+}
+.mainContext  .context_button button:hover{
+    background-color:#fa5555 ;
+}
+
+.category_sortAndPrice{
+
+    padding: 0 15px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+.category_sortAndPrice .category_mysort,.category .category_sortAndPrice .category_price{
+    display: inline;
+    padding: 7px;
+}
+.category_sortAndPrice .category_sort{
+    width: 20px;
+    border: 1px #CCC solid;
+    padding:3px 1px;
+    font-size: 12px;
+}
+.category_sortAndPrice .active{
+    background-color: #F1EDEC;
+}
+.category_sortAndPrice .category_price .category_sort{
+    padding: 3px 1px 1px 1px ;
+    vertical-align:middle;
+    color: #CCCCCC;
+}
+.category_sortAndPrice .category_sort  a {
+    margin: 1px;
+    color: #806F66;
+}
+.category_sortAndPrice .category_sort  a:hover{
+     color: #fa5555;
+ }

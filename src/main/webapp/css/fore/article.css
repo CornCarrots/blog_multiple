@@ -1,0 +1,330 @@
+.someText ul li {
+    list-style: none;
+    margin-left: -40px;
+}
+
+.test {
+    width: 75%;
+}
+
+.test > div {
+    margin: 10px 13px;
+}
+
+.test a {
+    color: black;
+    text-decoration: none;
+}
+
+.test .MainText {
+    padding: 10px 10px 0 10px;
+    background-color: floralwhite;
+    border: 1px solid #ddd;
+
+}
+
+.test .MainText .text_title {
+    position: relative;
+    margin: 10px 0 65px 0;
+    outline: none;
+}
+
+.test .MainText .text_title .text_title_left {
+    position: absolute;
+    left: 10px;
+    top: 0;
+}
+
+.text_title_left > a {
+    position: relative;
+    margin-right: 10px;
+    padding-top: 6px;
+    display: inline-block;
+    width: 65px;
+    height: 50px;
+    font-size: 10px;
+    border-radius: 50%;
+    border: 1px solid #666;
+    color: #666;
+    text-align: center;
+    vertical-align: middle;
+    transition: background 0.6s ease-out 0s;
+}
+
+.test .MainText .text_title a.yes {
+    background-color: bisque;
+}
+
+.text_title_left > a:hover {
+    background-color: #d43f3a;
+    color: white;
+}
+
+.text_title_left > a i:hover {
+    color: white;
+}
+
+.test .MainText .text_title a.yes:hover {
+    background-color: #d43f3a;
+    color: white;
+}
+
+.text_title_left i {
+    margin: 0 10px;
+    font-size: 17px;
+}
+
+.test .MainText .text_title .text_title_right {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.test .MainText .text_main {
+    margin: 80px auto 0;
+    line-height: 30px;
+    font-size: 14px;
+    font-family: Arial;
+}
+
+.test .MainText .text_main .text_main_container {
+    width: 688px;
+    margin: 10px 35px;
+    font-size: 14px;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.test .MainText .text_main .text_main_title {
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+}
+
+.test .MainText .text_main .text_main_summary {
+    width: 90%;
+    margin: 10px auto;
+    padding: 5px 20px;
+}
+
+.test .MainText .text_tag {
+    margin: 20px 40px 10px;
+    color: #999;
+    font-size: 12px;
+}
+
+.test .MainText .text_category {
+    margin: 20px 40px;
+    color: #999;
+    font-size: 12px;
+}
+
+.test .MainText .text_good {
+    text-align: center;
+    margin: 0 0 30px;
+}
+
+.test .MainText .pager {
+    display: flow-root;
+    margin-bottom: 5px;
+}
+
+.test .MainText .text_category span {
+    margin-right: 10px;
+}
+
+.test .MainText .text_tag a {
+    color: #999;
+}
+
+.test .MainText .text_category i {
+    color: #999;
+}
+
+.test .MainText .text_category a:hover {
+    color: #fa5555;
+}
+
+.someText {
+    padding: 15px 18px 5px;
+    position: relative;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.someText p {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.someText a:hover {
+    /*background-color:#009688;*/
+    color: #fa5555;
+    text-decoration: none;
+}
+
+.someText .text_other, .someText .text_like, .someText .separate {
+    display: inline-block;
+}
+
+.someText .text_other, .someText .text_like {
+    width: 47%;
+    vertical-align: text-top;
+}
+
+.someText .text_like {
+    margin-left: 31px;
+}
+
+.someText .separate {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background-color: #ebebeb;
+}
+
+.commentText {
+    margin: 10px;
+    padding: 10px 10px;
+}
+
+.triangle {
+    position: absolute;
+    top: 0;
+    left: -11px;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    font-size: 0;
+    line-height: 0;
+    border-color: #fa5555 #fa5555 transparent transparent;
+    border-style: solid dashed dashed dashed;
+    border-width: 6px;
+}
+
+.commentText textarea {
+    resize: none;
+}
+
+.comment {
+    margin: 10px;
+    padding: 10px;
+}
+
+.comment p {
+    color: #999999;
+}
+
+/*.comment .mainComment .commentName, .comment .otherComment .commentName {*/
+    /*font-weight: bold;*/
+/*}*/
+
+/*.comment .mainComment {*/
+    /*margin: 0 0 10px 0;*/
+    /*padding: 10px 10px 0 10px;*/
+    /*border: 1px solid #ebebeb;*/
+/*}*/
+
+/*.comment .mainComment img, .comment .otherComment img {*/
+    /*width: 64px;*/
+    /*height: 64px;*/
+    /*margin-right: 20px;*/
+/*}*/
+
+/*.comment .mainComment .otherComment {*/
+    /*margin: 30px;*/
+    /*padding: 10px 10px 0 10px;*/
+    /*border: 1px solid #ebebeb;*/
+/*}*/
+
+.responseDiv {
+    padding: 20px 65px;
+}
+
+.responseDiv img {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+}
+
+.lead {
+    position: relative;
+    font-size: 14px;
+}
+.responseDiv .lead{
+    margin-left: 85px;
+    margin-top: 25px;
+    width: 90%;
+}
+
+.smile {
+    position: absolute;
+    right: 145px;
+    bottom: -30px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.send {
+    position: absolute;
+    right: 30px;
+    bottom: -30px;
+}
+
+textarea {
+    resize: none;
+    border: 1px solid #fa5555;
+    border-radius: 30px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.commentDiv {
+    width: 90%;
+    margin: 10px auto;
+}
+
+.comment .commentTable {
+    width: 100%;
+    /*border-spacing: 10px;*/
+    /*border-collapse: separate;*/
+}
+
+.comment .commentTable tr {
+    border-bottom: 1px dotted #ebebeb;
+}
+
+.comment .commentTable tr:hover {
+    background-color: floralwhite;
+}
+
+.comment .commentTable tr td {
+    padding: 15px 15px 0;
+}
+
+.comment .commentTable tr td:first-child {
+    width: 10%;
+    vertical-align: top;
+}
+
+.comment .commentTable tr td:first-child img {
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+}
+
+.comment .commentTable .commentName a {
+    color: #fa5555;
+}
+
+.comment .commentTable table {
+    border-top: 1px solid #ebebeb;
+}
+
+.comment .commentTable .commentName a:hover {
+    color: #d43f3a;
+}
+.payDIV img{
+    margin:0 50px;
+}

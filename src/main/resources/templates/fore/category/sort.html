@@ -1,0 +1,11 @@
+<div class="category_sortAndPrice" th:fragment="html">
+    <div><i class="fa fa-th-list" style="font-size: 18px"> 排序：</i></div>
+    <div class="category_mysort">
+        <span class="category_sort active" ><a href="#no" @click="sort('title',$event)">综合 <i class="fa fa-sort-alpha-desc"></i></a></span>
+        <span class="category_sort"><a href="#no" @click="sort('view',$event)">最高人气<i class="fa fa-sort-amount-desc"></i></a></span>
+        <span class="category_sort"><a href="#no" @click="sort('createDate',$event)">最近发布<i class="fa fa-sort-amount-desc"></i></a></span>
+        <span class="category_sort"><a href="#no" @click="sort('start',$event)">最多收藏<i class="fa fa-sort-numeric-desc"></i></a></span>
+        <span class="category_sort"><a href="#no" @click="sort('like',$event)">最多点赞 <i class="fa fa-sort-numeric-desc"></i></a></span>
+        <span class="category_sort"><a href="#no" @click="sort('comment',$event)">最多评论 <i class="fa fa-sort-numeric-desc"></i></a></span>
+    </div>
+</div>

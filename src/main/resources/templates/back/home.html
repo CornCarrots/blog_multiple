@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="back/include/header::html('后台管理')"></head>
+<link rel="stylesheet" th:href="@{/css/back/index.css}">
+<body>
+<div th:replace="back/include/top::html" ></div>
+<div th:replace="back/include/side::html" ></div>
+<div class="container">
+    <div class="index_info">
+        <div class="index_info_block">
+            <div id="index_info_block_user" class="index_info_icon"><i class="fa fa-pencil-square-o fa-3x"></i></div>
+            <div class="index_info_content">
+                <h1>{{article_sum}}</h1>
+                <p>文章总数</p>
+            </div>
+        </div>
+        <div class="index_info_block">
+            <div id="index_info_block_distribution" class="index_info_icon"><i class="fa fa-eye fa-3x"></i></div>
+            <div class="index_info_content">
+                <h1>{{view_sum}}</h1>
+                <p>浏览总量</p>
+            </div>
+        </div>
+        <div class="index_info_block">
+            <div id="index_info_block_order" class="index_info_icon"><i class="fa fa-user fa-3x"></i></div>
+            <div class="index_info_content">
+                <h1>{{user_sum}}</h1>
+                <p>用户个数</p>
+            </div>
+        </div>
+        <div class="index_info_block">
+            <div id="index_info_block_transaction" class="index_info_icon"><i class="fa fa-comment fa-3x"></i></div>
+            <div class="index_info_content">
+                <h1>{{comment_sum}}</h1>
+                <p>留言总量</p>
+            </div>
+        </div>
+    </div>
+    <div class="index_news">
+        <table class="table table-bordered table-striped table-hover table-condensed">
+            <thead>
+            <tr>
+                <th colspan="2">博客信息</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>发布总数</td>
+                <td><span class="data">{{publish_sum}}</span> 个</td>
+            </tr>
+            <tr>
+                <td>草稿总数</td>
+                <td><span class="data">{{draft_sum}}</span> 个</td>
+            </tr>
+            <tr>
+                <td>分类个数</td>
+                <td><span class="data">{{category_sum}}</span> 个</td>
+            </tr>
+            <tr>
+                <td>标签个数</td>
+                <td><span class="data">{{tag_sum}}</span> 个</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-striped table-hover table-condensed" style="text-align: left">
+            <thead>
+            <tr>
+                <th>最新文章</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="art in articles">
+                <td>
+                    <i class="data fa fa-pencil"></i>
+                    <span v-if="art.title.length>20"><a th:href="@{/admin/article}">{{art.title | subStringFilter(0,20) }}...</a></span>
+                    <span v-if="art.title.length<=20"><a th:href="@{/admin/article}">{{art.title}}</a></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-striped table-hover table-condensed" style="text-align: left">
+            <thead>
+            <tr>
+                <th>最新消息</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="msg in messages">
+                <td>
+                    <i class="data fa fa-bell-o"></i>
+                    <span v-if="msg.text.length>20"><a th:href="@{/admin/message}">{{msg.text | subStringFilter(0,20) }}...</a></span>
+                    <span v-if="msg.text.length<=20"><a th:href="@{/admin/message}">{{msg.text}}</a></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="back/include/footer::html" ></div>
+<script th:src="@{/js/back/home.js}"></script>
+
+</body>

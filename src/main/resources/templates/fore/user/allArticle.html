@@ -1,0 +1,96 @@
+<div class="userRight pull-left" th:fragment="html">
+    <div class="back_article_list">
+        <div class="top_navigate" style="padding: 0px">
+            <a href="#no" class="categoryButton"  @click="getCategoryButton(0)">所有文章</a></li>
+            <span class="dropdown" v-for="cat in userCategories">
+                <a href="#no" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="100" data-close-others="false">
+                    {{cat.name}}
+                    <b v-if="cat.child!==undefined  && cat.child.length > 0" class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" style="margin-top: 10px" v-if="cat.child!==undefined  && cat.child.length > 0">
+                    <li v-for="cld in cat.child">
+                        <a tabindex="-1" href="#no" class="categoryButton"  @click="getCategoryButton(cld.id)">{{cld.name}}</a></li>
+                </ul>
+                <!--<ul class="dropdown-menu" style="margin-top: 10px" v-else>-->
+                        <!--<li><a tabindex="-1" class="categoryButton">无分类</a></li>-->
+                <!--</ul>-->
+            </span>
+        </div>
+        <div style="margin-bottom: 10px;width: 100%">
+            <button class="btn btn-danger" @click="PDFButton"><i class="fa fa-book" style="color: white">制作电子书</i></button>
+            <div id="search">
+                <div class="input-group">
+                    <input class="form-control" type="text" v-model.lazy="key">
+                    <span class="input-group-btn">
+                         <button class="btn btn-info" type="button" @click="search"><i class="fa fa-search" style="color: white"> 搜索</i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <table class="table table-bordered table-hover table-striped table-condensed back_article_list_table">
+            <thead>
+            <tr>
+                <th id="checkAllTH">
+                    <div class="checkbox checkbox-success checkbox-inline">
+                        <input type="checkbox" id="checkAll" value="">
+                        <label for="checkAll"></label>
+                    </div>
+                </th>
+                <th width="15%">分类</th>
+                <th width="15%">标题</th>
+                <th>简介</th>
+                <th v-if="has" width="10%">添加时间</th>
+                <th v-if="has" width="10%">修改时间</th>
+                <th width="5%">状态</th>
+                <th v-if="has" width="5%">编辑</th>
+                <th v-if="has" width="5%">删除</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="art,index in articles">
+                <td class="checkOne">
+                    <div class="checkbox checkbox-success checkbox-inline">
+                        <input type="checkbox" :id=art.id :value=art.id name="articleCheckbox">
+                        <label :for=art.id></label>
+                    </div>
+                </td>
+                <td><a href="javascript:void(0)" @click="getCategoryButton(art.cid)">{{art.category.name}}</a></td>
+                <td><a href="javascript:void(0)" @click="checkArticle(art.id)">{{art.title}}</a></td>
+                <td v-if="art.summary.length>35">{{art.summary | subStringFilter(0,35)}}...</td>
+                <td style="text-align: left;text-indent: 2em" v-if="art.summary.length<=35">{{art.summary}}</td>
+                <td v-if="has">{{art.createDate | formatDateFilter}}</td>
+                <td v-if="has">{{art.updateDate | formatDateFilter}}</td>
+                <td><span class="label"
+                          :class="art.status==0?'label-success':'label-danger'">{{art.type|typeFilter}}</span></td>
+                <td v-if="has"><a :href="getButton(art.id)"><span class="fa fa-edit"></span></a></td>
+                <td v-if="has"><a href="#no" @click="deleteButton(art.id)"><span class="fa fa-trash"></span></a></td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:replace="fore/include/page::html"></div>
+    </div>
+    <div class="notfound_list">
+        <div style="text-align: center">
+            <h1 style="color: #fa5555;margin: 50px auto">您还没有发表过文章呢，先四处逛逛吧！</h1>
+            <button class="btn btn-success btn-lg" style="width: 200px" @click="getCategoryButton(0)">返回</button>
+        </div>
+    </div>
+    <div class="notfound_list2">
+        <div style="text-align: center">
+            <h1 style="color: #fa5555;margin: 50px auto">没有相关的文章，先四处逛逛吧！</h1>
+            <button class="btn btn-success btn-lg" style="width: 200px" @click="getCategoryButton(0)">返回</button>
+        </div>
+    </div>
+
+    <div id="js_print_content">
+        <div v-for="art in articles">
+            <div style="page-break-after:always;"></div>
+            <div class="text_main no-print" :id="'text_main_' + art.id">
+                <div class="text_main_title">{{art.title}}</div>
+                <div class="text_main_container" v-html="art.text"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<p></p>

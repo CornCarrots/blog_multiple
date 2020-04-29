@@ -1,0 +1,81 @@
+.back_art_category_list{
+    /*width: 95%;*/
+    margin: 10px auto;
+}
+.back_art_category_list_table{
+    width: 80%;
+    margin: 0 auto;
+    padding: 10px;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.back_art_category_list_table thead{
+    background: #b2dba1;
+    text-align: center;
+}
+.back_art_category_list_table thead tr th{
+    text-align: center;
+}
+.back_art_category_list_table tbody tr td{
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px 0;
+}
+.back_category_add .panel{
+   width: 40%;
+   margin: 20px auto;
+}
+.back_category_add  #category_name{
+   width: 100%;
+   border: 1px solid #999999;
+}
+
+.back_category_add .addTable{
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+.back_property_list,.back_property_edit{
+    width: 95%;
+    margin: 10px auto;
+}
+
+.back_property_list_table{
+    padding: 10px;
+    text-align: center;
+    table-layout: fixed;
+    width: 90%;
+    margin: 0 auto;
+}
+.back_property_list_table tbody tr td{
+    vertical-align: middle;
+}
+.back_property_list_table thead{
+    background: #b2dba1;
+}.back_property_list_table thead tr th{
+    text-align: center;
+    vertical-align: middle;
+ }
+.back_property_add,.back_property_edit .panel{
+    margin: 20px auto;
+}
+.back_property_add  #property_name,.back_property_edit .property_Nname{
+    width: 100%;
+    border: 1px solid #999999;
+}
+
+.addTable, .editTable {
+    border-collapse: separate;
+    border-spacing: 10px;
+    margin: 0 auto;
+}
+.editCategoryModelDialog,.addCategoryModelDialog{
+    width: 500px;
+}
+.editCategoryModelContent{
+    height: 100%;
+}
+.editCategoryTable{
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 10px;
+}

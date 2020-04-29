@@ -1,0 +1,47 @@
+<div class="myarticle" th:fragment="html">
+    <!--<div th:replace="fore/home/lunbo::html"></div>-->
+    <div class="container" v-for="art,index in articles">
+        <div class='column' style="  box-shadow: 30px 7px 30px rgba(62, 9, 11, 0.3);">
+            <div class='post-module'>
+                <!--缩略图-->
+                <div class='thumbnail'>
+                    <a href="javascript:void(0)" @click="checkArticle(art.id)"><img :src="getImage('category',art.cid)" :alt="'article_'+art.id" class="pull-left"></a>
+                </div>
+                <div class='post-content'>
+                    <a :href="getCategory(art.cid)"><div class='category'>{{art.category.name}}</div></a>
+                    <a href="javascript:void(0)"@click="checkArticle(art.id)"><h1 class='title'>{{art.title}}</h1></a>
+                    <!--<h2 class='sub_title'>文章子标题</h2>-->
+                    <p class='description'>{{art.summary}}</p>
+                    <div class='post-meta'>
+                        <span class='timestamp'><i class='fa fa-user'></i>{{art.user.nickName}}</span>
+                        <span class='timestamp'><i class='fa fa-clock-o'></i>{{art.updateDate | formatDateFilter}}</span>
+                        <!--<span class='comments'><i class='fa fa-comments'></i><a :href="comment(art.id)">{{art.comment}} 回复</a></span>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--<article class="mainContext" v-for="art,index in articles">-->
+        <!--<div class="redBlock"></div>-->
+        <!--<div class="newBlock" v-if="index==0">new</div>-->
+        <!--<div class="context_category">-->
+            <!--<a :href="getCategory(art.cid)">{{art.category.name}}</a>-->
+        <!--</div>-->
+        <!--<a :href="getArticle(art.id)"><img :src="getImage('category',art.cid)" :alt="'article_'+art.id" class="pull-left"></a>-->
+        <!--<div class="context_title"><a :href="getArticle(art.id)">{{art.title}}</a></div>-->
+        <!--<div class="context_text">{{art.summary}}</div>-->
+        <!--<div class="context_info">-->
+            <!--<span class="context_time"><span class="fa fa-clock-o"></span>{{art.updateDate | formatDateFilter}}</span>-->
+            <!--<span class="context_view"><span class="fa fa-eye"></span>{{art.view}} views</span>-->
+            <!--<span class="context_comment">-->
+                <!--<a :href="comment(art.id)"> <i class="fa fa-comment-o"></i>发表评论</a>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<span class="context_button">-->
+            <!--<a :href="getArticle(art.id)"><button>阅读全文</button></a>-->
+        <!--</span>-->
+    <!--</article>-->
+    <div th:replace="fore/include/page::html"></div>
+
+</div>

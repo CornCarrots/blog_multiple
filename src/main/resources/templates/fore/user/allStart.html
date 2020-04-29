@@ -1,0 +1,28 @@
+<div class="userRight pull-left" th:fragment="html">
+    <table class="table table-striped table-bordered table-hover  table-condensed historyTable">
+        <thead>
+        <tr>
+            <th width="20%">分类</th>
+            <th width="20%">标题</th>
+            <th>简介</th>
+            <th>取消收藏</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="art in articles">
+            <td>{{art.category.name}}</td>
+            <td><a href="javascript:void(0)" @click="checkArticle(art.id)">{{art.title}}</a></td>
+            <td v-if="art.summary.length>35">{{art.summary | subStringFilter(0,35)}}...</td>
+            <td v-if="art.summary.length<=35">{{art.summary}}</td>
+            <td><a href="#no" @click="deleteHistory(art.id)"><i class="fa fa-trash"></i></a></td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:replace="fore/include/page::html"></div>
+    <div class="notfound_list">
+        <div style="text-align: center">
+            <h1 style="color: #fa5555;margin: 50px auto">您还没有收藏过文章呢，先四处逛逛吧！</h1>
+            <a th:href="@{/home}"><button class="btn btn-success btn-lg" style="width: 200px">返回首页</button></a>
+        </div>
+    </div>
+</div>

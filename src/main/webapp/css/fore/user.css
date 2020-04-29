@@ -1,0 +1,202 @@
+
+.user{
+    width: 100%;
+    margin: 10px auto;
+}
+.userLeft{
+
+    width: 18%;
+    margin: 0px 10px;
+}
+.userRight{
+    width: 78%;
+    /*border: 1px solid #eee;*/
+    margin-bottom: 50px;
+    padding:10px 0 50px 0;
+}
+.userTable{
+    width: 75%;
+}
+.userTable thead tr{
+    background-color: #eee;
+}
+.userTable thead tr th:first-child{
+    text-align: center;
+}
+.userTable tbody tr td:first-child{
+    width: 25%;
+    text-align: right;
+    padding:25px 35px;
+}
+.userRight>div{
+    font-size: 14px;
+    margin: 30px;
+}
+.userRight .topDiv table{
+    margin-left: 10px;
+    border-spacing: 10px;
+    border-collapse: separate;
+}
+.userRight .topDiv table a,.userRight .bottomDiv table a{
+    margin-left: 20px;
+    color: #2b85e4;
+    font-weight: bold;
+}
+.userRight .topDiv table a:hover,.userRight .bottomDiv table a:hover{
+    color: #fa5555;
+}
+.userRight .bottomDiv table{
+    margin-left: 10px;
+    /*border-spacing: 10px;*/
+    /*border-collapse: separate;*/
+}
+.userRight .bottomDiv table tr{
+    border-bottom: 1px dotted #999;
+}
+.userRight .bottomDiv table tr td{
+    padding: 20px 0;
+
+}
+.userRight .bottomDiv table tr td:nth-child(3){
+    width: 60%;
+    color: #999999;
+}
+.userRight .bottomDiv table tr td:first-child{
+    padding-left: 40px;
+    padding-right: 20px;
+}
+.historyTable{
+    width: 80%;
+    margin: 10px auto;
+}
+.historyTable a{
+    color: lightcoral;
+}
+.historyTable a:hover{
+    color: #d43f3a;
+}
+.historyTable tr td,.historyTable tr th{
+    text-align: center;
+}
+.historyTable tr td:first-child,.historyTable tr th:first-child{
+    text-align: left;
+}
+.payDIV img{
+    margin: 50px;
+}
+.addMessageModelContent table{
+    width: 100%;
+    margin: 0 auto;
+}
+.addMessageModelContent table tr td{
+    vertical-align: middle;
+    text-align: center;
+}
+.addMessageModelContent .border{
+    position: relative;
+    border: 5px solid transparent;
+}
+.addMessageModelContent .border:hover{
+    border: 5px solid lightgreen;
+    -webkit-transition: all 0.3s linear 0s;
+    -moz-transition: all 0.3s linear 0s;
+    -ms-transition: all 0.3s linear 0s;
+    -o-transition: all 0.3s linear 0s;
+    transition: all 0.3s linear 0s;
+}
+.addMessageModelContent .border .successImg{
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    z-index: 10;
+    width: 20px;
+    height: 20px;
+    display: none;
+}
+.add_article_table{
+    border-collapse: separate;
+    border-spacing: 10px;
+    width: 90%;
+}
+.add_article_table tr td:first-child{
+    width: 10%;
+}
+.back_article_list{
+    /*width: 95%;*/
+    margin: 10px auto;
+}
+.back_article_list_table{
+    padding: 10px;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.back_article_list_table thead{
+    background: #b2dba1;
+    text-align: center;
+}
+.back_article_list_table thead tr th{
+    text-align: center;
+}
+.back_article_list_table tbody tr td{
+    text-align: center;
+    vertical-align: middle;
+}
+.back_category_add .panel{
+    width: 40%;
+    margin: 20px auto;
+}
+.back_category_add  #category_name{
+    width: 100%;
+    border: 1px solid #999999;
+}
+
+.back_category_add .addTable{
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+#following, #fellow{
+    width: 80%;
+    background-color: lightcyan;
+    border-top-left-radius: 20%;
+    border-top-right-radius: 20%;
+    padding-bottom: 10px;
+}
+.back_user_list_table{
+    /*border: 0px;*/
+    width: 80%;
+    margin: 10px auto;
+    /*border-bottom: 1px dotted lightgray;*/
+    padding-top: 10px;
+
+}
+.back_user_list_table img{
+    float: left;
+    width: 80px;
+    border-radius: 35px;
+}
+.back_user_list_table tbody tr td{
+    padding: 20px;
+    border: 0px;
+
+}
+#search{
+    vertical-align: top;
+    width: 35%;
+    /*display:inline-block;*/
+    float: right;
+}
+#searchTag{
+    vertical-align: top;
+    width: 80%;
+    /*display:inline-block;*/
+    float: right;
+}
+#backTag{
+    vertical-align: top;
+    width: 20%;
+    /*display:inline-block;*/
+    float: right;
+}
+#backTag button{
+    width: 95%;
+}

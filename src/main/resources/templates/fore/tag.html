@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fore/include/header::html('浩说')"></head>
+<link rel="stylesheet" th:href="@{/css/fore/home.css}">
+<body>
+<div th:replace="fore/include/top::html" ></div>
+<div th:replace="fore/include/navigation::html" ></div>
+
+</nav>
+<div class="main">
+    <div class="bottom_navigate">
+        <ul class="breadcrumb">
+            <li><a th:href="@{/home}">首页</a></li>
+            <li><a :href="getTag(tag.id)" class="active">{{tag.name}}</a></li>
+            <li class="active">所有文章</li>
+        </ul>
+    </div>
+    <div th:replace="fore/include/right::html" ></div>
+    <div th:replace="fore/category/page::html" ></div>
+    <div class="notfound_list">
+        <div style="text-align: center">
+            <h1 style="color: #fa5555;margin: 50px auto;font-size: 20px">十分抱歉！该标签下还没有文章呢</h1>
+            <h1 style="color: #fa5555;margin: 50px auto;font-size: 20px">请你耐心等待哦，（づ￣3￣）づ╭❤～</h1>
+        </div>
+    </div>
+</div>
+<div th:replace="fore/include/footer::html" ></div>
+<script th:src="@{/js/fore/tag.js}" ></script>
+</body>

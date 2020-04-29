@@ -1,0 +1,89 @@
+<div class="comment" th:fragment="html">
+    <a name="comment"></a>
+    <h4><i class="fa fa-comments-o fa-2x"></i><span style="margin-left: 10px"><b>评论专区</b></span></h4>
+    <div class="responseDiv">
+        <img class="pull-left" th:if="${session.user}==null" th:src="@{/image/profile_user/default.jpg}" alt="profile">
+        <img class="pull-left" th:if="${session.user}!=null"
+             th:src="@{${session.user.img}}"
+             alt="profile">
+        <div class="lead">
+            <div class="triangle"></div>
+            <textarea maxlength="200" class="form-control commentContent" contenteditable="true" rows="3" id="mycontent" @focus="checkLogin"></textarea>
+            <p>剩余字数：<span style="color: red">{{200-comment.text.length}}</span>字</p>
+            <i class="fa fa-smile-o smile" id="smile1"></i>
+            <button class="btn btn-info send" @click="commitButton" pid="0">我也要留言</button>
+        </div>
+    </div>
+    <div class="commentDiv">
+        <div style="border-bottom: 1px solid #fa5555"><b>最新评论（{{article.comment}}）</b></div>
+        <p style="text-align: center;font-size: 16px;margin-top: 55px" class="comments404">
+            还没有人评论，快来争当第一个评论的人吧！
+        </p>
+        <table class="commentTable">
+            <tr v-for="com,index1 in comments">
+                <!--<a :name="'comment_'+com.id"></a>-->
+                <td><a :name="'comment_'+com.id"></a><img :src="getImage(com.user.img)" :alt="'profile_user'+com.uid"></td>
+                <td>
+                    <p class="commentName" v-if="com.uid==1">楼主<span> {{com.createDate | formatDateFilter}} {{comments.length-index1}}楼</span>
+                    </p>
+                    <p class="commentName" v-if="com.uid!=1">
+                        <a :href="getUser(com.uid)">{{com.user.nickName}}</a>
+                        <i class="fa fa-superpowers" :style="{'color':com.user.member!=null ? com.user.member.icon:'gray'}">
+                            <span v-if="com.user.member==null">普通用户</span>
+                            <span v-if="com.user.member!=null">{{com.user.member.name}}</span>
+                        </i>
+                        <span> {{com.createDate | formatDateFilter}}  {{comments.length-index1}}楼</span>
+                    </p>
+                    <div class="commentContent" style="margin: 15px" v-html="com.text">
+                    </div>
+                    <p class="pull-right" style="margin-top: 10px">
+                        <a href="#no" v-if="user.id==com.uid"><span><i class="fa fa-trash" @click="deleteButton(com.id)">删除</i></span></a>
+                        <a href="#no" @click="likeComment(com)">
+                            <span v-if="com.hasLike"><i class="fa fa-thumbs-up">({{com.like}})</i></span>
+                            <span v-if="!com.hasLike"><i class="fa fa-thumbs-o-up">({{com.like}})</i></span>
+                        </a>
+                        <a href="#no"><span><i class="fa fa-comment-o" @click="addButton($event)"
+                                               :pid="com.id">回复</i></span></a>
+                    </p>
+                    <div class="clearfix"></div>
+                    <div class="lead allDiv" style="display: none;margin: 10px 0">
+            <textarea maxlength="200" class="form-control commentContent addcontent" contenteditable="true" rows="3"
+                      placeholder="想说什么？？？" v-model="addComment.text"></textarea>
+                        <p>剩余字数：<span style="color: red">{{200-addComment.text.length}}</span>字</p>
+                        <button class="btn btn-info pull-right" @click="sendButton">发送</button>
+                        <div class="clearfix"></div>
+                    </div>
+                    <table>
+                        <tr v-for="cld,index2 in com.child">
+                            <td><a :name="cld.id"></a><img :src="getImage(cld.user.img)"
+                                                           :alt="'profile_user'+cld.uid"></td>
+                            <td>
+                                <p class="commentName" v-if="cld.uid==1">楼主<span> {{cld.createDate | formatDateFilter}} {{com.child.length-index2}}层</span>
+                                </p>
+                                <p class="commentName" v-if="cld.uid==com.uid&&cld.uid!=1">层主<span> {{cld.createDate | formatDateFilter}} {{com.child.length-index2}}层</span>
+                                </p>
+                                <p class="commentName" v-if="cld.uid!=com.uid&&cld.uid!=1"><a
+                                        :href="getUser(cld.uid)">{{cld.user.nickName}}</a><span> {{cld.createDate | formatDateFilter}}  {{com.child.length-index2}}层</span>
+                                </p>
+                                <div class="commentContent" style="margin: 15px" v-html="cld.text">
+                                </div>
+                                <p class="pull-right" style="margin-top: 10px">
+                                    <a href="#no" v-if="user.id==cld.uid"><span><i class="fa fa-trash" @click="deleteButton(cld.id)">删除</i></span></a>
+                                    <a href="#no" @click="likeComment(cld)">
+                                        <span v-if="cld.hasLike"><i class="fa fa-thumbs-up">({{cld.like}})</i></span>
+                                        <span v-if="!cld.hasLike"><i class="fa fa-thumbs-o-up">({{cld.like}})</i></span>
+                                    </a>
+                                    <!--<a href="#no"><span><i class="fa fa-comment-o" @click="addButton($event)" :pid="com.id">回复</i></span></a>-->
+                                </p>
+                                <div class="clearfix"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <div th:replace="fore/include/page::html"></div>
+
+    </div>
+</div>

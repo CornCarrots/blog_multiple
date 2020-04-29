@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="back/include/header::html('文章管理')"></head>
+<link rel="stylesheet" th:href="@{/css/include/checkbox/awesome-bootstrap-checkbox.css}">
+<link rel="stylesheet" th:href="@{/css/include/select/bootstrap-select.min.css}">
+<link rel="stylesheet" th:href="@{/js/include/kindeditor/themes/default/default.css}">
+<link rel="stylesheet" th:href="@{/css/back/article.css}">
+<body>
+<div th:replace="back/include/top::html"></div>
+<div th:replace="back/include/side::html"></div>
+<div class="container">
+    <div class="back_article_list">
+        <ol class="breadcrumb">
+            <li><a th:href="@{/admin}"><i class="fa fa-home">首页</i></a></li>
+            <li class="active">添加文章</li>
+        </ol>
+        <form id="addForm" onsubmit="return false;" @submit="addArticle">
+            <table class="add_article_table">
+                <tr>
+                    <td>文章标题：</td>
+                    <td><input type="text" class="form-control validate[required,maxSize[10]]" style="width: 300px;"
+                               v-model="article.title"></td>
+                </tr>
+                <tr>
+                    <td>文章简介：</td>
+                    <td><input type="text" class="form-control validate[required]" v-model="article.summary"></td>
+                </tr>
+                <tr>
+                    <td>文章内容：</td>
+                    <td>
+                        <textarea id="editor_id" name="content" style="width:500px;height:300px;"
+                                  placeholder="请输入你的文章"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>隐藏内容：</td>
+                    <td><input type="text" class="form-control validate[required]" v-model="article.secret"></td>
+                </tr>
+                <tr>
+                    <td>所属分类：</td>
+                    <td>
+                        <div class="dropdown bootstrap-select">
+                            <select class="selectpicker validate[required]" id="addSelect" data-style="btn-success"
+                                    tabindex="-98" v-model="article.cid"></select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>所属标签：</td>
+                    <td>
+                        <div class="checkbox checkbox-success checkbox-inline" style="margin: 5px" v-for="tag in tags">
+                            <input type="checkbox" name="tagCheckBox" :id="tag.id" :value="tag.id">
+                            <label :for="tag.id"> {{tag.name}} </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>文章状态：</td>
+                    <td>
+                        <div class="radio radio-info radio-inline">
+                            <input type="radio" id="inlineRadio1" value="TYPE_PUBLISH" v-model="article.type">
+                            <label for="inlineRadio1">发布</label>
+                        </div>
+                        <div class="radio radio-inline">
+                            <input type="radio" id="inlineRadio2" value="TYPE_DRAFT" v-model="article.type">
+                            <label for="inlineRadio2">草稿</label>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <button class="btn btn-default" type="submit">确定</button>
+                        <button class="btn btn-default" @click="cancel_">取消</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<div th:replace="back/include/footer::html"></div>
+<script th:src="@{/js/include/select/bootstrap-select.js}"></script>
+<script th:src="@{/js/include/kindeditor/kindeditor-all.js}"></script>
+<script th:src="@{/js/include/kindeditor/lang/zh-CN.js}"></script>
+<script th:src="@{/js/back/addArticle.js}"></script>
+</body>

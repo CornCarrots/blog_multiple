@@ -1,0 +1,135 @@
+<div class="back_navigation pull-left optiscroll" id="scroll" th:fragment="html"
+     xmlns:th="http://www.thymeleaf.org">
+    <nav>
+        <div class="accordion" id="accordion">
+            <div class="accordion-group">
+                <a th:href="@{/admin}">
+                    <div class="accordion-heading">
+                        <i class="fa fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                </a>
+            </div>
+            <div class="accordion-group">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                    <div class="accordion-heading">
+                        <i class="fa fa-pencil-square-o"></i>
+                        <span>博客管理</span>
+                        <span class="fa fa-angle-down"></span>
+                    </div>
+                </a>
+                <div id="collapseOne" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/article}">文章列表</a>
+                    </div>
+                    <!--<div class="accordion-inner">-->
+                        <!--<a th:href="@{/admin/addArticle}">创建文章</a>-->
+                    <!--</div>-->
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/category}">分类管理</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/tag}">标签管理</a>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-group">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                    <div class="accordion-heading">
+                        <i class="fa fa-comments-o"></i>
+                        <span>留言管理</span>
+                        <span class="fa fa-angle-down"></span>
+                    </div>
+                </a>
+                <div id="collapseTwo" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/comment}">用户评论</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/message}">建议反馈</a>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-group">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                    <div class="accordion-heading">
+                        <i class="fa fa-user-o"></i>
+                        <span>用户管理</span>
+                        <span class="fa fa-angle-down"></span>
+                    </div>
+                </a>
+                <div id="collapseThree" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/user}">用户列表</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/member}">会员列表</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/score}">积分管理</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/authorized}">认证管理</a>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-group">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFore">
+                    <div class="accordion-heading">
+                        <i class="fa fa-wrench"></i>
+                        <span>网站建设</span>
+                        <span class="fa fa-angle-down"></span>
+                    </div>
+                </a>
+                <div id="collapseFore" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/carousel}">轮播图管理</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/profile}">头像管理</a>
+                    </div>
+                    <!--<div class="accordion-inner">-->
+                        <!--<a th:href="@{/admin/link}">友情链接</a>-->
+                    <!--</div>-->
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/notice}">网站公告</a>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-group">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+                    <div class="accordion-heading">
+                        <i class="fa fa-desktop"></i>
+                        <span>网站管理</span>
+                        <span class="fa fa-angle-down"></span>
+                    </div>
+                </a>
+                <div id="collapseFive" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/option}">网站信息</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/manager}">管理员列表</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/role}">角色管理</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/module}">模块管理</a>
+                    </div>
+                    <div class="accordion-inner">
+                        <a th:href="@{/admin/operation}">操作管理</a>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-group">
+                <a th:href="@{/admin/person}">
+                    <div class="accordion-heading">
+                        <i class="fa fa-user-circle"></i>
+                        <span>个人信息</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>

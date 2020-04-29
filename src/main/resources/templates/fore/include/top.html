@@ -1,0 +1,53 @@
+<header th:fragment="html" xmlns:th="http://www.thymeleaf.org">
+    <nav class="top">
+        <span class="pull-left">
+            <a th:href="@{/home}"><span class="fa fa-home"></span>浩说</a>
+            <span>欢迎你，亲爱的朋友</span>
+            <span th:if="${session.user==null}">
+                <a th:href="@{/login}">请登录</a>
+                <a th:href="@{/register}">免费注册</a>
+            </span>
+            <span th:if="${session.user!=null}">
+                <a th:href="@{/setting}" th:text="${session.user.nickName}"></a>
+                <a th:href="@{/logout}">退出</a>
+            </span>
+
+        </span>
+        <span class="pull-right" style="font-size: 1.2em;">
+            <!--<a href="#no"><i class="fa fa-wechat" style="color: green"></i></a>-->
+            <!--<a href="#no"><i class="fa fa-qq" style="color: blue"></i></a>-->
+            <!--<a href="#no"><i class="fa fa-weibo"></i></a>-->
+            <!--<a th:href="@{/link}">申请友链</a>-->
+            <a th:href="@{/message}">留言反馈</a>
+            <a th:href="@{/about}">关于本站</a>
+            <!--<a th:href="@{/back}">后台管理</a>-->
+        </span>
+        <div class="clearfix"></div>
+        <div class="search">
+            <a th:href="@{/home}" class="logoDIV"><img th:src="@{/image/site/logo.png}" alt="logo"></a>
+            <div class="mysearch">
+                <div class="input-group">
+                    <div class="dropdown bootstrap-select input-group-btn">
+                        <select class="selectpicker" data-style="btn-default" tabindex="-98" id="categorySelect">
+                            <option th:each="cat:${application.categories}" th:value="${cat.id}"
+                                    th:text="${cat.name}"></option>
+                        </select>
+                    </div>
+                    <input class="form-control" type="text" placeholder="搜索你想要的文章标题" name="keyword" id="keyword">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default searchButton" type="button" id="search">
+                        <i class="fa fa-search" style="color:gray;"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div>
+                <a th:href="@{/user}"><span class="graySpan"><i class="fa fa-user fa-2x"></i><p>个人中心</p></span></a>
+                <a th:href="@{/publish}"><span class="graySpan"><i class="fa fa-plus-circle fa-2x"></i><p>发表博客</p></span></a>
+                <a th:href="@{/history}"><span><i class="fa fa-history fa-2x"></i><p>浏览历史</p></span></a>
+                <a th:href="@{/msg}"><span><i class="fa fa-envelope-o fa-2x"></i>
+                    <i id="shoppingNumber" th:text="${session.msg}"></i><p>我的信息</p></span></a>
+            </div>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,191 @@
+<div th:fragment="html">
+    <div class="member_info">
+        <div class="member_info_left" style="color: gray">
+            <img :src="getImage(user.img)" alt="user_profile">
+            <span>
+                关注：{{to}}
+            </span>
+            <span>
+                粉丝：{{from}}
+            </span>
+        </div>
+
+        <div class="pull-left memberDiv">
+            <span class="member_info_name" style="margin-right: 10px">{{user.nickName}}</span>
+            <span v-if="user.specialty" class="member_info_name">
+                <i class="fa fa-address-card fa-2x" style="color: #fa5555" title="专业人士"></i>
+            </span>
+            <span v-if="!user.specialty" class="member_info_name">
+                <!--<a href="#no" v-if="!has" style="cursor: default">-->
+                <!--</a>-->
+                <a href="#no" v-if="has" title="申请认证" @click="addAuthButton()">
+                    <i class="fa fa-address-card fa-2x" style="color: gray" title="非专业人士"></i>
+                </a>
+            </span>
+            <span class="member_info_name">
+                <i class="fa fa-superpowers fa-2x"
+                   :style="{'color':user.member!=null ? user.member.icon:'gray'}"
+                   :title="user.member==null ? '普通用户' : user.member.name"
+                ></i>
+            </span>
+            <span class="member_info_plus" v-if="has">
+             <a href="#no" @click="upgrade"><i class="fa fa-user-circle" title="升级会员">升级会员</i></a>
+             <a th:href="@{/setting}"><i class="fa fa-cog" title="个人资料">账户设置</i></a>
+                <a :href="getFollow(user.id)"><i class="fa fa-circle-o" title="圈子">我的圈子</i></a>
+            </span>
+            <span class="member_info_plus" v-if="!has">
+                <a href="#no" @click="follow(user.id)" v-if="isFollow == 2" class="fa fa-user-plus" title="取消关注">关注Ta</i></a>
+                <a href="#no" @click="follow(user.id)" v-if="isFollow == 1"><i class="fa fa-user-times" title="关注Ta">取消关注</i></a>
+                <a href="#no" @click="follow(user.id)" v-if="isFollow == 3"><i class="fa fa-users" title="取消关注">互相关注</i></a>
+                <a href="#no" @click="sendMsg(user.id)"><i class="fa fa-envelope-o" title="私信">私信Ta</i></a>
+                <a :href="getFollow(user.id)"><i class="fa fa-circle-o" title="圈子">Ta的圈子</i></a>
+            </span>
+            <div class="member_info_score">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-trophy fa-2x"></i>
+                            <span>当前积分：</span>
+                        </td>
+                        <td>
+                            <span>
+                    <div class="progress progress-striped member_info_bar active">
+                        <div v-if="user.member!=null" class="progress-bar progress-bar-danger"
+                             :style="{'width':+progress1+'%'}">{{progress1}}%</div>
+                        <div v-if="user.member==null" class="progress-bar progress-bar-danger"
+                             :style="{'width':+progress2+'%'}">{{progress2}}%</div>
+                    </div>
+                </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fa fa-arrow-up fa-2x"></i>
+                            <span>升级还需：</span>
+                        </td>
+                        <td>
+                            <span v-if="user.member==null">{{50-user.score}}分</span>
+                            <span v-if="user.member!=null">{{myScore}}分</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fa fa-tag fa-2x"></i>
+                            <span>我喜欢：</span>
+                        </td>
+                        <td class="tagButton">
+                            <span class="notfound_list1">还没有自己喜欢的标签呢</span>
+                            <a :href="getTag(tag.id)" v-for="tag in all">
+                                <button class="btn btn-warning">{{tag.name}}</button>
+                            </a>
+                            <button  v-if="has"  class="btn btn-info" @click="addCategoryButton"><i class="fa fa-plus" style="color: white">编辑</i></button>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="member_comment">
+        <div class="tabbable"> <!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab">动态</a></li>
+                <li><a href="#tab2" data-toggle="tab">杰作</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+                    <div class="logisticsDiv">
+                        <ul class="cbp_tmtimeline" v-for="com,index in comments">
+                            <li>
+                                <time class="cbp_tmtime" :class="{cbp_tmtime1:index==0}">
+                                    <span>{{com.createDate | formatDateFilter}}</span></time>
+                                <div class="cbp_tmicon"></div>
+                                <div class="cbp_tmlabel" :class="{cbp_tmlabel1:index==0}">
+                                    <p v-if="com.pid==0">在 <a href="javascript:void(0)" @click="checkArticle(com.aid)">{{com.article.title}}</a>中评论: <span
+                                            v-html="com.text"></span></p>
+                                    <p v-if="com.pid!=0">在 <a href="javascript:void(0)" @click="checkArticle(com.aid)">{{com.article.title}}</a>中回复
+                                        <a :href="getUser(com.parent.uid)">{{com.parent.user.nickName}}</a>: <span
+                                                v-html="com.text"></span></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pageDiv" th:fragment="html" style="text-align: center">
+                        <nav>
+                            <ul class="pagination">
+                                <li :class="{ disabled: pages.first }">
+                                    <a  href="#first" @click="jump('first',1)">«</a>
+                                </li>
+                                <li :class="{ disabled: !pages.hasPrevious }">
+                                    <a  href="#prev" @click="jump('pre',1)">‹</a>
+                                </li>
+
+                                <li  v-for="i in pages.navigatepageNums">
+                                    <a href="#no" @click="jumpByNumber(i-1,1)" >
+                                        {{i}}
+                                    </a>
+                                </li>
+
+                                <li :class="{ disabled: !pages.hasNext }">
+                                    <a  href="#next" @click="jump('next',1)">›</a>
+                                </li>
+                                <li :class="{ disabled: pages.last }">
+                                    <a  href="#last" @click="jump('last',1)"> »</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div id="notLogistics" style="display: none;padding: 50px;font-size: 16px">
+                        <h3 class="greenSpan"> ( ⊙ o ⊙ )啊！ 没有留下任何信息</h3>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab2">
+                    <div class="articlesDiv" style="margin: 10px">
+                        <table class="table table-bordered table-hover table-striped table-condensed back_article_list_table" style="border: 0px">
+                            <thead>
+                            <tr>
+                                <th width="20%">标题</th>
+                                <th>简介</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="art,index in articles">
+                                <td><a href="javascript:void(0)" @click="checkArticle(art.id)">{{art.title}}</a></td>
+                                <td v-if="art.summary.length>35">{{art.summary | subStringFilter(0,35)}}...</td>
+                                <td v-if="art.summary.length<=35">{{art.summary}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <a :href="getAllArticle(user.id)" style="width: 100%; text-align: center; display: block"><button class="btn btn-success btn-lg registerButton">查看更多</button></a>
+                    </div>
+                    <div id="notArticles" style="display: none;padding: 50px;font-size: 16px">
+                        <h3 class="greenSpan"> ( ⊙ o ⊙ )啊！ 没有发过文章</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<div style="font-size: 20px"><b>最近动态</b></div>-->
+        <!--<div class="logisticsDiv">-->
+            <!--<ul class="cbp_tmtimeline" v-for="com,index in comments">-->
+                <!--<li>-->
+                    <!--<time class="cbp_tmtime" :class="{cbp_tmtime1:index==0}">-->
+                        <!--<span>{{com.createDate | formatDateFilter}}</span></time>-->
+                    <!--<div class="cbp_tmicon"></div>-->
+                    <!--<div class="cbp_tmlabel" :class="{cbp_tmlabel1:index==0}">-->
+                        <!--<p v-if="com.pid==0">在 <a :href="getArticle(com.aid)">{{com.article.title}}</a>中评论: <span-->
+                                <!--v-html="com.text"></span></p>-->
+                        <!--<p v-if="com.pid!=0">在 <a :href="getArticle(com.aid)">{{com.article.title}}</a>中回复-->
+                            <!--<a :href="getUser(com.parent.uid)">{{com.parent.user.nickName}}</a>: <span-->
+                                    <!--v-html="com.text"></span></p>-->
+                    <!--</div>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+        <!--<div th:replace="fore/include/page::html"></div>-->
+
+        <!--<div id="notLogistics" style="display: none;padding: 50px;font-size: 16px">-->
+            <!--<h3 class="greenSpan"> ( ⊙ o ⊙ )啊！ 这个用户没有留下任何信息</h3>-->
+        <!--</div>-->
+    </div>
+</div>

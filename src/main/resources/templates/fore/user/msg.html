@@ -1,0 +1,132 @@
+<div class="userRight pull-left" th:fragment="html">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#comment" data-toggle="tab">回复我的</a></li>
+        <li><a href="#msg" data-toggle="tab">我的私信</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="comment">
+            <table class="table table-bordered table-hover table-striped table-condensed back_message_list_table">
+                <thead>
+                <tr>
+                    <th width="10%">作者</th>
+                    <th width="10%">回复时间</th>
+                    <th width="15%">回复文章</th>
+                    <th>回复内容</th>
+                    <th width="5%">状态</th>
+                    <th width="5%">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="comment in comments">
+                    <td><a :href="getUser(comment.user.id)">{{comment.user.nickName}}</a> </td>
+                    <td>{{comment.createDate | formatDateFilter}}</td>
+                    <td><a href="javascript:void(0)" @click="checkArticle(comment.article.id)">{{comment.article.title}}</a></td>
+                    <td v-html="comment.text"></td>
+                    <!--<td v-if="comment.text.length>40">{{comment.text | subStringFilter(0,40) }}...</td>-->
+                    <!--<td v-if="comment.text.length<=40">{{comment.text}}</td>-->
+                    <td><span class="label" :class="comment.status==0?'label-success':'label-danger'">{{comment.status|statusFilter}}</span></td>
+                    <td v-if="comment.status==0" @click="checkButton(comment.id,'2','1')"><a href="#no"><span class="fa fa-close"></span></a></td>
+                    <td v-if="comment.status==2" @click="checkButton(comment.id,'0','1')"><a href="#no"><span class="fa fa-check"></span></a></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="pageDiv" th:fragment="html" style="text-align: center">
+                <nav>
+                    <ul class="pagination">
+                        <li :class="{ disabled: pages.first }">
+                            <a  href="#first" @click="jump('first',1)">«</a>
+                        </li>
+                        <li :class="{ disabled: !pages.hasPrevious }">
+                            <a  href="#prev" @click="jump('pre',1)">‹</a>
+                        </li>
+
+                        <li  v-for="i in pages.navigatepageNums">
+                            <a href="#no" @click="jumpByNumber(i-1,1)" >
+                                {{i}}
+                            </a>
+                        </li>
+
+                        <li :class="{ disabled: !pages.hasNext }">
+                            <a  href="#next" @click="jump('next',1)">›</a>
+                        </li>
+                        <li :class="{ disabled: pages.last }">
+                            <a  href="#last" @click="jump('last',1)"> »</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="notfound_list">
+                <div style="text-align: center">
+                    <h1 style="color: #fa5555;margin: 50px auto">还没有人回复过你的评论哦，先四处逛逛吧！</h1>
+                    <a th:href="@{/home}"><button class="btn btn-success btn-lg" style="width: 200px">返回首页</button></a>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="msg">
+            <div class="tab-pane fade in active" id="comment">
+                <table class="table table-bordered table-hover table-striped table-condensed back_message_list_table">
+                    <thead>
+                    <tr>
+                        <th width="10%">发送者</th>
+                        <th width="10%">发送时间</th>
+                        <th>发送内容</th>
+                        <th width="5%">状态</th>
+                        <th width="5%">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="msg in msgs">
+                        <td><a :href="getUser(msg.send.id)">{{msg.send.nickName}}</a> </td>
+                        <td>{{msg.createDate | formatDateFilter}}</td>
+                        <td v-html="msg.text"></td>
+                        <!--<td v-if="comment.text.length>40">{{comment.text | subStringFilter(0,40) }}...</td>-->
+                        <!--<td v-if="comment.text.length<=40">{{comment.text}}</td>-->
+                        <td><span class="label" :class="msg.status==0?'label-success':'label-danger'">{{msg.status|statusFilter}}</span></td>
+                        <td v-if="msg.status==0" @click="checkButton(msg.id,2,2)"><a href="#no"><span class="fa fa-close"></span></a></td>
+                        <td v-if="msg.status==2" @click="checkButton(msg.id,0,2)"><a href="#no"><span class="fa fa-check"></span></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="pageDiv2" th:fragment="html" style="text-align: center">
+                    <nav>
+                        <ul class="pagination">
+                            <li :class="{ disabled: pages_msg.first }">
+                                <a  href="#first" @click="jump('first','2')">«</a>
+                            </li>
+                            <li :class="{ disabled: !pages_msg.hasPrevious }">
+                                <a  href="#prev" @click="jump('pre','2')">‹</a>
+                            </li>
+
+                            <li  v-for="i in pages_msg.navigatepageNums">
+                                <a href="#no" @click="jumpByNumber(i-1,'2')" >
+                                    {{i}}
+                                </a>
+                            </li>
+
+                            <li :class="{ disabled: !pages_msg.hasNext }">
+                                <a  href="#next" @click="jump('next','2')">›</a>
+                            </li>
+                            <li :class="{ disabled: pages_msg.last }">
+                                <a  href="#last" @click="jump('last','2')"> »</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="notfound_list2">
+                    <div style="text-align: center">
+                        <h1 style="color: #fa5555;margin: 50px auto">还没有人私信你哦，先四处逛逛吧！</h1>
+                        <a th:href="@{/home}"><button class="btn btn-success btn-lg" style="width: 200px">返回首页</button></a>
+                    </div>
+                </div>
+            <!--<div class="msgDiv">-->
+                <!--<div v-for="msg in msgs">-->
+                    <!--<img :src="getImage(msg.sid)" alt="profile">-->
+                    <!--<span>{{msg.createDate | formatDateFilter}}</span>-->
+                    <!--<span>{{msg.sender.nickName}}:</span>-->
+                    <!--<span>{{msg.text | subStringFilter(0,30)}}</span>-->
+                    <!--<span class="badge">42</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>

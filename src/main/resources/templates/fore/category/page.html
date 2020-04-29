@@ -1,0 +1,25 @@
+<div class="myarticle" th:fragment="html">
+    <div th:replace="fore/category/sort::html"></div>
+    <article class="mainContext" v-for="art,index in articles">
+        <div class="redBlock"></div>
+        <div class="newBlock" v-if="index==0">new</div>
+        <div class="context_category">
+            <a :href="getCategory(art.cid)">{{art.category.name}}</a>
+        </div>
+        <a href="javascript:void(0)" @click="checkArticle(art.id)"><img :src="getImage('category',art.cid)" :alt="'article_'+art.id" class="pull-left"></a>
+        <div class="context_title"><a href="javascript:void(0)" @click="checkArticle(art.id)">{{art.title}}</a></div>
+        <div class="context_text">简介：{{art.summary}}</div>
+        <div class="context_info">
+            <span class="context_time"><i class="fa fa-user"></i>{{art.user.nickName}}</span>
+            <span class="context_time"><i class="fa fa-clock-o"></i>{{art.updateDate | formatDateFilter}}</span>
+            <span class="context_view"><i class="fa fa-eye"></i>{{art.view}} views</span>
+            <!--<span class="context_comment">-->
+                <!--<a :href="comment(art.id)"> <i class="fa fa-comment-o"></i>发表评论</a>-->
+            <!--</span>-->
+        </div>
+        <span class="context_button">
+            <a href="javascript:void(0)" @click="checkArticle(art.id)"><button>阅读全文</button></a>
+        </span>
+    </article>
+    <div th:replace="fore/include/page::html"></div>
+</div>

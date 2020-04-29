@@ -1,0 +1,6 @@
+<div class="list-group" style="width: 73%" th:fragment="html">
+    <a :href="getNotice(notice.id)" class="list-group-item" v-for="notice in notices">
+        <span style="margin-right: 50px">{{notice.updateDate | formatDateFilter}}</span>
+        {{notice.title}}
+    </a>
+</div>

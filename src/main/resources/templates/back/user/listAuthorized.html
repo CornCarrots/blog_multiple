@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="back/include/header::html('认证管理')"></head>
+<link rel="stylesheet" th:href="@{/css/back/user.css}">
+<body>
+<div th:replace="back/include/top::html"></div>
+<div th:replace="back/include/side::html"></div>
+<div class="container">
+    <div class="back_power_list">
+        <ol class="breadcrumb">
+            <li><a th:href="@{/admin}"><i class="fa fa-home">首页</i></a></li>
+            <li class="active">认证管理</li>
+        </ol>
+        <table class="table table-bordered table-hover table-striped table-condensed back_user_list_table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>认证机构</th>
+                <th>认证邮箱</th>
+                <th>认证图片</th>
+                <th>状态</th>
+                <th>审核</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="authorized,index in authorizeds">
+                <td>{{authorized.id}}</td>
+                <td>{{authorized.user.name}}</td>
+                <td>{{authorized.name}}</td>
+                <td>{{authorized.email}}</td>
+                <td><img :src="getImage(authorized.id)" :alt="'authorized'+authorized.id" width="140px" height="105px"></td>
+                <td><span class="label" :class="authorized.status==0?'label-danger':'label-success'">{{authorized.status | statusFilter}}</span></td>
+                <td><a href="#no" @click="editButton(authorized.id)"><span class="fa fa-edit"></span></a></td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:replace="back/include/404_list::html('认证')"></div>
+    </div>
+    <div th:replace="back/include/page::html"></div>
+</div>
+<div th:replace="back/include/footer::html"></div>
+<script th:src="@{/js/back/authorized.js}"></script>
+</body>

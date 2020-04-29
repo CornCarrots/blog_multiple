@@ -1,0 +1,36 @@
+<div class="login" th:fragment="html">
+    <img th:src="@{/image/site/loginBg.jpg}" alt="background">
+    <div class="loginDiv" style="height: 364px;top: 390px">
+        <h3>欢迎交换友链</h3>
+        <form id="registerForm" onsubmit="return false;" @submit="register">
+            <table>
+                <tr>
+                    <td>博客名：</td>
+                    <td>
+                        <input id="name" type="text" name="name" class="form-control validate[required]" placeholder="请输入您的博客名" v-model.trim="link.name">
+                    </td>
+                </tr>
+                <tr>
+                    <td>链接地址：</td>
+                    <td><input type="text" class="form-control validate[required]" placeholder="请输入您的链接地址" v-model.trim="link.url"></td>
+                </tr>
+                <tr>
+                    <td>描述：</td>
+                    <td><input type="text" class="form-control validate[required]" placeholder="请输入您的博客网站的相关信息" v-model.trim="link.describe"></td>
+                </tr>
+                <tr>
+                    <td>联系邮箱：</td>
+                    <td><input type="email" class="form-control validate[required]" placeholder="请输入您的邮箱" v-model.trim="link.email"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center">
+                        <button class="btn btn-danger" style="width: 40%" type="submit">申请</button>
+                        <button class="btn btn-default" style="width: 40%" @click="reset">重置</button>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+
+</div>
