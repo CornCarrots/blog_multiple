@@ -363,17 +363,6 @@ $(
                             }
                             else{
                                 articleVue.search(articleVue.start_search);
-                                // var tidArr = ",";
-                                // $(articleVue.tids).each(
-                                //     function (i, data) {
-                                //         tidArr += data;
-                                //         tidArr += ",";
-                                //     });
-                                // var url = getPath() + "/user/writing/tag?tid=" + tidArr;
-                                // axios.get(url).then(
-                                //     function (value) {
-                                //         articleVue.all = value.data.all;
-                                //     });
                             }
                         }
                     },
@@ -409,8 +398,7 @@ $(
                                                             type: 'type_suggestion'
                                                         };
                                                         axios.post(url, message).then(function (value) {
-                                                            if (value.data == 'ok')
-                                                            {
+                                                            if (value.code == '500301') {
                                                                 $.alert({
                                                                     title: '我们已收到您的反馈!',
                                                                     content: '请留意您的邮箱，等待我们的工作人员答复',
@@ -422,7 +410,7 @@ $(
                                                             }
                                                             else {
                                                                 $.alert({
-                                                                    title: '抱歉，出错了!',
+                                                                    title: '抱歉!'+ value.msg,
                                                                     content: '请尝试重新提交'
                                                                 });
                                                             }

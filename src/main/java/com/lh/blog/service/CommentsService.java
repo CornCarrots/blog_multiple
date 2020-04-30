@@ -182,9 +182,11 @@ public class CommentsService {
 
     public void fillLike(List<Comments> comments,int uid){
         CommentsService commentsService = SpringContextUtils.getBean(CommentsService.class);
-        for (Comments message:
-                comments) {
+        for (Comments message: comments) {
             commentsService.fillLike(message, uid);
+            List<Comments> child = message.getChild();
+            commentsService.fillLike(child, uid);
+            message.setChild(child);
         }
     }
 
@@ -237,10 +239,23 @@ public class CommentsService {
 
     public void fillParent(List<Comments> comments){
         CommentsService commentsService = SpringContextUtils.getBean(CommentsService.class);
-        for (Comments message:
-            comments) {
+        for (Comments message: comments) {
             commentsService.fillParent(message);
         }
+    }
+
+    public void fillComments(List<Comments> comments){
+        for (Comments comment: comments) {
+            fillComments(comment);
+        }
+    }
+
+    public void fillComments(Comments comments){
+        CommentsService commentsService = SpringContextUtils.getBean(CommentsService.class);
+        commentsService.fillUser(comments);
+        commentsService.fillArticle(comments);
+        commentsService.fillParent(comments);
+        commentsService.fillChild(comments);
     }
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
@@ -250,7 +265,7 @@ public class CommentsService {
         try {
             page = dao.listByUser(uid,pageable);
         }catch (IllegalArgumentException e){
-            logger.warn("分页插件异常",e);
+            logger.info("分页插件异常",e);
         }
         page = new RestPageImpl(page.getContent(),pageable,page.getTotalElements());
         return new PageUtil<>(page,number);

@@ -14,7 +14,6 @@ $(
                 },
                 methods: {
                     list: function (start) {
-                        var id = getUrlParms("nid");
                         var url = getPath() + this.uri + "?start="+start+"&timeStamp=" + new Date().getTime();
                         axios.get(url).then(
                             function (value) {

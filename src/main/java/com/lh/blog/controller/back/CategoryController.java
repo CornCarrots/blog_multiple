@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,16 +50,8 @@ public class CategoryController {
         if(image!=null)
         {
             int id = category.getId();
-            File imageFolder= new File(request.getServletContext().getRealPath("image/category"));
-            File file = new File(imageFolder,id+".jpg");
-            if(!file.getParentFile().exists())
-                file.getParentFile().mkdirs();
-            image.transferTo(file);
-            BufferedImage img = ImageUtil.change2jpg(file);
-            ImageIO.write(img, "jpg", file);
-//            String name = id+".jpg";
-//            FtpUtil ftpUtil = new FtpUtil();
-//            ftpUtil.uploadFile(name,image.getInputStream(),"/home/ftpuser/blog/image/category");
+            String path = request.getServletContext().getRealPath("image/category");
+            ImageUtil.uploadCate(id, path, image);
         }
     }
 
@@ -66,12 +59,8 @@ public class CategoryController {
     public String delete(@PathVariable("id") int id,HttpServletRequest request) throws Exception
     {
         categoryService.delete(id);
-        String name = id+".jpg";
-        File imageFolder = new File(request.getServletContext().getRealPath("image/category"));
-        File file = new File(imageFolder, name);
-        file.delete();
-//        FtpUtil ftpUtil = new FtpUtil();
-//        ftpUtil.deleteFile("/home/ftpuser/blog/image/category",name);
+        String path = request.getServletContext().getRealPath("image/category");
+        ImageUtil.deleteCate(id, path);
         return null;
     }
 
@@ -82,17 +71,8 @@ public class CategoryController {
         categoryService.update(category);
         if(image!=null)
         {
-            int id = category.getId();
-            File imageFolder= new File(request.getServletContext().getRealPath("image/category"));
-            File file = new File(imageFolder,id+".jpg");
-            if(!file.getParentFile().exists())
-                file.getParentFile().mkdirs();
-            image.transferTo(file);
-            BufferedImage img = ImageUtil.change2jpg(file);
-            ImageIO.write(img, "jpg", file);
-//            String name = id+".jpg";
-//            FtpUtil ftpUtil = new FtpUtil();
-//            ftpUtil.uploadFile(name,image.getInputStream(),"/home/ftpuser/blog/image/category");
+            String path = request.getServletContext().getRealPath("image/category");
+            ImageUtil.uploadCate(category.getId(), path, image);
         }
     }
 
@@ -104,5 +84,4 @@ public class CategoryController {
         categoryService.fillParent(categories);
         return categories;
     }
-
 }

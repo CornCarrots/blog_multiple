@@ -65,4 +65,9 @@ public class OperationService {
     {
         return operationDAO.findOne(id);
     }
+
+    public Operation getByName(String name)
+    {
+        return operationDAO.findAllByName(name).get(0);
+    }
 }

@@ -32,12 +32,15 @@ $(
                             return false;
                         var url = getPath() + "/foreLoginUser" + "?timeStamp=" + new Date().getTime();
                         axios.post(url, loginVue.user).then(function (value) {
-                            if (value.data == "success")
+                            if (value.code == "500510") {
                                 location.href = getPath() + "/user";
-                            if (value.data == "user404")
+                            } else if (value.code == "500507") {
                                 $("#nameField").validationEngine("showPrompt", "没有此用户", "error");
-                            if (value.data == "fail")
+                            } else if (value.code == "500508") {
                                 $("#passField").validationEngine("showPrompt", "密码错误", "error");
+                            }else {
+                                $.alert("抱歉!" + value.msg);
+                            }
                         })
                     },
                     forgetButton: function () {

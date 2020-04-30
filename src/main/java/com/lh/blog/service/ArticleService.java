@@ -329,4 +329,18 @@ public class ArticleService {
         }
     }
 
+
+    public void fillArticle(List<Article> articles) {
+        ArticleService articleService = SpringContextUtils.getBean(ArticleService.class);
+        for (Article article : articles) {
+            articleService.fillArticle(article);
+        }
+    }
+
+    public void fillArticle(Article article){
+        ArticleService articleService = SpringContextUtils.getBean(ArticleService.class);
+        articleService.fillCategory(article);
+        articleService.fillTags(article);
+        articleService.fillUser(article);
+    }
 }

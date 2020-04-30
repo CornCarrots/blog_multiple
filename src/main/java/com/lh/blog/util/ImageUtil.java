@@ -1,4 +1,6 @@
 package com.lh.blog.util;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -61,5 +63,28 @@ public class ImageUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void uploadCate(int id, String path, MultipartFile image) throws IOException {
+        File imageFolder= new File(path);
+        File file = new File(imageFolder,id+".jpg");
+        if(!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        image.transferTo(file);
+        BufferedImage img = ImageUtil.change2jpg(file);
+        ImageIO.write(img, "jpg", file);
+//            String name = id+".jpg";
+//            FtpUtil ftpUtil = new FtpUtil();
+//            ftpUtil.uploadFile(name,image.getInputStream(),"/home/ftpuser/blog/image/category");
+    }
+
+    public static void deleteCate(int id, String path){
+        String name = id+".jpg";
+        File imageFolder = new File(path);
+        File file = new File(imageFolder, name);
+        file.delete();
+        //        FtpUtil ftpUtil = new FtpUtil();
+        //        ftpUtil.deleteFile("/home/ftpuser/blog/image/category",name);
     }
 }

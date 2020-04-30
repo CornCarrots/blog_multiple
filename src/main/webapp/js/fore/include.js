@@ -125,6 +125,13 @@ Vue.filter('formatDateFilter', function (value, formatString) {
     formatString = formatString || 'YYYY-MM-DD HH:mm:ss';
     return moment(value).format(formatString);
 });
+axios.interceptors.response.use(
+    function (response) {
+        return response.data;
+    },function (error) {
+        return Promise.reject(error);;
+    }
+);
 //搜索
 function search() {
     var key =$("#keyword").val();
@@ -200,11 +207,13 @@ function checkLogin() {
         url:url,
         async:false,
         success:function (value) {
-            if (value == "fail") {
+            if (value.code == "500501") {
                 $("#loginModel").modal("show");
                 res = false;
-            }else {
+            }else if (value.data == '500505') {
                 res = true;
+            }else {
+                $.alert("抱歉!"+ value.msg);
             }
         }
     });
@@ -225,13 +234,15 @@ function checkArticle(id) {
     var url = getPath() + "/foreArticleCheck" + "?aid="+ id + "&timeStamp=" + new Date().getTime();
     axios.get(url).then(
         function (value) {
-            console.log(value)
-            if (value.data == "nologin") {
-                $.alert('这是权威认证文章，请您先登录再阅读');
-            }else if (value.data == "nomember") {
-                $.alert('这是权威认证文章，您的会员等级不足无法阅读');
-            }else
+            if (value.code == "500503"){
                 location.href = href;
+            } else if (value.code == "500501") {
+                $.alert('这是权威认证文章，请您先登录再阅读');
+            }else if (value.code == "500502") {
+                $.alert('这是权威认证文章，您的会员等级不足无法阅读');
+            }else {
+                $.alert('抱歉!'+ value.msg);
+            }
         }
     );
 }
@@ -240,12 +251,16 @@ function loginUser(vue) {
         return false;
     var url = getPath() + "/foreLoginUser" + "?timeStamp=" + new Date().getTime();
     axios.post(url, vue.user).then(function (value) {
-        if (value.data == "success")
+        if (value.code == "500510") {
             location.reload();
-        if (value.data == "user404")
+        }
+        else if (value.code == "500507") {
             $("#nameField").validationEngine("showPrompt", "没有此用户", "error");
-        if (value.data == "fail")
+        } else if (value.code == "500508") {
             $("#passField").validationEngine("showPrompt", "密码错误", "error");
+        }else {
+            $.alert("抱歉!" + value.msg);
+        }
     })
 }
 function forgetPass() {

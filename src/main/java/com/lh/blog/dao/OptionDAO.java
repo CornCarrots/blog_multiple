@@ -15,5 +15,6 @@ public interface OptionDAO extends JpaRepository<Option,Integer> {
     public static final String SWITCH_CATE = "switch_cate";
     public static final String TAG_SCORE = "tag_score";
     public static final String TAG_WEIGHT = "tag_weight";
+    public static final String INTERESTTAG_OVER = "interesttag_over";
     public Option findAllByKey(String key);
 }

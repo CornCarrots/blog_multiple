@@ -33,6 +33,7 @@ $(function () {
                     var url = getPath() + this.uri+"?start="+start+"&timeStamp="+new Date().getTime();
                     axios.get(url).then(
                         function (value) {
+                            console.log(value)
                             homeVue.pages = value.data.pages;
                             homeVue.articles = value.data.pages.content;
                             // homeVue.carousels = value.data.carousels;

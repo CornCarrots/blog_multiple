@@ -52,12 +52,12 @@ public class LikeService {
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public Like getArticle(int aid,int uid){
-        return dao.findAllByAcidAndUidAndType(aid,uid,LikeDAO.type_article);
+        return dao.findAllByAcidAndUidAndType(aid,uid,LikeDAO.TYPE_ARTICLE);
     }
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public Like getComment(int cid,int uid){
-        return dao.findAllByAcidAndUidAndType(cid,uid,LikeDAO.type_comment);
+        return dao.findAllByAcidAndUidAndType(cid,uid,LikeDAO.TYPE_COMMENT);
     }
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")

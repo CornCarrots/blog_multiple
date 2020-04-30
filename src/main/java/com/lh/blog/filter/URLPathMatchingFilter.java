@@ -54,7 +54,7 @@ public class URLPathMatchingFilter extends HttpMethodPermissionFilter {
             // 看看有没有权限,有则放行
             Manager manager = (Manager) subject.getSession().getAttribute("manager");
             // 进行优化，直接用管理员id就可以，
-            // 不要再通过名字，节省SQL查询的开销 776ms -> 710ms
+            // 不要再通过名字，节省SQL查询的开销 776ms -> 710ms -> 2ms
             boolean hasPermission = permissionService.hasPermission(manager.getId(), requestURI, requestMethod);
 //            boolean hasPermission = permissionService.hasPermission(manager.getId(), requestURI, requestMethod);
             if (hasPermission) {
@@ -71,4 +71,5 @@ public class URLPathMatchingFilter extends HttpMethodPermissionFilter {
             }
         }
     }
+
 }

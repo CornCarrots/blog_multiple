@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface OperationDAO extends JpaRepository<Operation,Integer> {
     public List<Operation> findAllByNameContaining(String key, Sort sort);
-
+    public List<Operation> findAllByName(String name);
 }

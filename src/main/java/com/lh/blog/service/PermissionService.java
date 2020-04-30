@@ -1,5 +1,7 @@
 package com.lh.blog.service;
 
+import cn.hutool.core.util.StrUtil;
+import com.lh.blog.annotation.MethodLog;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.PermissionDAO;
 import com.lh.blog.filter.URLHelper;
@@ -124,7 +126,7 @@ public class PermissionService {
      *  格式化URL所对应的权限 “模块路径 - 操作”
      *  优化空间复杂度，初始化map时指定大小，避免动态扩展，占用内存
      */
-    @Cacheable(keyGenerator = "wiselyKeyGenerator")
+//    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public HashMap<String, List<Operation>> formatPermission(List<Permission> permissions) {
         HashMap<String, List<Operation>> map = new HashMap<>(100);
         for (Permission permission : permissions) {
@@ -139,15 +141,14 @@ public class PermissionService {
                 url = moduleService.getChildURL(module.getUrl());
             }
             // 加入路径对应的操作
+            List<Operation> operationList;
             if (map.containsKey(url)) {
-                List<Operation> list = map.get(url);
-                list.add(operation);
-                map.put(url,list);
+                operationList = map.get(url);
             } else {
-                List<Operation> list = new ArrayList<>();
-                list.add(operation);
-                map.put(url,list);
+                operationList = new ArrayList<>();
             }
+            operationList.add(operation);
+            map.put(url,operationList);
         }
         return map;
     }
@@ -160,7 +161,9 @@ public class PermissionService {
      * @return
      */
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
+    @MethodLog
     public boolean hasPermission(int mid, String url, String method) {
+//         方案一：获取所有权限，用字符串一一比对
         PermissionService permissionService = SpringContextUtils.getBean(PermissionService.class);
         // 获取权限
         List<Permission> permissions = rolePermissionService.listPermissionByManager(mid);
@@ -175,10 +178,8 @@ public class PermissionService {
                         return true;
                     }
                 }
-
             }
         }
         return false;
     }
-
 }

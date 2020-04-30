@@ -75,8 +75,7 @@ $(function () {
                     var url = getPath() + this.uri + "?start_commnet=" + this.start_comment + "&start_tag=" + this.start_tag + "&uid=" + id + "&timeStamp=" + new Date().getTime();
                     axios.get(url).then(
                         function (value) {
-                            console.log(value.data)
-                            if (value.data.no == 'no')
+                            if (value.code == '500501')
                                 location.href = getPath() + "/login";
 
                             if (value.data.comments.content.length > 0) {
@@ -143,7 +142,7 @@ $(function () {
                                 $(".pageDiv2").hide();
                             }
                             memberVue.user = value.data.user;
-                            memberVue.has = value.data.has;
+                            memberVue.has = value.data.ismyself;
                             memberVue.from = value.data.from;
                             memberVue.to = value.data.to;
                             memberVue.isFollow  = value.data.isFollow ;
@@ -242,25 +241,29 @@ $(function () {
                 follow: function (id) {
                     var url = getPath() + "/foreLoginCheck" + "?timeStamp=" + new Date().getTime();
                     axios.get(url).then(function (value) {
-                        if (value.data == "fail")
+                        if (value.code == "500501")
                             $("#loginModel").modal("show");
-                        else {
+                        else if (value.code == '500505') {
                             url = getPath() + "/foreFollow/" + id;
                             axios.post(url).then(function (value) {
                                 memberVue.from = value.data.from;
                                 memberVue.to = value.data.to;
                                 memberVue.isFollow = value.data.res;
                             });
+                        }else {
+                            $.alert("抱歉!"+ value.msg);
                         }
                     });
                 },
                 sendMsg: function (id) {
                     var url = getPath() + "/foreLoginCheck" + "?timeStamp=" + new Date().getTime();
                     axios.get(url).then(function (value) {
-                        if (value.data == "fail")
+                        if (value.code == "500501")
                             $("#loginModel").modal("show");
-                        else {
+                        else if (value.code == '500505') {
                             $("#addMessageModel").modal("show");
+                        }else {
+                            $.alert("抱歉!"+ value.msg);
                         }
                     });
                 },
@@ -333,7 +336,7 @@ $(function () {
                     console.log(this.image)
                     axios.post(uri, formData).then(
                         function (value) {
-                            if (value.data == 'ok') {
+                            if (value.code == '500411') {
                                 $.alert({
                                     title: '我们已收到您的申请!',
                                     content: '请留意您的邮箱，等待我们的工作人员答复'
@@ -344,7 +347,7 @@ $(function () {
                             }
                             else {
                                 $.alert({
-                                    title: '抱歉，出错了!',
+                                    title: '抱歉!' + value.msg,
                                     content: '请检查您的内容并尝试重新提交'
                                 });
                             }
@@ -362,7 +365,7 @@ $(function () {
                         function (value) {
                             console.log(value)
                             var button = e.target;
-                            if (value.data == 1 || value.data == 2){
+                            if (value.code == '500406' || value.code == '500408'){
                                 if (!memberVue.issearch) {
                                     memberVue.list(memberVue.start_tag, 2);
                                 }
@@ -370,19 +373,19 @@ $(function () {
                                     memberVue.search(memberVue.start_search);
                                 }
                             }
-                            if (value.data == 1) {
+                            if (value.code == '500406') {
                                 $(button).removeClass("btn-danger");
                                 $(button).addClass("btn-success");
                             }
-                            else if (value.data == 2) {
+                            else if (value.code == '500408') {
                                 $(button).removeClass("btn-success");
                                 $(button).addClass("btn-danger");
                             }
-                            else if (value.data == 3) {
-                                $.alert("抱歉，您只能喜欢10个标签");
+                            else if (value.code == '500407') {
+                                $.alert("抱歉!" + value.msg);
                                 return;
                             } else {
-                                $.alert("系统出错，请重试");
+                                $.alert("抱歉!" + value.msg);
                                 return;
                             }
                         }
@@ -499,7 +502,7 @@ $(function () {
                     var url = getPath() + memberVue.uri_msg;
                     axios.post(url, memberVue.msg).then(
                         function (value) {
-                        if (value.data == 'ok') {
+                        if (value.code == '500404') {
                             $.alert({
                                 title: '恭喜您,发送成功!',
                                 content: '博主已经收到私信啦',
@@ -516,7 +519,7 @@ $(function () {
                             });
                         } else {
                                 $.alert({
-                                    title: '抱歉，出错了!',
+                                    title: '抱歉!' + value.msg,
                                     content: '请检查您的内容并尝试重新提交'
                                 });
                             }

@@ -95,7 +95,7 @@ $(
                             return;
                         var url = getPath() + "/startArticle/?timeStamp=" + new Date().getTime();
                         axios.post(url, helpVue.article).then(function (value) {
-                            if (value.data == 'save') {
+                            if (value.code == '500202') {
                                 $.alert(
                                     {
                                         title: '恭喜你!',
@@ -112,7 +112,7 @@ $(
                                     }
                                 );
                             }
-                            else if (value.data == 'delete') {
+                            else if (value.code == '500203') {
                                 $.alert(
                                     {
                                         title: '恭喜你!',
@@ -133,7 +133,7 @@ $(
                                 $.alert(
                                     {
                                         title: '抱歉!',
-                                        content: '系统错误，请重试',
+                                        content: ''+ value.msg +'，请重试',
                                         theme: 'modern',
                                         icon: 'fa fa-close-o'
 
@@ -153,8 +153,9 @@ $(
                                     '确认': function () {
                                         var url = getPath() + "/deleteComment/" + id + "?timeStamp=" + new Date().getTime();
                                         axios.delete(url).then(function (value) {
-                                            if (0 != value.data.length) {
-                                                $.alert('系统异常，请重试!');
+                                            console.log(value)
+                                            if (0 != value.code) {
+                                                $.alert(value.msg + ',请重试!');
                                             }
                                             else {
                                                 $.alert('成功删除!');
@@ -179,7 +180,7 @@ $(
                         var url = getPath() + "/likeArticle/?timeStamp=" + new Date().getTime();
                         axios.post(url, helpVue.article).then(function (value) {
                             console.log(value)
-                            if (value.data == 'save') {
+                            if (value.code == '500206') {
                                 $.alert(
                                     {
                                         title: '恭喜你!',
@@ -196,7 +197,7 @@ $(
                                     }
                                 );
                             }
-                            else if (value.data == 'delete') {
+                            else if (value.code == '500207') {
                                 $.alert(
                                     {
                                         title: '恭喜你!',
@@ -217,7 +218,7 @@ $(
                                 $.alert(
                                     {
                                         title: '抱歉!',
-                                        content: '系统错误，请重试',
+                                        content: '' + value.msg + '，请重试',
                                         theme: 'modern',
                                         icon: 'fa fa-close-o'
 
@@ -254,18 +255,9 @@ $(
                         var url = getPath() + "/foreCommitComment" + "?timeStamp=" + new Date().getTime();
                         axios.post(url, helpVue.comment).then(
                             function (value) {
-                                helpVue.comment = {
-                                    id: 0,
-                                    text: '',
-                                    createDate: null,
-                                    status: 0,
-                                    pid: 0,
-                                    uid: 0,
-                                    aid: 0,
-                                    like: 0
-                                };
+                                helpVue.comment = {id: 0, text: '', createDate: null, status: 0, pid: 0, uid: 0, aid: 0, like: 0};
                                 $("#mycontent").val("");
-                                if (value.data == 'yes') {
+                                if (value.code == 0) {
                                     $.alert(
                                         {
                                             title: '恭喜你!',
@@ -287,14 +279,13 @@ $(
                                     $.alert(
                                         {
                                             title: '抱歉!',
-                                            content: '系统错误，请重试',
+                                            content: '' + value.msg + '，请重试',
                                             theme: 'modern',
                                             icon: 'fa fa-close-o'
 
                                         }
                                     );
                                 }
-
                             }
                         );
                     },
@@ -339,7 +330,7 @@ $(
                                     aid: 0,
                                     like: 0
                                 };
-                                if (value.data == 'yes') {
+                                if (value.status == 0) {
                                     $.alert(
                                         {
                                             title: '恭喜你!',
@@ -350,8 +341,6 @@ $(
                                                 ok: {
                                                     action: function () {
                                                         $(".allDiv").hide();
-
-                                                        // $("#addMessageModel").modal("hide");
                                                         helpVue.list(helpVue.start);
                                                     }
                                                 }
@@ -363,7 +352,7 @@ $(
                                     $.alert(
                                         {
                                             title: '抱歉!',
-                                            content: '系统错误，请重试',
+                                            content: '' + value.msg + '，请重试',
                                             theme: 'modern',
                                             icon: 'fa fa-close-o'
 

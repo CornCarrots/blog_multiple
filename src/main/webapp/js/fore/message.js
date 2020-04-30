@@ -29,7 +29,7 @@ $(
                         }
                         var url = getPath() + messageVue.uri+"?timeStamp="+new Date().getTime();
                         axios.post(url, messageVue.message).then(function (value) {
-                            if (value.data == 'ok')
+                            if (value.code == '500301')
                             {
                                 $.alert({
                                     title: '我们已收到您的问卷!',
@@ -38,11 +38,10 @@ $(
                             }
                             else {
                                 $.alert({
-                                    title: '抱歉，出错了!',
+                                    title: '抱歉!'+ value.msg,
                                     content: '请检查您的问卷并尝试重新提交'
                                 });
                             }
-
                         });
                     }
                 }

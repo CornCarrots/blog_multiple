@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 //@Repository
 public interface LikeDAO extends JpaRepository<Like,Integer> {
-    public String type_article = "type_article";
-    public String type_comment = "type_comment";
-    public Like findAllByAcidAndUidAndType(int aid,int uid,String type);
+    String TYPE_ARTICLE = "type_article";
+    String TYPE_COMMENT = "type_comment";
+    Like findAllByAcidAndUidAndType(int aid,int uid,String type);
 }
