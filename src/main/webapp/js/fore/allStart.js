@@ -52,12 +52,12 @@ $(
                                 '确认': function () {
                                     var url = getPath()+operationVue.uri+"/"+id;
                                     axios.delete(url).then(function(value){
-                                        if(0!=value.data.length){
-                                            $.alert('系统异常，请重试!');
-                                        }
-                                        else{
+                                        if (value.code == '500604') {
                                             $.alert('成功删除!');
                                             operationVue.list(0);
+                                        }
+                                        else {
+                                            $.alert('抱歉!' + value.msg);
                                         }
                                     });
                                 },

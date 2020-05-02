@@ -24,7 +24,6 @@ public class MessageController {
         PageUtil<Message> page =messageService.list(start, size, 5);
         List<Message> messages = page.getContent();
         messageService.fillUser(messages);
-        page.setContent(messages);
         return page;
     }
 

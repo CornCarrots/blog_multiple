@@ -34,7 +34,6 @@ $(
                         var url = getPath() + this.uri + "?start=" + start + "&uid=" + this.uid + "&cid=" + this.cid + "&key=" + this.key + "&timeStamp=" + new Date().getTime();
                         axios.get(url).then(
                             function (value) {
-                                console.log(value)
                                 if (value.data.pages.content.length > 0) {
                                     articleVue.pages = value.data.pages;
                                     articleVue.articles = value.data.pages.content;
@@ -86,12 +85,12 @@ $(
                                 '确认': function () {
                                     var url = getPath() + articleVue.uri + "/" + id;
                                     axios.delete(url).then(function (value) {
-                                        if (0 != value.data.length) {
-                                            $.alert('系统异常，请重试!');
-                                        }
-                                        else {
+                                        if (value.code == '500216') {
                                             $.alert('成功删除!');
                                             articleVue.list(0, articleVue.cid);
+                                        }
+                                        else {
+                                            $.alert('抱歉!'+ value.msg);
                                         }
                                     });
                                 },
@@ -129,29 +128,6 @@ $(
                             // title: helpVue.article.title+"_by"+helpVue.article.user.nickName
                             // prepend:pre
                         });
-                        // var input = $("input[name='articleCheckbox']:checked");
-                        // if (input.length == 0) {
-                        //     $.alert('请先选择文章!');
-                        //     return;
-                        // }
-                        // var aidArr = ",";
-                        // $(input).each(
-                        //     function () {
-                        //         var aid = $(this).val();
-                        //         aidArr += aid;
-                        //         aidArr += ",";
-                        //     }
-                        // );
-
-
-                        // var url = getPath() + "/downloadPDF?aids=" + aidArr;
-                        // axios.get(url).then(function (value) {  });
-                        //     .then(function (value) {
-                        //     console.log(value);
-                        //     if (value.result == 'error') {
-                        //         $.alert('系统异常，请重试!');
-                        //     }
-                        // });
                     }
                 }
             });

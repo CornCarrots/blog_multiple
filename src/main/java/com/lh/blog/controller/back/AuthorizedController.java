@@ -26,7 +26,6 @@ public class AuthorizedController {
         PageUtil<Authorized> page =authorizedService.list(start, size, 5);
         List<Authorized> authorizeds = page.getContent();
         authorizedService.fillUser(authorizeds);
-        page.setContent(authorizeds);
         return page;
     }
 

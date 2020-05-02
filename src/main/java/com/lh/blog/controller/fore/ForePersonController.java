@@ -65,18 +65,16 @@ public class ForePersonController {
             Map<String, Object> map = new HashMap<>();
             boolean ismyself = false;
             int isFollow = FocusDAO.NO;
-            logger.info("[访问个人页面] uid: {}", uid);
 
             // 判断是访问自己的还是别人的
-            if (uid == 0) {
-                user = (User) session.getAttribute("user");
-                if (user == null) {
-                    logger.info("[访问个人页面] 用户未登录");
-                    return Result.error(CodeMsg.USER_EMPTY);
-                } else {
+            user = (User) session.getAttribute("user");
+            if (uid == 0 || (user!= null && uid == user.getId())) {
+                {
                     ismyself = true;
+                    uid = user.getId();
                 }
             }
+
             // 访问他人页面，需要处理 关注 逻辑
             else {
                 user = userService.get(uid);
@@ -91,23 +89,24 @@ public class ForePersonController {
                 }
                 logger.info("[访问个人页面] 处理关注逻辑,isFollow:{}", isFollow);
             }
+            logger.info("[访问个人页面] uid: {}", uid);
             map.put("isFollow", isFollow);
 
             // 处理访问用户的数据
             // 处理评论逻辑
-            PageUtil<Comments> comments = commentsService.listByStatusAndUser(user.getId(), start_commnet, size, 5);
+            PageUtil<Comments> comments = commentsService.listByStatusAndUser(uid, start_commnet, size, 5);
             List<Comments> comments1 = comments.getContent();
             commentsService.fillComments(comments1);
-            comments.setContent(comments1);
+            commentsService.fillParent(comments1);
             // 处理文章逻辑
-            List<Article> articles = articleService.list5ByStatusAndUser(0, user.getId());
+            List<Article> articles = articleService.list5ByStatusAndUser(0, uid);
             articleService.fillArticle(articles);
             // 处理标签逻辑
-            List<Tag> tags = tagService.listByUser(user.getId());
+            List<Tag> tags = tagService.listByUser(uid);
             PageUtil<Tag> page = tagService.listByCount(start_tag, size, 5);
             // 处理关注和粉丝
-            long from = focusService.sumFrom(user.getId());
-            long to = focusService.sumTo(user.getId());
+            long from = focusService.sumFrom(uid);
+            long to = focusService.sumTo(uid);
             logger.info("[访问个人页面] 评论条数:{}，文章数:{}，个人标签数:{},粉丝:{}，关注：{}",
                     comments1.size(), articles.size(), tags.size(), from, to);
 
@@ -266,7 +265,7 @@ public class ForePersonController {
             return Result.success(CodeMsg.APPLY_AUTHORIZED_SUCCESS);
         }catch (Exception e){
             logger.error("[申请认证] 失败 uid:{}", user.getId() ,e);
-            return Result.error(CodeMsg.APPLY_AUTHORIZED_EOORO);
+            return Result.error(CodeMsg.APPLY_AUTHORIZED_ERROR);
         }
     }
 }

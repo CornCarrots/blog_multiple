@@ -14,7 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
+import java.util.Objects;
+
 @Service
 @CacheConfig(cacheNames = "users")
 public class UserService {
@@ -120,5 +123,20 @@ public class UserService {
     public List<User> listByIds(List<Integer> ids)
     {
         return dao.findAllByIdIn(ids, sort);
+    }
+
+    public String getImgPath(){
+        File imageFolder = new File("image/profile_user");
+        String[] files = imageFolder.list();
+        int num = Objects.requireNonNull(files).length - 1;
+        int imgId = (int) (Math.random() * num) + 1;
+        return  "/image/profile_user/" + imgId + ".jpg";
+    }
+
+    public int getImgNum(){
+        File imageFolder = new File("image/profile_user");
+        String[] files = imageFolder.list();
+        int num = files.length - 1;
+        return num;
     }
 }

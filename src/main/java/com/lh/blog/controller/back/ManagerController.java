@@ -32,7 +32,6 @@ public class ManagerController {
         PageUtil<Manager> page = managerService.list(start, size, 5);
         List<Manager> managers = page.getContent();
         managerService.fill(managers);
-        page.setContent(managers);
         map.put("page", page);
         List<Role> roles = roleService.list();
         map.put("roles", roles);

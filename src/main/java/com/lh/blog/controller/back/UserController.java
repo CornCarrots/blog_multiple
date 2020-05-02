@@ -22,7 +22,6 @@ public class UserController {
         start = start<0?0:start;
         PageUtil<User> page =userService.list(start,size,5);
         List<User> users = page.getContent();
-        page.setContent(users);
         return page;
     }
 

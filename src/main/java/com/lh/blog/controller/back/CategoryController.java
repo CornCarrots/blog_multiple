@@ -31,7 +31,6 @@ public class CategoryController {
         PageUtil<Category> page =categoryService.list(start, size, 5);
         List<Category> categories = page.getContent();
         categoryService.fillChild(categories);
-        page.setContent(categories);
         map.put("page",page);
 //        map.put("all",categoryService.list());
         return map;

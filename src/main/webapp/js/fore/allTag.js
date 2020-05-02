@@ -18,9 +18,9 @@ $(
                         axios.get(url).then(
                             function (value) {
                                 console.log(value)
-                                if (value.data.page.content.length > 0) {
-                                    operationVue.pages = value.data.page;
-                                    operationVue.tags = value.data.page.content;
+                                if (value.data.content.length > 0) {
+                                    operationVue.pages = value.data;
+                                    operationVue.tags = value.data.content;
                                     $(".historyTable").show();
                                     $(".notfound_list").hide();
                                     $(".pageDiv").show();
@@ -49,12 +49,12 @@ $(
                                 '确认': function () {
                                     var url = getPath() + operationVue.uri + "/" + id;
                                     axios.delete(url).then(function (value) {
-                                        if (0 != value.data.length) {
-                                            $.alert('系统异常，请重试!');
-                                        }
-                                        else {
+                                        if (value.code == '500707') {
                                             $.alert('成功删除!');
                                             operationVue.list(0);
+                                        }
+                                        else {
+                                            $.alert('抱歉!' + value.msg);
                                         }
                                     });
                                 },

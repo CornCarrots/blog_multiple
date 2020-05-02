@@ -65,12 +65,16 @@ $(
             pages_tag: {},
             temp: [],
             tags: [],
+            syms: [],
             all: [],
             key: '',
             issearch: false,
             tids: [],
             start: 0,
-            tag: {id: 0, name: '', status: 0, count: 0,uid:0}
+            isadd:"no",
+            tag: {id: 0, name: '', status: 0, count: 0,uid:0},
+            start_search:0,
+            pages_tag_search:{}
         };
         var articleVue = new Vue(
             {
@@ -81,6 +85,7 @@ $(
                 },
                 methods: {
                     get: function () {
+                        $(".notfound_list_user").hide();
                         var aid = getUrlParms("aid");
                         var url = getPath() + articles.uri + "/" + aid;
                         axios.get(url).then(
@@ -125,6 +130,10 @@ $(
 
                     },
                     list: function (start) {
+                        if (!this.issearch) {
+                            $("#liketag").hide();
+                            $(".pageDiv3").hide();
+                        }
                         this.start = start;
                         var tidArr = ",";
                         $(this.tids).each(
@@ -140,7 +149,7 @@ $(
                                     articleVue.pages = value.data.page;
                                     articleVue.pages_tag = value.data.page;
                                     articleVue.temp = value.data.page.content;
-                                    $(".info_tag_myTag").show();
+                                    $("#findtag").show();
                                     $(".notfound_list2").hide();
                                     $(".pageDiv2").show();
                                     var arr = new Array();
@@ -168,17 +177,41 @@ $(
                                     articleVue.tags = arr;
                                 }
                                 else {
-                                    $(".info_tag_myTag").hide();
+                                    $("#findtag").hide();
                                     $(".notfound_list2").show();
                                     $(".pageDiv2").hide();
                                 }
                             }
                         );
                     }, jump: function (page, id) {
-                        jump(page, articleVue);
+                        if (id == '2')
+                            jump(page, articleVue);
+                        else if (id == '3') {
+                            if ('first' == page && !articleVue.pages_tag_search.first)
+                                articleVue.search(0);
+
+                            else if ('pre' == page && articleVue.pages_tag_search.hasPrevious)
+                                articleVue.search(articleVue.pages_tag_search.number - 1);
+
+                            else if ('next' == page && articleVue.pages_tag_search.hasNext)
+                                articleVue.search(articleVue.pages_tag_search.number + 1);
+
+                            else if ('last' == page && !articleVue.pages_tag_search.last)
+                                articleVue.search(articleVue.pages_tag_search.totalPages - 1);
+                        }
                     },
                     jumpByNumber: function (start, id) {
-                        jumpByNumber(start, articleVue);
+                        if (id == '2')
+                            jumpByNumber(start, articleVue);
+                        else if (id == '3'){
+                            if(start!=articleVue.pages_tag_search.number)
+                                articleVue.search(start);
+                        }
+                    },
+                    backButton:function(){
+                        articleVue.issearch = false;
+                        articleVue.key = '';
+                        articleVue.list(0);
                     },
                     closeButton: function () {
                         location.reload();
@@ -193,7 +226,7 @@ $(
                         var url = getPath() + articles.uri + "/" + getUrlParms("aid");
                         axios.put(url, {article: articleVue.article, tags: articleVue.tids}).then(
                             function (value) {
-                                if (value.data == 'yes') {
+                                if (value.code == '500218') {
                                     $.alert(
                                         {
                                             title: '恭喜你!',
@@ -210,8 +243,9 @@ $(
                                             }
                                         }
                                     );
+                                }else {
+                                    $.alert("抱歉!" + value.msg);
                                 }
-
                             }
                         );
                     },
@@ -223,7 +257,8 @@ $(
                         articleVue.key = '';
                         articleVue.list(0);
                     },
-                    search: function () {
+                    search: function (start) {
+                        this.start_search =start;
                         if (!checkEmpty(this.key, '关键词')) {
                             return;
                         }
@@ -233,41 +268,70 @@ $(
                         }
                         articleVue.issearch = true;
                         var key = this.key;
-                        var url = getPath() + articleVue.uri_tag + "/search/?key=" + key;
+                        var url = getPath() + articleVue.uri_tag + "/search/?key=" + key + "&start=" + start;
                         axios.post(url).then(
                             function (value) {
-                                console.log(value)
                                 $(".pageDiv2").hide();
-                                articleVue.tags = [];
-                                if (value.data.tags.length > 0) {
-                                    articleVue.temp = value.data.tags;
-                                    $(".info_tag_myTag").show();
-                                    $(".notfound_list2").hide();
-                                    var arr = new Array();
-                                    $(articleVue.temp).each(
-                                        function (i, data) {
-                                            var tag = {
-                                                id: 0, name: '', status: 0, count: 0, has: false
-                                            };
-                                            tag.id = data.id;
-                                            tag.name = data.name;
-                                            tag.status = data.status;
-                                            tag.count = data.count;
-                                            $(articleVue.tids).each(
-                                                function (j, res) {
-                                                    if (res == tag.id) {
-                                                        tag.has = true;
-                                                        return;
+                                var likes = value.data.likes;
+                                var finds = value.data.tags.content;
+                                // articleVue.all = value.data.all;
+
+                                $("#liketag").hide();
+                                $("#findtag").hide();
+                                if (likes.length > 0 || finds.length > 0) {
+                                    if (value.data.tag == null) {
+                                        $(".notfound_list2").show();
+                                    }else{
+                                        $(".notfound_list2").hide();
+                                    }
+                                    articleVue.syms = [];
+                                    if (likes.length > 0) {
+                                        $("#liketag").show();
+                                        articleVue.temp = likes;
+                                        var arr = new Array();
+                                        $(articleVue.temp).each(
+                                            function (i, data) {
+                                                var tag = {id: data.id, name: data.name, status: data.status, count: data.count, uid:data.uid, has: false};
+                                                $(articleVue.tids).each(
+                                                    function (j, res) {
+                                                        if (res == tag.id) {
+                                                            tag.has = true;
+                                                            return;
+                                                        }
                                                     }
-                                                }
-                                            );
-                                            arr.push(tag);
-                                        }
-                                    );
-                                    articleVue.tags = arr;
-                                }
-                                else {
-                                    $(".info_tag_myTag").hide();
+                                                );
+                                                arr.push(tag);
+                                            }
+                                        );
+                                        articleVue.syms = arr;
+                                    }
+                                    articleVue.tags = [];
+                                    if (finds.length > 0) {
+                                        articleVue.pages_tag_search = value.data.tags;
+                                        articleVue.temp = finds;
+                                        $("#findtag").show();
+                                        $(".pageDiv3").show();
+                                        var arr = new Array();
+                                        $(articleVue.temp).each(
+                                            function (i, data) {
+                                                var tag = {id: data.id, name: data.name, status: data.status, count: data.count, uid:data.uid, has: false};
+                                                $(articleVue.tids).each(
+                                                    function (j, res) {
+                                                        if (res == tag.id) {
+                                                            tag.has = true;
+                                                            return;
+                                                        }
+                                                    }
+                                                );
+                                                arr.push(tag);
+                                            }
+                                        );
+                                        articleVue.tags = arr;
+                                    }else {
+                                        $(".pageDiv3").hide();
+                                    }
+                                } else {
+                                    $(".pageDiv3").hide();
                                     $(".notfound_list2").show();
                                 }
                             }
@@ -283,7 +347,8 @@ $(
                             if (!articleVue.issearch) {
                                 articleVue.list(articleVue.start);
                             }
-                            else {
+                            else{
+                                articleVue.search(articleVue.start_search);
                                 var tidArr = ",";
                                 $(articleVue.tids).each(
                                     function (i, data) {
@@ -304,18 +369,8 @@ $(
                             if (!articleVue.issearch) {
                                 articleVue.list(articleVue.start);
                             }
-                            else {
-                                var tidArr = ",";
-                                $(this.tids).each(
-                                    function (i, data) {
-                                        tidArr += data;
-                                        tidArr += ",";
-                                    });
-                                var url = getPath() + "/user/writing/tag?tid=" + tidArr;
-                                axios.get(url).then(
-                                    function (value) {
-                                        articleVue.all = value.data.all;
-                                    });
+                            else{
+                                articleVue.search(articleVue.start_search);
                             }
                         }
                     },
@@ -323,39 +378,67 @@ $(
                         var name = this.key;
                         articleVue.tag.name = name;
                         var url = getPath() + articleVue.uri_tag;
-                        axios.post(url, articleVue.tag).then(
+                        axios.post(url, {tag:articleVue.tag,isadd:articleVue.isadd}).then(
                             function (value) {
-                                if (value.data.res == 'ok') {
-                                    articleVue.tag = {id: 0, name: '', status: 0, count: 0};
-                                    $(".pageDiv2").hide();
-                                    $(".info_tag_myTag").show();
-                                    $(".notfound_list2").hide();
-                                    articleVue.tags = [];
-                                    if (value.data.tags.length > 0) {
-                                        articleVue.temp = value.data.tags;
-                                        $(".back_art_category_list_table").show();
-                                        $(".notfound_search").hide();
-                                        var arr = new Array();
-                                        $(articleVue.temp).each(
-                                            function (i, data) {
-                                                var tag = {
-                                                    id: 0, name: '', status: 0, count: 0, uid: 0, has: false
-                                                };
-                                                tag.id = data.id;
-                                                tag.name = data.name;
-                                                tag.status = data.status;
-                                                tag.count = data.count;
-                                                tag.uid = data.uid;
-                                                arr.push(tag);
+                                if (value.data.code == '500704') {
+                                    $.alert(
+                                        {
+                                            title: '抱歉!',
+                                            content: value.msg,
+                                            theme: 'modern',
+                                            icon: 'fa fa-meh-o',
+                                            buttons: {
+                                                再看看: {
+                                                },
+                                                添加并反馈:{
+                                                    action: function () {
+                                                        articleVue.isadd = "yes";
+                                                        var url = getPath() + "/foreMessage?timeStamp="+new Date().getTime();
+                                                        var message = {
+                                                            id: 0,
+                                                            uid: 0,
+                                                            createDate: null,
+                                                            text: '标签:'+ articleVue.tag.name + ',存在同义词,不合理',
+                                                            reply: null,
+                                                            replyDate: null,
+                                                            status: 1,
+                                                            type: 'type_suggestion'
+                                                        };
+                                                        axios.post(url, message).then(function (value) {
+                                                            if (value.code == '500301') {
+                                                                $.alert({
+                                                                    title: '我们已收到您的反馈!',
+                                                                    content: '请留意您的邮箱，等待我们的工作人员答复',
+                                                                    onClose: function () {
+                                                                        // before the modal is hidden.
+                                                                        articleVue.addTag();
+                                                                    }
+                                                                });
+                                                            }
+                                                            else {
+                                                                $.alert({
+                                                                    title: '抱歉!'+ value.msg,
+                                                                    content: '请尝试重新提交'
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                }
                                             }
-                                        );
-                                        articleVue.tags = arr;
-                                    }
-                                    else {
-                                        $(".back_art_category_list_table").hide();
-                                        $(".notfound_search").show();
-                                    }
-                                } else {
+                                        }
+                                    );
+                                }
+                                else if (value.code == '500706') {
+                                    articleVue.isadd = "no";
+                                    articleVue.tag={id:0,name:'',status:0,count:0};
+                                    articleVue.search(articleVue.start_search);
+
+                                }else if (value.code == '500705') {
+                                    $.alert({
+                                        title: '抱歉!',
+                                        content: value.msg
+                                    });
+                                }else {
                                     $.alert({
                                         title: '抱歉，出错了!',
                                         content: '再试试吧'

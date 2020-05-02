@@ -48,7 +48,6 @@ public class ArticleController {
         PageUtil<Article> page = articleService.list(start, size, 5);
         List<Article> articles = page.getContent();
         articleService.fillCategory(articles);
-        page.setContent(articles);
         return page;
     }
 

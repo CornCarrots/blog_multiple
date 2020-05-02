@@ -24,7 +24,6 @@ public class RoleController {
         PageUtil<Role> page = roleService.list(start, size, 5);
         List<Role> roles = page.getContent();
         roleService.fill(roles);
-        page.setContent(roles);
         return page;
     }
 

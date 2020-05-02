@@ -20,7 +20,6 @@ public class CommentController {
         List<Comments> comments = page.getContent();
         commentsService.fillArticle(comments);
         commentsService.fillUser(comments);
-        page.setContent(comments);
         return page;
     }
 

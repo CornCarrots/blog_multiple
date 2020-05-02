@@ -60,13 +60,13 @@ $(
                                             var input = $(this);
                                             var url = getPath()+operationVue.uri+"/"+input.val();
                                             axios.delete(url).then(function(value){
-                                                if(0!=value.data.length){
-                                                    $.alert('系统异常，请重试!');
-                                                }
-                                                else{
+                                                if (value.code == '500602') {
                                                     $.alert('成功删除!');
                                                     input.prop("checked",false);
                                                     operationVue.list(0);
+                                                }
+                                                else {
+                                                    $.alert('抱歉!' + value.msg);
                                                 }
                                             });
                                         }

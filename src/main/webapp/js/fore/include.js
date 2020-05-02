@@ -207,10 +207,10 @@ function checkLogin() {
         url:url,
         async:false,
         success:function (value) {
+            console.log(value)
             if (value.code == "500501") {
                 $("#loginModel").modal("show");
-                res = false;
-            }else if (value.data == '500505') {
+            }else if (value.code == '500505') {
                 res = true;
             }else {
                 $.alert("抱歉!"+ value.msg);
@@ -285,7 +285,7 @@ function togglePass(vue) {
         $("#seePass").toggleClass("fa-eye");
     }
 }
-function changePass(vue, random) {
+function changePass(vue) {
     var key = this.$content.find('.key').val();
     var pass = this.$content.find('.pass').val();
     var res = true;
@@ -293,11 +293,15 @@ function changePass(vue, random) {
         $.alert('请输入一个有效的值');
         return false;
     }
-    var bean = {random: random, key: key, email: vue.email, pass: pass};
+    var bean = {key: key, email: vue.email, pass: pass};
     var url = getPath() + "/foreUserPass?timeStamp=" + new Date().getDate();
-    axios.post(url, bean).then(
-        function (value) {
-            if (value.data == 'ok') {
+    $.ajax({
+        type:"POST",
+        url:url,
+        data:bean,
+        async:false,
+        success:function (value) {
+            if (value.code == '0') {
                 $.dialog({
                     title: '恭喜您,密码修改成功!',
                     content: '快去登录吧',
@@ -305,7 +309,7 @@ function changePass(vue, random) {
                     icon: 'fa fa-smile-o'
                 });
             }
-            else {
+            else if (value.code == '500416') {
                 $.alert({
                     title: '抱歉!',
                     content: '验证码错误',
@@ -313,20 +317,26 @@ function changePass(vue, random) {
                     icon: 'fa fa-close'
                 });
                 res = false;
+            }else {
+                $.alert({
+                    title: '抱歉!',
+                    content: value.msg,
+                    theme: 'modern',
+                    icon: 'fa fa-close'
+                });
+                res = false;
             }
         }
-    );
+    });
     return res;
 }
 function getRandom(e,vue) {
-    var random = '';
     var self = e;
     var url = getPath() + "/forgetUser?email=" + vue.email + "&timeStamp=" + new Date().getDate();
     axios.get(url).then(
         function (value) {
-            if (value.data.result == 'yes') {
+            if (value.code == '500417') {
                 $("#forgetModel").modal("hide");
-                random = value.data.random;
                 self.setContent(
                     '<div class="form-group">' +
                     '<label>验证码已发送到您的邮箱，请查看</label>' +
@@ -341,23 +351,25 @@ function getRandom(e,vue) {
                 self.buttons['formSubmit'].show();
                 self.buttons['取消'].show();
             }
-            else if (value.data.result == 'noUser') {
+            else if (value.code == '500507') {
                 self.setContent(
                     '<div>该邮箱没有绑定用户, 请重新输入' +
                     '</div>'
                 );
                 self.buttons['ok'].show();
                 self.buttons['取消'].show();
-            }else {
+            }
+            else {
                 self.setContent(
-                    '<div>系统错误, 再试试吧' +
+                    '<div>抱歉!' +
+                    value.msg +
                     '</div>'
                 );
                 self.buttons['ok'].show();
                 self.buttons['取消'].show();
             }
-        });
-    return random;
+        }
+    );
 }
 //获取地址栏参数的函数
 function getUrlParms(para){

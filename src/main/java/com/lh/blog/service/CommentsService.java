@@ -185,8 +185,9 @@ public class CommentsService {
         for (Comments message: comments) {
             commentsService.fillLike(message, uid);
             List<Comments> child = message.getChild();
-            commentsService.fillLike(child, uid);
-            message.setChild(child);
+            if (child != null && !child.isEmpty()) {
+                commentsService.fillLike(child, uid);
+            }
         }
     }
 
@@ -254,8 +255,6 @@ public class CommentsService {
         CommentsService commentsService = SpringContextUtils.getBean(CommentsService.class);
         commentsService.fillUser(comments);
         commentsService.fillArticle(comments);
-        commentsService.fillParent(comments);
-        commentsService.fillChild(comments);
     }
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")

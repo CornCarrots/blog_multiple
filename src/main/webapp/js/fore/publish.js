@@ -97,7 +97,7 @@ $(
                         var url = getPath() + this.uri;
                         axios.get(url).then(
                             function (value) {
-                                articles.categories = value.data.categories;
+                                articles.categories = value.data;
                                 Vue.nextTick(function () {
                                     editor = KindEditor.create("#editor_id", options);
                                     $("#addForm").validationEngine({
@@ -218,7 +218,7 @@ $(
                         var url = getPath() + articleVue.uri;
                         axios.post(url, {article: articleVue.article, tags: articleVue.tids}).then(
                             function (value) {
-                                if (value.data == 'yes') {
+                                if (value.code == '500215') {
                                     $.alert(
                                         {
                                             title: '恭喜你!',
@@ -236,7 +236,9 @@ $(
                                         }
                                     );
                                 }
-
+                                else {
+                                    $.alert("抱歉!" + value.msg);
+                                }
                             }
                         );
                     },
@@ -262,7 +264,6 @@ $(
                         var url = getPath() + articleVue.uri_tag + "/search/?key=" + key + "&start=" + start;
                         axios.post(url).then(
                             function (value) {
-                                console.log(value);
                                 $(".pageDiv2").hide();
                                 var likes = value.data.likes;
                                 var finds = value.data.tags.content;
@@ -372,12 +373,11 @@ $(
                         var url = getPath() + articleVue.uri_tag;
                         axios.post(url, {tag:articleVue.tag,isadd:articleVue.isadd}).then(
                             function (value) {
-                                if (value.data.res == 'has') {
-                                    var temptag = value.data.tag.name;
+                                if (value.data.code == '500704') {
                                     $.alert(
                                         {
                                             title: '抱歉!',
-                                            content: '当前已存在类似的标签:'+ temptag,
+                                            content: value.msg,
                                             theme: 'modern',
                                             icon: 'fa fa-meh-o',
                                             buttons: {
@@ -391,7 +391,7 @@ $(
                                                             id: 0,
                                                             uid: 0,
                                                             createDate: null,
-                                                            text: '标签:'+ articleVue.tag.name + ',存在同义词:' + temptag +',不合理',
+                                                            text: '标签:'+ articleVue.tag.name + ',存在同义词,不合理',
                                                             reply: null,
                                                             replyDate: null,
                                                             status: 1,
@@ -421,35 +421,15 @@ $(
                                         }
                                     );
                                 }
-                                else if (value.data.res == 'ok') {
+                                else if (value.code == '500706') {
                                     articleVue.isadd = "no";
                                     articleVue.tag={id:0,name:'',status:0,count:0};
                                     articleVue.search(articleVue.start_search);
-                                    // $(".pageDiv2").hide();
-                                    // $("#findtag").show();
-                                    // $(".notfound_list2").hide();
-                                    // articleVue.tags = [];
-                                    // if (value.data.tags.length > 0) {
-                                    //     articleVue.temp = value.data.tags;
-                                    //     $(".back_art_category_list_table").show();
-                                    //     $(".notfound_search").hide();
-                                    //     var arr = new Array();
-                                    //     $(articleVue.temp).each(
-                                    //         function (i, data) {
-                                    //             var tag = {id: data.id, name: data.name, status: data.status, count: data.count, uid:data.uid, has: false};
-                                    //             arr.push(tag);
-                                    //         }
-                                    //     );
-                                    //     articleVue.tags = arr;
-                                    // }
-                                    // else {
-                                    //     $(".back_art_category_list_table").hide();
-                                    //     $(".notfound_search").show();
-                                    // }
-                                }else if (value.data.res == 'no') {
+
+                                }else if (value.code == '500705') {
                                     $.alert({
-                                        title: '标签只能添加10个!',
-                                        content: '先删除一些标签吧'
+                                        title: '抱歉!',
+                                        content: value.msg
                                     });
                                 }else {
                                     $.alert({

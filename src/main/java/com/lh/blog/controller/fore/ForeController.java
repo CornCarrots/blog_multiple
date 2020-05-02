@@ -54,7 +54,6 @@ public class ForeController {
             List<Article> articles = pages.getContent();
             articleService.fillCategory(articles);
             articleService.fillUser(articles);
-            pages.setContent(articles);
             map.put("pages", pages);
             return Result.success(map);
         }catch (Exception e){
@@ -81,7 +80,6 @@ public class ForeController {
             List<Article> articles = pages.getContent();
             articleService.fillCategory(articles);
             articleService.fillUser(articles);
-            pages.setContent(articles);
             map.put("pages", pages);
             map.put("key", key);
             return Result.success(map);
@@ -175,7 +173,6 @@ public class ForeController {
             List<Article> articles = pages.getContent();
             articleService.fillCategory(articles);
             articleService.fillUser(articles);
-            pages.setContent(articles);
             map.put("pages", pages);
             map.put("tag", tag);
             return Result.success(map);
@@ -207,10 +204,10 @@ public class ForeController {
             message.setUid(user.getId());
             messageService.add(message);
             logger.info("用户：{} 反馈成功", user.getId());
-            return Result.success(CodeMsg.SEND_SUCCESS);
+            return Result.success(CodeMsg.SEND_MESSAGE_SUCCESS);
         }catch (Exception e){
             logger.error("用户：{} 反馈失败", user.getId(), e);
-            return Result.success(CodeMsg.SEND_ERROR);
+            return Result.success(CodeMsg.SEND_MESSAGE_ERROR);
         }
     }
 
@@ -264,7 +261,6 @@ public class ForeController {
             List<Article> articles = pages.getContent();
             articleService.fillCategory(articles);
             articleService.fillUser(articles);
-            pages.setContent(articles);
             map.put("pages", pages);
             return Result.success(map);
         }catch (Exception e){

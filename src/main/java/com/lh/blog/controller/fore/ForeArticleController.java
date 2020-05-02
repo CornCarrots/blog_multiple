@@ -71,7 +71,7 @@ public class ForeArticleController {
             PageUtil<Comments> page = commentsService.listByParent(aid, start, size, 5);
             List<Comments> comments = page.getContent();
             commentsService.fillComments(comments);
-            page.setContent(comments);
+            commentsService.fillChild(comments);
             map.put("pages", page);
             logger.info("[访问文章] 处理评论逻辑，获取评论：{}条", comments.size());
 
@@ -272,6 +272,19 @@ public class ForeArticleController {
             else {
                 return Result.error(CodeMsg.UNLIKE_COMMENT_ERROR);
             }
+        }
+    }
+
+    @PostMapping(value = "/addChicken/{uid}")
+    public Result addChicken(@PathVariable("uid") int uid) {
+        try {
+            User user = userService.get(uid);
+            user.setScore(user.getScore() + 10);
+            logger.info("[赞赏] 用户:{} 成功", uid);
+            return Result.success(CodeMsg.CHICKEN_SUCCESS);
+        }catch (Exception e){
+            logger.error("[赞赏] 用户:{} 失败", uid, e);
+            return Result.error(CodeMsg.CHICKEN_ERROR);
         }
     }
 }

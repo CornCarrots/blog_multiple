@@ -172,11 +172,9 @@ $(
                             });
                         },
                     likeArticle: function () {
-                        console.log(1)
                         var login = checkLogin();
                         if (!login)
                             return;
-                        console.log(2)
                         var url = getPath() + "/likeArticle/?timeStamp=" + new Date().getTime();
                         axios.post(url, helpVue.article).then(function (value) {
                             console.log(value)
@@ -386,7 +384,6 @@ $(
                         togglePass(helpVue);
                     },
                     forgetButton: function () {
-                        var random;
                         $.confirm({
                                 title: '请稍后',
                                 content: '<div class="ball"></div>\n' +
@@ -400,7 +397,7 @@ $(
                                         text: '确定',
                                         btnClass: 'btn-blue',
                                         action: function () {
-                                            return changePass(helpVue, random);
+                                            return changePass(helpVue);
                                         }
                                     },
                                     '取消': function () {
@@ -413,23 +410,47 @@ $(
                                     self.buttons['取消'].hide();
                                 },
                                 onContentReady: function () {
-                                    random = getRandom(this, helpVue);
+                                    getRandom(this, helpVue);
                                 }
                             }
                         );
                     },
                     addChicken: function () {
-                        $.dialog({
-                            title: '可以为我加个鸡腿吗？',
-                            content: '<div align="center" class="payDIV">\n' +
-                                '    <h5>服务器以及网站维护需要一点费用，如果可以的话，扫描一下二维码支持一下站长，帮我加个鸡腿吧！</h5>\n' +
-                                '    <img src="image/site/pay1.jpg" alt="alipay" style="width: 20%">\n' +
-                                '    <img src="image/site/pay2.jpg" alt="weixin" style="width: 20%">\n' +
-                                '</div>',
-                            icon: 'fa fa-smile-o',
-                            theme: 'modern',
-                            columnClass: 'col-md-12'
+                        var url = getPath() + "/addChicken/" + helpVue.article.uid + "?timeStamp=" + new Date().getTime();
+                        axios.post(url).then(function (value) {
+                            if (value.code == '500221') {
+                                $.alert({
+                                        title: '谢谢你!',
+                                        content: '赞赏成功',
+                                        theme: 'modern',
+                                        icon: 'fa fa-smile-o'
+                                    }
+                                );
+                            }else {
+                                $.alert(
+                                    {
+                                        title: '抱歉!',
+                                        content: '' + value.msg + '，请重试',
+                                        theme: 'modern',
+                                        icon: 'fa fa-close-o'
+
+                                    }
+                                );
+                            }
                         });
+
+                        // $("#chickenModel").modal("show");
+                        // $.dialog({
+                        //     title: '可以为我加个鸡腿吗？',
+                        //     content: '<div align="center" class="payDIV">\n' +
+                        //         '    <h5>服务器以及网站维护需要一点费用，如果可以的话，扫描一下二维码支持一下站长，帮我加个鸡腿吧！</h5>\n' +
+                        //         '    <img src="image/site/pay1.jpg" alt="alipay" style="width: 20%">\n' +
+                        //         '    <img src="image/site/pay2.jpg" alt="weixin" style="width: 20%">\n' +
+                        //         '</div>',
+                        //     icon: 'fa fa-smile-o',
+                        //     theme: 'modern',
+                        //     columnClass: 'col-md-12'
+                        // });
                     },
                     PDFButton:function () {
                         var pre = "        <h1 style=\"text-align: center\">" +

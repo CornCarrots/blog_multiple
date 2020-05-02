@@ -23,7 +23,6 @@ public class MemberController {
         PageUtil<User> page = userService.listMember(start, size, 5, 0);
         List<User> users = page.getContent();
         userService.fillMember(users);
-        page.setContent(users);
         return page;
     }
 

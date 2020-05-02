@@ -153,7 +153,7 @@ $(
                         formData.append("status", this.category.status);
                         axios.post(uri, formData).then(
                             function (value) {
-                                if (value.data == "yes"){
+                                if (value.code == "500803"){
                                     $.alert(
                                         {
                                             title: '恭喜你!',
@@ -172,14 +172,14 @@ $(
                                             }
                                         }
                                     );
-                                } else if (value.data == "no"){
+                                } else if (value.code == "500802"){
                                     $.alert({
-                                        title: '分类只能添加4个!',
+                                        title: '抱歉!' + value.msg,
                                         content: '先删除一些分类吧'
                                     });
                                 }else {
                                     $.alert({
-                                        title: '抱歉，出错了!',
+                                        title: '抱歉!' + value.msg,
                                         content: '再试试吧'
                                     });
                                 }
@@ -196,12 +196,12 @@ $(
                                 '确认': function () {
                                     var url = getPath() + operationVue.uri + "/" + id;
                                     axios.delete(url).then(function (value) {
-                                        if (0 != value.data.length) {
-                                            $.alert('系统异常，请重试!');
-                                        }
-                                        else {
+                                        if (value.code == '500806') {
                                             $.alert('成功删除!');
                                             operationVue.list(0);
+                                        }
+                                        else {
+                                            $.alert('抱歉!' + value.msg);
                                         }
                                     });
                                 },
@@ -215,15 +215,6 @@ $(
 
                     },
                     editCategory: function (id) {
-                        if (!$("#updateForm").validationEngine("validate")) return false;
-                        if (this.category.pid == 0){
-                            $.alert("所属分类不可为空!");
-                            return;
-                        }
-                        if (this.image == null){
-                            $.alert("分类图片不可为空!");
-                            return;
-                        }
                         var url = getPath() + this.uri + "/" + id;
                         axios.get(url).then(function (value) {
                             operationVue.category = value.data;
@@ -243,7 +234,6 @@ $(
                                     $("#editSelect").html(html);
                                     $("#editSelect").selectpicker('refresh');
                                     $("#editSelect").selectpicker('render');
-                                    checkListener();
                                 }
                             );
                             $("#editCategoryModel").modal("show");
@@ -265,26 +255,29 @@ $(
                         formData.append("status", this.category.status);
                         formData.append("uid", this.category.uid);
                         axios.put(url, formData).then(function (value) {
-                            $.alert(
-                                {
-                                    title: '恭喜你!',
-                                    content: '修改分类成功',
-                                    theme: 'modern',
-                                    icon: 'fa fa-smile-o',
-                                    buttons: {
-                                        ok: {
-                                            action: function () {
-                                                operationVue.image = null;
-                                                operationVue.category = {id: 0, name: '', pid: 0, icon: '', status: 0,uid:0};
-                                                $("#editCategoryModel").modal("hide");
-                                                location.reload();
+                            if (value.code == '500808'){
+                                $.alert(
+                                    {
+                                        title: '恭喜你!',
+                                        content: '修改分类成功',
+                                        theme: 'modern',
+                                        icon: 'fa fa-smile-o',
+                                        buttons: {
+                                            ok: {
+                                                action: function () {
+                                                    operationVue.image = null;
+                                                    operationVue.category = {id: 0, name: '', pid: 0, icon: '', status: 0,uid:0};
+                                                    $("#editCategoryModel").modal("hide");
+                                                    location.reload();
 
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            );
-
+                                );
+                            } else {
+                                $.alert("抱歉!" + value.msg);
+                            }
                         });
                     }
                 }

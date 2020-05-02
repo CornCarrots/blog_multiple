@@ -1,10 +1,12 @@
 package com.lh.blog.controller.fore;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.lh.blog.bean.Article;
 import com.lh.blog.bean.Log;
 import com.lh.blog.bean.Manager;
 import com.lh.blog.bean.User;
+import com.lh.blog.cache.UserKey;
 import com.lh.blog.service.*;
 import com.lh.blog.util.CodeMsg;
 import com.lh.blog.util.EncodeUtil;
@@ -47,7 +49,8 @@ public class ForeCheckController {
     UserService userService;
     @Autowired
     ManagerService managerService;
-
+    @Autowired
+    CacheService cacheService;
     /**
      * 检查权威文章 权限
      * @param aid
@@ -94,7 +97,7 @@ public class ForeCheckController {
             }
             return Result.success(CodeMsg.USER_ONLINE);
         }catch (Exception e){
-            logger.error("[用户认证异常]", e);
+            logger.error("[校验用户状态异常]", e);
             return Result.error(CodeMsg.USER_ERROR);
         }
     }
@@ -125,11 +128,13 @@ public class ForeCheckController {
                 }
             }
             // 通过校验，加入session
+            // TODO 优化 采用cookie存储，session是存储在内存中的，当用户量增大时，服务器的压力增大。
             HttpSession session = request.getSession();
             trueUser.setLoginDate(new Date());
             userService.update(trueUser);
             userService.fillMember(trueUser);
             session.setAttribute("user", trueUser);
+            logger.info("[用户登录校验成功] uid:{}", trueUser.getId());
             return Result.success(CodeMsg.LOGIN_SUCCESS);
         }catch (Exception e){
             logger.error("[用户登录校验异常]", e);
@@ -159,6 +164,8 @@ public class ForeCheckController {
             UsernamePasswordToken token = new UsernamePasswordToken(name, pass);
             subject.login(token);
             Manager trueManager = managerService.getByName(subject.getPrincipal().toString());
+            // 登录成功
+            // TODO 使用切面
             Log log = new Log();
             log.setMid(trueManager.getId());
             log.setCreateDate(new Date());
@@ -166,6 +173,7 @@ public class ForeCheckController {
             logService.add(log);
             HttpSession session = request.getSession();
             session.setAttribute("manager", trueManager);
+            logger.info("[管理员认证成功] mid:{}", manager.getId());
             return Result.success(CodeMsg.LOGIN_MANAGER_SUCCESS);
         }
         catch (AuthenticationException e){
@@ -183,43 +191,41 @@ public class ForeCheckController {
      * @return
      */
     @GetMapping(value = "/forgetUser")
-    public Map<String, Object> forgetUser(@RequestParam("email") String email) {
-        String result = "";
-        String random = "";
-        // 用户为空直接结束
-        User user = userService.getByEmail(email);
-        if (user == null) {
-            result = "noUser";
-        } else {
-            // 生成验证码
-            random = RandomStringUtils.randomAlphanumeric(8);
-            // 生成邮件
-            String from = "953625619@qq.com";
-            String to = user.getEmail();
-            String subject = "浩说：你正在找回你的密码！";
-            String content = "<html>\n" +
-                    "<body>\n" +
-                    "<BR>\n" +
-                    "<div align='center'>\n" +
-                    " <h3>恭喜您，邮箱验证成功！</h3>\n" +
-                    "    <h3>您的验证码为：<b>\"" + random + "\"</b></h3>" +
-                    "<BR>\n" +
-                    "</div>\n" +
-                    "</body>\n" +
-                    "</html>";
-            try {
+    public Result forgetUser(@RequestParam("email") String email) {
+        try {
+            // 用户不存在
+            User user = userService.getByEmail(email);
+            if (user == null) {
+                return Result.error(CodeMsg.USER_NOTEXIST);
+            } else {
+                // 生成验证码
+                String random = RandomStringUtils.randomAlphanumeric(8);
+                cacheService.set(UserKey.getRandom, user.getId() + "", random);
+                // 生成邮件
+                String from = "953625619@qq.com";
+                String to = user.getEmail();
+                String subject = "浩说：你正在找回你的密码！";
+                String content = "<html>\n" +
+                        "<body>\n" +
+                        "<BR>\n" +
+                        "<div align='center'>\n" +
+                        " <h3>恭喜您，邮箱验证成功！</h3>\n" +
+                        "    <h3>您的验证码为：<b>\"" + random + "\"</b></h3>" +
+                        "<BR>\n" +
+                        "</div>\n" +
+                        "</body>\n" +
+                        "</html>";
                 // 发送邮件
                 mailService.sendHtmlMail(from, to, subject, content);
-                result = "yes";
-            } catch (Exception e) {
-                result = "no";
+                return Result.success(CodeMsg.GET_RANDOM_SUCCESS);
             }
+        }catch (MessagingException e){
+            logger.error("[发送邮件异常]", e);
+            return Result.error(CodeMsg.SEND_EMAIL_ERROR);
+        }catch (Exception e){
+            logger.error("[用户获取验证码异常]", e);
+            return Result.error(CodeMsg.GET_RANDOM_ERROR);
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("result", result);
-        map.put("random", random);
-        map.put("email", email);
-        return map;
     }
 
     /**
@@ -228,23 +234,29 @@ public class ForeCheckController {
      * @return
      */
     @PostMapping(value = "/foreUserPass")
-    public String setUserPass(@RequestBody JSONObject object) {
-        // 判断验证码是否正确
-        String random = object.get("random").toString();
-        // 初始化新密码
-        String key = object.get("key").toString();
-        String pass = object.get("pass").toString();
-        String email = object.get("email").toString();
-        if (key.equals(random)) {
+    public Result setUserPass(@RequestBody JSONObject object) {
+        try {
+            String email = object.get("email").toString();
             User user = userService.getByEmail(email);
-            // 加密明文
-            Map<String, Object> map = EncodeUtil.encode(pass);
-            user.setSalt(map.get("salt").toString());
-            user.setPassword(map.get("pass").toString());
-            userService.update(user);
-            return "ok";
+            // 判断验证码是否正确
+            String random = cacheService.get(UserKey.getRandom, user.getId() + "");
+            String key = object.get("key").toString();
+             if (StrUtil.equals(key, random)) {
+                 // 初始化新密码
+                 String pass = object.get("pass").toString();
+                // 加密明文
+                Map<String, Object> map = EncodeUtil.encode(pass);
+                user.setSalt(map.get("salt").toString());
+                user.setPassword(map.get("pass").toString());
+                userService.update(user);
+                logger.info("[用户重置密码成功] uid:{}", user.getId());
+                return Result.success(CodeMsg.MODIFY_PASSWORD_SUCCESS);
+            }
+            return Result.error(CodeMsg.VALIDATE_RANDOM_ERROR);
+        }catch (Exception e){
+            logger.error("[用户重置密码异常]", e);
+            return Result.error(CodeMsg.MODIFY_PASSWORD_ERROR);
         }
-        return "no";
     }
 
     /**
@@ -253,39 +265,37 @@ public class ForeCheckController {
      * @return
      */
     @GetMapping(value = "/forgetManager")
-    public Map<String, Object> forgetManager(@RequestParam("email") String email) {
-        String result = "";
-        String random = "";
-        Manager manager = managerService.getByEmail(email);
-        if (manager == null) {
-            result = "noUser";
-        } else {
-            random = RandomStringUtils.randomAlphanumeric(8);
-            String from = "953625619@qq.com";
-            String to = manager.getEmail();
-            String subject = "浩说：你正在找回你的密码！";
-            String content = "<html>\n" +
-                    "<body>\n" +
-                    "<BR>\n" +
-                    "<div align='center'>\n" +
-                    " <h3>恭喜您，邮箱验证成功！</h3>\n" +
-                    "    <h3>您的验证码为：<b>\"" + random + "\"</b></h3>" +
-                    "<BR>\n" +
-                    "</div>\n" +
-                    "</body>\n" +
-                    "</html>";
-            try {
+    public Result forgetManager(@RequestParam("email") String email) {
+        try {
+            Manager manager = managerService.getByEmail(email);
+            if (manager == null) {
+                return Result.error(CodeMsg.USER_NOTEXIST);
+            } else {
+                String random = RandomStringUtils.randomAlphanumeric(8);
+                String from = "953625619@qq.com";
+                String to = manager.getEmail();
+                String subject = "浩说：你正在找回你的密码！";
+                String content = "<html>\n" +
+                        "<body>\n" +
+                        "<BR>\n" +
+                        "<div align='center'>\n" +
+                        " <h3>恭喜您，邮箱验证成功！</h3>\n" +
+                        "    <h3>您的验证码为：<b>\"" + random + "\"</b></h3>" +
+                        "<BR>\n" +
+                        "</div>\n" +
+                        "</body>\n" +
+                        "</html>";
                 mailService.sendHtmlMail(from, to, subject, content);
-                result = "yes";
-            } catch (MessagingException e) {
-                result = "no";
+                return Result.success(random);
             }
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("result", result);
-        map.put("random", random);
-        map.put("email", email);
-        return map;
+        catch (MessagingException e){
+            logger.error("[发送邮件异常]", e);
+            return Result.error(CodeMsg.SEND_EMAIL_ERROR);
+        }catch (Exception e){
+            logger.error("[管理员获取验证码异常]", e);
+            return Result.error(CodeMsg.GET_RANDOM_ERROR);
+        }
     }
 
     /**
@@ -294,45 +304,53 @@ public class ForeCheckController {
      * @return
      */
     @PostMapping(value = "/foreManagerPass")
-    public String setManagerPass(@RequestBody JSONObject object) {
-        String random = object.get("random").toString();
-        String key = object.get("key").toString();
-        String pass = object.get("pass").toString();
-        String email = object.get("email").toString();
-        if (key.equals(random)) {
-            Manager manager = managerService.getByEmail(email);
-            Map<String, Object> map = EncodeUtil.encode(pass);
-            manager.setSalt(map.get("salt").toString());
-            manager.setPassword(map.get("pass").toString());
-            managerService.update(manager);
-            return "ok";
+    public Result setManagerPass(@RequestBody JSONObject object) {
+        try {
+            String random = object.get("random").toString();
+            String key = object.get("key").toString();
+            String pass = object.get("pass").toString();
+            String email = object.get("email").toString();
+            if (key.equals(random)) {
+                Manager manager = managerService.getByEmail(email);
+                Map<String, Object> map = EncodeUtil.encode(pass);
+                manager.setSalt(map.get("salt").toString());
+                manager.setPassword(map.get("pass").toString());
+                managerService.update(manager);
+                logger.info("[管理员重置密码成功] uid:{}", manager.getId());
+                return Result.success(CodeMsg.MODIFY_PASSWORD_SUCCESS);
+            }
+            return Result.error(CodeMsg.VALIDATE_RANDOM_ERROR);
+        }catch (Exception e){
+            logger.error("[管理员重置密码异常]", e);
+            return Result.error(CodeMsg.MODIFY_PASSWORD_ERROR);
         }
-        return "no";
     }
 
     /**
      * 用户注册
      * @param user
-     * @param request
      * @throws Exception
      */
     @PostMapping(value = "/foreRegister")
-    public void register(@RequestBody User user, HttpServletRequest request) throws Exception {
-        Map<String, Object> map = EncodeUtil.encode(user.getPassword());
-        // 加密明文
-        user.setPassword(map.get("pass").toString());
-        user.setSalt(map.get("salt").toString());
-        // 设置注册时间
-        user.setRegisterDate(new Date());
-        // 用户头像
-        File imageFolder = new File("image/profile_user");
-        String files[] = imageFolder.list();
-        int num = files.length - 1;
-        int imgId = (int) (Math.random() * num) + 1;
-        String folder = "/image/profile_user/" + imgId + ".jpg";
-        user.setImg(folder);
-        // 初始积分
-        user.setScore(10);
-        userService.add(user);
+    public Result register(@RequestBody User user) {
+        try {
+            Map<String, Object> map = EncodeUtil.encode(user.getPassword());
+            // 加密明文
+            user.setPassword(map.get("pass").toString());
+            user.setSalt(map.get("salt").toString());
+            // 设置注册时间
+            user.setRegisterDate(new Date());
+            // 用户头像
+            String folder = userService.getImgPath();
+            user.setImg(folder);
+            // 初始积分
+            user.setScore(10);
+            userService.add(user);
+            logger.info("[用户注册成功] uid:{}", user.getId());
+            return Result.success(CodeMsg.REGISTER_SUCCESS);
+        }catch (Exception e){
+            logger.error("[用户注册失败]", e);
+            return Result.success(CodeMsg.REGISTER_ERROR);
+        }
     }
 }

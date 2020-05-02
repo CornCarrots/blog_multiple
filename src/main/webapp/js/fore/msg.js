@@ -126,27 +126,32 @@ $(function () {
                     var url = getPath() + memberVue.uri+"/check/" + id;
                     axios.post(url,{status:status,type:type}).then(
                         function (value) {
-                            $.alert(
-                                {
-                                    title: '恭喜你!',
-                                    content: '标记成功',
-                                    theme:'modern',
-                                    icon: 'fa fa-smile-o',
-                                    buttons: {
-                                        ok: {
-                                            action: function () {
-                                                if (type == 1){
-                                                    memberVue.list(memberVue.start);
-                                                }
-                                                else if (type == 2){
-                                                    memberVue.list(memberVue.start_msg);
-                                                }
+                            if (value.code == '500305') {
+                                $.alert(
+                                    {
+                                        title: '恭喜你!',
+                                        content: '标记成功',
+                                        theme:'modern',
+                                        icon: 'fa fa-smile-o',
+                                        buttons: {
+                                            ok: {
+                                                action: function () {
+                                                    if (type == 1){
+                                                        memberVue.list(memberVue.start);
+                                                    }
+                                                    else if (type == 2){
+                                                        memberVue.list(memberVue.start_msg);
+                                                    }
 
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            );
+                                );
+                            }else {
+                                $.alert("抱歉!" + value.msg);
+                            }
+
                         }
                     );
                 }

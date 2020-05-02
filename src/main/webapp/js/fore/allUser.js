@@ -34,38 +34,42 @@ $(function () {
                     var url = getPath() + this.uri + "?uid="+ uid +"&start_following=" + this.start_following + "&start_fellow=" + this.start_fellow +"&timeStamp=" + new Date().getTime();
                     axios.get(url).then(
                         function (value) {
-                            console.log(value.data)
-                            if(value.data.pages_following.content.length>0)
-                            {
-                                memberVue.pages_following = value.data.pages_following;
-                                memberVue.followings = value.data.pages_following.content;
-                                $(".back_message_list_table1").show();
-                                $(".notfound_list1").hide();
-                                $(".pageDiv1").show();
+                            if (value.code == '0') {
+                                if(value.data.pages_following.content.length>0)
+                                {
+                                    memberVue.pages_following = value.data.pages_following;
+                                    memberVue.followings = value.data.pages_following.content;
+                                    $(".back_message_list_table1").show();
+                                    $(".notfound_list1").hide();
+                                    $(".pageDiv1").show();
 
-                            }
-                            else
-                            {
-                                $(".back_message_list_table1").hide();
-                                $(".notfound_list1").show();
-                                $(".pageDiv1").hide();
-                            }
-                            if(value.data.pages_fellow.content.length>0)
-                            {
-                                memberVue.pages_fellow = value.data.pages_fellow;
-                                memberVue.fellows = value.data.pages_fellow.content;
-                                $(".back_message_list_table2").show();
-                                $(".notfound_list2").hide();
-                                $(".pageDiv2").show();
+                                }
+                                else
+                                {
+                                    $(".back_message_list_table1").hide();
+                                    $(".notfound_list1").show();
+                                    $(".pageDiv1").hide();
+                                }
+                                if(value.data.pages_fellow.content.length>0)
+                                {
+                                    memberVue.pages_fellow = value.data.pages_fellow;
+                                    memberVue.fellows = value.data.pages_fellow.content;
+                                    $(".back_message_list_table2").show();
+                                    $(".notfound_list2").hide();
+                                    $(".pageDiv2").show();
 
+                                }
+                                else
+                                {
+                                    $(".back_message_list_table2").hide();
+                                    $(".notfound_list2").show();
+                                    $(".pageDiv2").hide();
+                                }
+                                memberVue.has = value.data.has;
                             }
-                            else
-                            {
-                                $(".back_message_list_table2").hide();
-                                $(".notfound_list2").show();
-                                $(".pageDiv2").hide();
+                            else {
+                                $.alert("抱歉!" + value.msg);
                             }
-                            memberVue.has = value.data.has;
                         }
                     );
                 },

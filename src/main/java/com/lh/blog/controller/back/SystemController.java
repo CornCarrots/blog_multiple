@@ -35,7 +35,6 @@ public class SystemController {
         List<Log> logs = page.getContent();
         if(logs.size()!=0)
             logService.fillLog(logs);
-        page.setContent(logs);
         return page;
     }
 

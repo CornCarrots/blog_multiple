@@ -24,6 +24,7 @@ public class CodeMsg implements Serializable {
     public static CodeMsg UPDATE_FAIL = new CodeMsg(500104, "更新 %s 失败");
     public static CodeMsg GET_FAIL = new CodeMsg(500104, "查找 %s 失败");
     public static CodeMsg MODULE_FAIL = new CodeMsg(500105, " %s 模块出现异常");
+    public static CodeMsg PIC_UPLOAD_ERROR = new CodeMsg(500106, "%s图片上传异常");
 
     /**
      * 文章模块 5002XX
@@ -41,13 +42,24 @@ public class CodeMsg implements Serializable {
     public static CodeMsg UNLIKE_COMMENT_SUCCESS = new CodeMsg(500211, "取消点赞评论成功");
     public static CodeMsg LIKE_COMMENT_ERROR = new CodeMsg(500212, "点赞评论失败");
     public static CodeMsg UNLIKE_COMMENT_ERROR = new CodeMsg(500213, "取消点赞评论失败");
+    public static CodeMsg ARTICLE_PUBLISH_ERROR = new CodeMsg(500214, "创建文章失败");
+    public static CodeMsg ARTICLE_PUBLISH_SUCCESS = new CodeMsg(500215, "创建文章成功");
+    public static CodeMsg ARTICLE_DELETE_SUCCESS = new CodeMsg(500216, "删除文章成功");
+    public static CodeMsg ARTICLE_DELETE_ERROR = new CodeMsg(500217, "删除文章失败");
+    public static CodeMsg ARTICLE_UPDATE_SUCCESS = new CodeMsg(500218, "更新文章成功");
+    public static CodeMsg ARTICLE_UPDATE_ERROR = new CodeMsg(500219, "更新文章失败");
+    public static CodeMsg CHICKEN_ERROR = new CodeMsg(500220, "赞赏失败");
+    public static CodeMsg CHICKEN_SUCCESS = new CodeMsg(500221, "赞赏成功");
+
 
     /**
      * 信息模块 5003XX
      */
-    public static CodeMsg SEND_SUCCESS = new CodeMsg(500301, "发送信息成功");
-    public static CodeMsg SEND_ERROR = new CodeMsg(500302, "发送信息失败");
-
+    public static CodeMsg SEND_MESSAGE_SUCCESS = new CodeMsg(500301, "发送信息成功");
+    public static CodeMsg SEND_MESSAGE_ERROR = new CodeMsg(500302, "发送信息失败");
+    public static CodeMsg SEND_EMAIL_ERROR = new CodeMsg(500303, "发送邮件失败");
+    public static CodeMsg CHECK_MSG_ERROR = new CodeMsg(500304, "私信审核失败");
+    public static CodeMsg CHECK_MSG_SUCCESS = new CodeMsg(500305, "私信审核成功");
     /**
      * 用户模块 5004XX
      */
@@ -61,7 +73,16 @@ public class CodeMsg implements Serializable {
     public static CodeMsg ADD_INTERESTTAG_ERROR = new CodeMsg(500409, "添加感兴趣标签失败");
     public static CodeMsg DELETE_INTERESTTAG_ERROR = new CodeMsg(500410, "删除感兴趣标签失败");
     public static CodeMsg APPLY_AUTHORIZED_SUCCESS = new CodeMsg(500411, "申请认证成功");
-    public static CodeMsg APPLY_AUTHORIZED_EOORO = new CodeMsg(500412, "申请认证失败");
+    public static CodeMsg APPLY_AUTHORIZED_ERROR = new CodeMsg(500412, "申请认证失败");
+    public static CodeMsg GET_RANDOM_ERROR = new CodeMsg(500413, "获取验证码失败");
+    public static CodeMsg MODIFY_PASSWORD_ERROR = new CodeMsg(500414, "重置密码失败");
+    public static CodeMsg MODIFY_PASSWORD_SUCCESS = new CodeMsg(500415, "重置密码成功");
+    public static CodeMsg VALIDATE_RANDOM_ERROR = new CodeMsg(500416, "校验验证码失败");
+    public static CodeMsg GET_RANDOM_SUCCESS = new CodeMsg(500417, "获取验证码成功");
+    public static CodeMsg REGISTER_SUCCESS = new CodeMsg(500418, "用户注册成功");
+    public static CodeMsg REGISTER_ERROR = new CodeMsg(500419, "用户注册失败");
+    public static CodeMsg MODIFY_USER_SUCCESS = new CodeMsg(500420, "更改用户成功");
+    public static CodeMsg MODIFY_USER_ERROR = new CodeMsg(500421, "更改用户失败");
 
     /**
      * 权限模块 5005XX
@@ -80,32 +101,37 @@ public class CodeMsg implements Serializable {
     public static CodeMsg LOGIN_MANAGER_SUCCESS = new CodeMsg(500512, "管理员登录成功");
     public static CodeMsg MANAGER_NOTEXIST = new CodeMsg(500513, "管理员不存在");
 
-    public static CodeMsg SESSION_ERROR = new CodeMsg(500201, "Session不存在或者已经失效，请返回登录！");
-    public static CodeMsg PASSWORD_EMPTY = new CodeMsg(500202, "登录密码不能为空");
-    public static CodeMsg MOBILE_EMPTY = new CodeMsg(500203, "手机号不能为空");
-    public static CodeMsg MOBILE_ERROR = new CodeMsg(500204, "手机号格式错误");
-    public static CodeMsg MOBILE_NOT_EXIST = new CodeMsg(500205, "手机号不存在");
-    public static CodeMsg USER_EXIST = new CodeMsg(500207, "用户已经存在，无需重复注册");
-    public static CodeMsg REGISTER_SUCCESS = new CodeMsg(500208, "注册成功");
-    public static CodeMsg REGISTER_FAIL = new CodeMsg(500209, "注册异常");
-    public static CodeMsg FILL_REGISTER_INFO = new CodeMsg(500210, "请填写注册信息");
-    public static CodeMsg WAIT_REGISTER_DONE = new CodeMsg(500211, "等待注册完成");
-
-    public static CodeMsg PRODUCT_NOT_EXIST = new CodeMsg(500300, "商品不存在");
-    public static CodeMsg PRODUCT_EMPTY = new CodeMsg(500301, "商品列表为空");
-    public static CodeMsg SECKILL_PRODUCT_EMPTY = new CodeMsg(500301, "秒杀商品列表为空");
-    //订单模块 5004XX
-    public static CodeMsg ORDER_NOT_EXIST = new CodeMsg(500400, "订单不存在");
-    public static CodeMsg ORDERITEM_NOT_EXIST = new CodeMsg(500401, "订单项不存在");
+    /**
+     * 其他模块 5006XX
+     */
+    public static CodeMsg DELETE_HISTORY_ERROR = new CodeMsg(500601, "历史记录删除失败");
+    public static CodeMsg DELETE_HISTORY_SUCCESS = new CodeMsg(500602, "历史记录删除成功");
+    public static CodeMsg DELETE_START_ERROR = new CodeMsg(500603, "收藏删除失败");
+    public static CodeMsg DELETE_START_SUCCESS = new CodeMsg(500604, "收藏删除成功");
 
     /**
-     * 秒杀模块 5005XX
+     * 标签模块 5007XX
      */
-    public static CodeMsg SECKILL_OVER = new CodeMsg(500500, "商品库存不足");
-    public static CodeMsg REPEATE_SECKILL = new CodeMsg(500501, "不能重复秒杀");
-    public static CodeMsg SECKILL_FAIL = new CodeMsg(500502, "秒杀失败");
-    public static CodeMsg SECKILL_PARM_ILLEGAL = new CodeMsg(500503, "秒杀请求参数异常：%s");
-    public static CodeMsg SECKILL_SUCCESS = new CodeMsg(500504, "秒杀成功");
+    public static CodeMsg TAG_ADD_ERROR = new CodeMsg(500701, "为文章添加标签失败");
+    public static CodeMsg TAG_SEARCH_ERROR = new CodeMsg(500702, "搜索标签失败");
+    public static CodeMsg TAG_INSERT_ERROR = new CodeMsg(500703, "自定义标签失败");
+    public static CodeMsg TAG_INSERT_SYM = new CodeMsg(500704, "存在同义词语:%s");
+    public static CodeMsg TAG_INSERT_OVER = new CodeMsg(500705, "自定义标签不能超过%s个");
+    public static CodeMsg TAG_INSERT_SUCCESS = new CodeMsg(500706, "自定义标签成功");
+    public static CodeMsg TAG_DELETE_SUCCESS = new CodeMsg(500707, "删除标签成功");
+    public static CodeMsg TAG_DELETE_ERROR = new CodeMsg(500708, "删除标签异常");
+
+    /**
+     * 分类模块 5008XX
+     */
+    public static CodeMsg CATE_GET_ERROR = new CodeMsg(500801, "获取分类失败");
+    public static CodeMsg CATE_INSERT_OVER = new CodeMsg(500802, "自定义分类不能超过%s个");
+    public static CodeMsg CATE_INSERT_SUCCESS = new CodeMsg(500803, "自定义分类成功");
+    public static CodeMsg CATE_INSERT_ERROR = new CodeMsg(500804, "自定义分类失败");
+    public static CodeMsg CATE_DELETE_ERROR = new CodeMsg(500805, "删除分类失败");
+    public static CodeMsg CATE_DELETE_SUCCESS = new CodeMsg(500806, "删除分类成功");
+    public static CodeMsg CATE_UPDATE_ERROR = new CodeMsg(500807, "更新分类失败");
+    public static CodeMsg CATE_UPDATE_SUCCESS = new CodeMsg(500808, "更新分类成功");
 
     public CodeMsg(int code, String msg) {
         this.code = code;

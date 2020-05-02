@@ -44,7 +44,6 @@ $(
                         })
                     },
                     forgetButton: function () {
-                        var random;
                         $.confirm({
                                 title: '请稍后',
                                 content: '<div class="ball"></div>\n' +
@@ -58,7 +57,7 @@ $(
                                         text: '确定',
                                         btnClass: 'btn-blue',
                                         action: function () {
-                                            return changePass(loginVue, random);
+                                            return changePass(loginVue);
                                         }
                                     },
                                     '取消': function () {
@@ -71,7 +70,7 @@ $(
                                     self.buttons['取消'].hide();
                                 },
                                 onContentReady: function () {
-                                    random = getRandom(this, loginVue);
+                                    getRandom(this, loginVue);
                                 }
                             }
                         );

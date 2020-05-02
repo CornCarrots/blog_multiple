@@ -34,7 +34,7 @@ $(function () {
                     var id = getUrlParms('uid');
                     if (id == undefined)
                         id = 0;
-                    var url = getPath() + this.uri + "?uid=" + id + "&timeStamp=" + new Date().getDate();
+                    var url = getPath() + this.uri + "?timeStamp=" + new Date().getDate();
                     axios.get(url).then(
                         function (value) {
                             userVue.user = value.data.user;
@@ -79,7 +79,7 @@ $(function () {
                         return false;  //验证没有使用ajax验证的控件(不是ajax验证的字段是可以正常验证的, 不通过就返回)
                     var url = getPath() + this.uri + "/" + userVue.user.id + "?timeStamp=" + new Date().getDate();
                     axios.put(url, userVue.user).then(function (value) {
-                        if (value.data == 'ok') {
+                        if (value.code == '500420') {
                             $.dialog({
                                 title: '恭喜您!',
                                 content: '修改成功啦',
@@ -88,7 +88,7 @@ $(function () {
                             });
                         }
                         else {
-                            $.alert("系统错误，请重试");
+                            $.alert("抱歉!" + value.msg);
                         }
                     });
                 },
@@ -109,7 +109,7 @@ $(function () {
                     axios.post(url, {num:this.image}).then(
                         function (value) {
                             $("#addMessageModel").modal("hide");
-                            if (value.data == 'ok') {
+                            if (value.code == '500420') {
                                 $.dialog({
                                     title: '恭喜您!',
                                     content: '修改成功啦',
@@ -122,7 +122,7 @@ $(function () {
                                 });
                             }
                             else {
-                                $.alert("系统错误，请重试");
+                                $.alert("抱歉!" + value.msg);
                             }
                         }
                     );
