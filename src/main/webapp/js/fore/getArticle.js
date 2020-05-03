@@ -90,7 +90,9 @@ $(
                         var url = getPath() + articles.uri + "/" + aid;
                         axios.get(url).then(
                             function (value) {
-                                console.log(value)
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 articles.categories = value.data.categories;
                                 articles.article = value.data.article;
                                 Vue.nextTick(function () {
@@ -144,6 +146,9 @@ $(
                         var url = getPath() + "/user/writing/tag?start=" + start + "&tid=" + tidArr;
                         axios.get(url).then(
                             function (value) {
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 articleVue.all = value.data.all;
                                 if (value.data.page.content.length > 0) {
                                     articleVue.pages = value.data.page;
@@ -271,6 +276,9 @@ $(
                         var url = getPath() + articleVue.uri_tag + "/search/?key=" + key + "&start=" + start;
                         axios.post(url).then(
                             function (value) {
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 $(".pageDiv2").hide();
                                 var likes = value.data.likes;
                                 var finds = value.data.tags.content;
@@ -358,6 +366,9 @@ $(
                                 var url = getPath() + "/user/writing/tag?tid=" + tidArr;
                                 axios.get(url).then(
                                     function (value) {
+                                        if (value.code != '0') {
+                                            location.href = getPath() + "/error";
+                                        }
                                         articleVue.all = value.data.all;
                                     });
                             }

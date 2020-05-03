@@ -2,10 +2,7 @@ package com.lh.blog.realm;
 import com.lh.blog.bean.Manager;
 import com.lh.blog.bean.RolePermission;
 import com.lh.blog.bean.User;
-import com.lh.blog.service.ManagerService;
-import com.lh.blog.service.RolePermissionService;
-import com.lh.blog.service.RoleService;
-import com.lh.blog.service.UserService;
+import com.lh.blog.service.*;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -44,9 +41,9 @@ public class DatabaseRealm extends AuthorizingRealm {
     @Autowired
     @Lazy
     RolePermissionService rolePermissionService;
-    @Override
 
     // 初始化权限
+    @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         String name = (String) principalCollection.getPrimaryPrincipal();
         //通过DAO获取角色和权限

@@ -34,6 +34,7 @@ $(
                     var url = getPath()+this.uri+"/tree";
                     axios.post(url).then(
                         function (value) {
+                            console.log(value)
                             var t = value.data;
                             checkableTree = $("#treeview-checkable").treeview({
                                 data: t,
@@ -139,14 +140,14 @@ $(
                             url +="/"+oid;
                             axios.delete(url);
                         }
-                        $.alert(
-                            {
-                                title: '恭喜你!',
-                                content: '修改权限成功',
-                                theme:'modern',
-                                icon: 'fa fa-smile-o'
-                            }
-                        );
+                        // $.alert(
+                        //     {
+                        //         title: '恭喜你!',
+                        //         content: '修改权限成功',
+                        //         theme:'modern',
+                        //         icon: 'fa fa-smile-o'
+                        //     }
+                        // );
                     }
                 }
             }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="fore/include/header::html('零号商城')"></head>
+<head th:include="fore/include/header::html('浩说博客')"></head>
 <link rel="stylesheet" th:href="@{/css/exception/404.css}">
 <body>
 <div class="main">
@@ -9,9 +9,9 @@
     </div>
     <div class="w3-main">
         <div class="agile-info">
-            <h2>抱歉!</h2>
-            <h3>没有权限</h3>
-            <p>您没有权限访问此页面</p>
+            <h2 style="color: #fa5555">403</h2>
+            <h3 style="color: #fa5555">没有权限</h3>
+            <p style="color: #fa5555">您没有权限访问此页面</p>
             <a th:href="@{/admin}"><i class="fa fa-angle-double-left" aria-hidden="true"></i>返回首页</a>
         </div>
     </div>

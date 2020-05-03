@@ -3,6 +3,8 @@ package com.lh.blog.controller.back;
 import com.lh.blog.bean.*;
 import com.lh.blog.service.*;
 import com.lh.blog.util.TreeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,8 @@ import java.util.Map;
 
 @RestController
 public class PermissionController {
+
+    private Logger logger = LoggerFactory.getLogger(PermissionController.class);
     @Autowired
     PermissionService permissionService;
     @Autowired
@@ -35,6 +39,7 @@ public class PermissionController {
         roleService.fill(role);
         List<Map<String, Object>> modules = moduleService.listForTree(role);
         List<Map<String, Object>> resultList = TreeUtil.treeViewDataTransform2(modules);
+        logger.info("[构建角色树] 成功 rid:{}, {}条信息", rid, resultList.size());
         return resultList;
     }
 
@@ -44,6 +49,7 @@ public class PermissionController {
         roleService.fill(role);
         Module module = moduleService.get(mid);
         moduleService.fill(module,role.getPermissions());
+        logger.info("[获取操作] 成功 rid:{}, mid:{}", rid, mid);
         return module.getOperations();
     }
 
@@ -64,12 +70,14 @@ public class PermissionController {
         rolePermission.setRid(rid);
         System.out.println(rolePermission);
         rolePermissionService.add(rolePermission);
+        logger.info("[新增权限成功] pid:{}, rid:{}, rpid:{}, oid:{}, mid:{}", pid, rid, rolePermission.getId(), permission.getOid(),permission.getMid());
     }
 
     @DeleteMapping(value = "/admin/roles/{rid}/permissions/{mid}/{oid}")
     public void deletePermission(@PathVariable("rid")int rid,@PathVariable("oid")int oid,@PathVariable("mid")int mid){
         Permission permission1 = permissionService.get(oid,mid);
         rolePermissionService.delete(rid,permission1.getId());
+        logger.info("[删除权限成功] rid:{}, pid:{}, oid:{}, mid", rid, permission1.getId(), oid, mid);
     }
 
 }

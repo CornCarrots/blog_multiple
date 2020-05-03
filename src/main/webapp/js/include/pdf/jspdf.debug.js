@@ -4173,7 +4173,7 @@
         return this.text(text, x, y, {
           charSpace: charSpace
         });
-      }; // PDF supports these path painting and clip path operators:
+      }; // PDF supports these path painting and clip path OperatorEnums:
       //
       // S - stroke
       // s - close/stroke
@@ -4187,7 +4187,7 @@
       // W - clip nonzero
       // W* - clip evenodd
       //
-      // In order to keep the API small, we omit the close-and-fill/stroke operators and provide a separate close()
+      // In order to keep the API small, we omit the close-and-fill/stroke OperatorEnums and provide a separate close()
       // method.
 
       /**
@@ -4242,7 +4242,7 @@
       };
       /**
        * Consumes the current path without any effect. Mainly used in combination with {@link clip} or
-       * {@link clipEvenOdd}. The PDF "n" operator.
+       * {@link clipEvenOdd}. The PDF "n" OperatorEnum.
        * @name discardPath
        * @function
        * @instance
@@ -4267,16 +4267,16 @@
         return result;
       };
 
-      API.__private__.setDefaultPathOperation = API.setDefaultPathOperation = function (operator) {
-        if (isValidStyle(operator)) {
-          defaultPathOperation = operator;
+      API.__private__.setDefaultPathOperation = API.setDefaultPathOperation = function (OperatorEnum) {
+        if (isValidStyle(OperatorEnum)) {
+          defaultPathOperation = OperatorEnum;
         }
 
         return this;
       };
 
       var getStyle = API.__private__.getStyle = API.getStyle = function (style) {
-        // see path-painting operators in PDF spec
+        // see path-painting OperatorEnums in PDF spec
         var op = defaultPathOperation; // stroke
 
         switch (style) {
@@ -4301,7 +4301,7 @@
           case "B":
           case "B*":
             /*
-                 Allow direct use of these PDF path-painting operators:
+                 Allow direct use of these PDF path-painting OperatorEnums:
                  - f    fill using nonzero winding number rule
                  - f*    fill using even-odd rule
                  - B    fill then stroke with fill using non-zero winding number rule
@@ -4314,7 +4314,7 @@
         return op;
       };
       /**
-       * Close the current path. The PDF "h" operator.
+       * Close the current path. The PDF "h" OperatorEnum.
        * @name close
        * @function
        * @instance
@@ -4328,7 +4328,7 @@
         return this;
       };
       /**
-       * Stroke the path. The PDF "S" operator.
+       * Stroke the path. The PDF "S" OperatorEnum.
        * @name stroke
        * @function
        * @instance
@@ -4343,7 +4343,7 @@
       };
       /**
        * Fill the current path using the nonzero winding number rule. If a pattern is provided, the path will be filled
-       * with this pattern, otherwise with the current fill color. Equivalent to the PDF "f" operator.
+       * with this pattern, otherwise with the current fill color. Equivalent to the PDF "f" OperatorEnum.
        * @name fill
        * @function
        * @instance
@@ -4358,7 +4358,7 @@
         return this;
       };
       /**
-       * Fill the current path using the even-odd rule. The PDF f* operator.
+       * Fill the current path using the even-odd rule. The PDF f* OperatorEnum.
        * @see API.fill
        * @name fillEvenOdd
        * @function
@@ -4374,7 +4374,7 @@
         return this;
       };
       /**
-       * Fill using the nonzero winding number rule and then stroke the current Path. The PDF "B" operator.
+       * Fill using the nonzero winding number rule and then stroke the current Path. The PDF "B" OperatorEnum.
        * @see API.fill
        * @name fillStroke
        * @function
@@ -4390,7 +4390,7 @@
         return this;
       };
       /**
-       * Fill using the even-odd rule and then stroke the current Path. The PDF "B" operator.
+       * Fill using the even-odd rule and then stroke the current Path. The PDF "B" OperatorEnum.
        * @see API.fill
        * @name fillStrokeEvenOdd
        * @function
@@ -4508,7 +4508,7 @@
         }
       };
       /**
-       * Begin a new subpath by moving the current point to coordinates (x, y). The PDF "m" operator.
+       * Begin a new subpath by moving the current point to coordinates (x, y). The PDF "m" OperatorEnum.
        * @param {number} x
        * @param {number} y
        * @name moveTo
@@ -4524,7 +4524,7 @@
         return this;
       };
       /**
-       * Append a straight line segment from the current point to the point (x, y). The PDF "l" operator.
+       * Append a straight line segment from the current point to the point (x, y). The PDF "l" OperatorEnum.
        * @param {number} x
        * @param {number} y
        * @memberof jsPDF#
@@ -4699,7 +4699,7 @@
       };
       /**
        * Similar to {@link API.lines} but all coordinates are interpreted as absolute coordinates instead of relative.
-       * @param {Array<Object>} lines An array of {op: operator, c: coordinates} object, where op is one of "m" (move to), "l" (line to)
+       * @param {Array<Object>} lines An array of {op: OperatorEnum, c: coordinates} object, where op is one of "m" (move to), "l" (line to)
        * "c" (cubic bezier curve) and "h" (close (sub)path)). c is an array of coordinates. "m" and "l" expect two, "c"
        * six and "h" an empty array (or undefined).
        * @param {String=} style  The style. Deprecated!
@@ -19245,7 +19245,7 @@
 
 
       function FileReader() {
-        if (!(this instanceof FileReader)) { throw new TypeError("Failed to construct 'FileReader': Please use the 'new' operator, this DOM object constructor cannot be called as a function."); }
+        if (!(this instanceof FileReader)) { throw new TypeError("Failed to construct 'FileReader': Please use the 'new' OperatorEnum, this DOM object constructor cannot be called as a function."); }
         var delegate = document.createDocumentFragment();
         this.addEventListener = delegate.addEventListener;
 

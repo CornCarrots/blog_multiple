@@ -17,6 +17,9 @@ $(
                         var url = getPath() + this.uri + "?start="+start+"&timeStamp=" + new Date().getTime();
                         axios.get(url).then(
                             function (value) {
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 noticeVue.pages = value.data;
                                 noticeVue.notices = value.data.content;
                             }

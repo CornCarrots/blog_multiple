@@ -17,14 +17,14 @@
                                 <td>模块名称</td>
                                 <td>
                                     <input style="width: 220px;" type="text" placeholder="请输入模块名称" v-model="module.name"
-                                           class="form-control validate[required,maxSize[10]]">
+                                           class="form-control validate[required]">
                                 </td>
                             </tr>
                             <tr>
                                 <td>父节点<span class="alarm">*</span></td>
                                 <td>
                                     <div class="dropdown bootstrap-select">
-                                        <select class="selectpicker validate[required]" id="addSelect" data-style="btn-success"
+                                        <select class="selectpicker validate[required]" id="editSelect" data-style="btn-success"
                                                 tabindex="-98" v-model="module.pid"></select>
                                     </div>
                                 </td>

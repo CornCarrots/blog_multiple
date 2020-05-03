@@ -8,6 +8,7 @@ package com.lh.blog.run;/**
 
 import com.lh.blog.bean.Tag;
 import com.lh.blog.es.CiLin;
+import com.lh.blog.filter.URLHelper;
 import com.lh.blog.service.TagService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ public class Runner implements ApplicationRunner {
     public void run(ApplicationArguments applicationArguments) throws IOException {
         try {
             CiLin.initWords();
+            URLHelper.init();
         } catch (IOException e) {
             logger.error("init fail!");
             throw e;

@@ -74,7 +74,9 @@ $(function () {
                     var url = getPath() + this.uri + "?start_commnet=" + this.start_comment + "&start_tag=" + this.start_tag + "&uid=" + id + "&timeStamp=" + new Date().getTime();
                     axios.get(url).then(
                         function (value) {
-                            console.log(value)
+                            if (value.code != '0') {
+                                location.href = getPath() + "/error";
+                            }
                             if (value.data.comments.content.length > 0) {
                                 memberVue.pages = value.data.comments;
                                 memberVue.comments = value.data.comments.content;
@@ -411,6 +413,9 @@ $(function () {
                     var url = getPath() + memberVue.uri_tag + "/search/?key=" + key + "&start=" + start;
                     axios.post(url).then(
                         function (value) {
+                            if (value.code != '0') {
+                                location.href = getPath() + "/error";
+                            }
                             $(".pageDiv2").hide();
                             var likes = value.data.likes;
                             var finds = value.data.tags.content;

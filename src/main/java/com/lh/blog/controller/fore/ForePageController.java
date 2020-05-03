@@ -13,7 +13,7 @@ public class ForePageController {
         return "exception/unauthorized";
     }
 
-    @GetMapping(value = "/error")
+    @GetMapping(value = "/404")
     public String error() {
         return "exception/404";
     }

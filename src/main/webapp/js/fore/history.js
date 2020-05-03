@@ -17,7 +17,9 @@ $(
                         var url = getPath() + this.uri + "?start=" + start;
                         axios.get(url).then(
                             function (value) {
-                                console.log(value)
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 if(value.data.content.length>0)
                                 {
                                     operationVue.pages = value.data;

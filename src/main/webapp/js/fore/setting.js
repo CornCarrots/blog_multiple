@@ -31,12 +31,15 @@ $(function () {
             },
             methods: {
                 get: function () {
-                    var id = getUrlParms('uid');
-                    if (id == undefined)
-                        id = 0;
+                    // var id = getUrlParms('uid');
+                    // if (id == undefined)
+                    //     id = 0;
                     var url = getPath() + this.uri + "?timeStamp=" + new Date().getDate();
                     axios.get(url).then(
                         function (value) {
+                            if (value.code != '0') {
+                                location.href = getPath() + "/error";
+                            }
                             userVue.user = value.data.user;
                             var operation = new Array();
                             for (var i = 0; i < value.data.num; i++) {
@@ -99,7 +102,7 @@ $(function () {
                     $("#addMessageModel").modal("show");
                 },
                 select: function (i) {
-                    console.log(i)
+                    // console.log(i)
                     this.image = i;
                     $(".successImg").hide();
                     $("#successImg" + i).show();
@@ -130,33 +133,6 @@ $(function () {
                 closeButton: function () {
                     this.image = 0;
                 }
-                // upload: function (e) {
-                //     this.image = e.target.files[0];
-                //     if (this.image == null)
-                //         return;
-                //     var formData = new FormData();
-                //     formData.append("image", this.image);
-                //     var url = getPath() + this.uri + "?timeStamp=" + new Date().getDate();
-                //     axios.post(url, formData).then(
-                //         function (value) {
-                //             if (value.data == 'ok') {
-                //                 $.dialog({
-                //                     title: '恭喜您!',
-                //                     content: '修改成功啦',
-                //                     theme: 'modern',
-                //                     icon: 'fa fa-smile-o',
-                //                     onDestroy: function () {
-                //                         // before the modal is hidden.
-                //                         location.reload();
-                //                     }
-                //                 });
-                //             }
-                //             else {
-                //                 $.alert("系统错误，请重试");
-                //             }
-                //         }
-                //     );
-                // }
             }
         }
     );

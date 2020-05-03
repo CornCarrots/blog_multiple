@@ -34,6 +34,9 @@ $(
                         var url = getPath() + this.uri + "?start=" + start + "&uid=" + this.uid + "&cid=" + this.cid + "&key=" + this.key + "&timeStamp=" + new Date().getTime();
                         axios.get(url).then(
                             function (value) {
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 if (value.data.pages.content.length > 0) {
                                     articleVue.pages = value.data.pages;
                                     articleVue.articles = value.data.pages.content;

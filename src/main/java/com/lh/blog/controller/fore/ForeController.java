@@ -1,5 +1,6 @@
 package com.lh.blog.controller.fore;
 
+import com.lh.blog.annotation.Check;
 import com.lh.blog.bean.*;
 import com.lh.blog.service.*;
 import com.lh.blog.util.*;
@@ -52,8 +53,7 @@ public class ForeController {
             // 获取5篇首页文章
             PageUtil<Article> pages = articleService.listForShow(start, size, 5, 0);
             List<Article> articles = pages.getContent();
-            articleService.fillCategory(articles);
-            articleService.fillUser(articles);
+            articleService.fillArticle(articles);
             map.put("pages", pages);
             return Result.success(map);
         }catch (Exception e){
@@ -72,14 +72,14 @@ public class ForeController {
      * @return
      */
     @GetMapping(value = "/foreSearch")
+    @Check(params = {"key"})
     public Result search(@RequestParam("key") String key, @RequestParam(value = "order", defaultValue = "id") String order, @RequestParam(value = "sort", defaultValue = "false") Boolean sort, @RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "size", defaultValue = "5") int size) {
         try {
             Map<String, Object> map = new HashMap<>();
             // 搜索文章
             PageUtil<Article> pages = articleService.listByKey(key, start, size, 5, order, sort);
             List<Article> articles = pages.getContent();
-            articleService.fillCategory(articles);
-            articleService.fillUser(articles);
+            articleService.fillArticle(articles);
             map.put("pages", pages);
             map.put("key", key);
             return Result.success(map);
@@ -98,7 +98,12 @@ public class ForeController {
      * @return
      */
     @GetMapping(value = "/foreCategory/{cid}")
-    public Result category(@PathVariable("cid") int cid, @RequestParam(value = "order") String order, @RequestParam(value = "sort") Boolean sort, @RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "size", defaultValue = "5") int size) {
+    @Check(params = {"cid"})
+    public Result category(@PathVariable("cid") int cid,
+                           @RequestParam(value = "order", defaultValue = "id") String order,
+                           @RequestParam(value = "sort", defaultValue = "false") Boolean sort,
+                           @RequestParam(value = "start", defaultValue = "0") int start,
+                           @RequestParam(value = "size", defaultValue = "5") int size) {
         try {
             Map<String, Object> map = new HashMap<>();
             // 分类信息
@@ -107,9 +112,7 @@ public class ForeController {
             // 通过分类获取文章
             PageUtil<Article> pages = articleService.listByCategory(cid, start, size, 5, order, sort);
             List<Article> articles = pages.getContent();
-            articleService.fillCategory(articles);
-            articleService.fillUser(articles);
-            pages.setContent(articles);
+            articleService.fillArticle(articles);
             map.put("pages", pages);
             map.put("category", category);
             return Result.success(map);
@@ -171,8 +174,7 @@ public class ForeController {
             // 通过标签获取文章
             PageUtil<Article> pages = articleService.listByTag(tid, start, size, 5, order, sort);
             List<Article> articles = pages.getContent();
-            articleService.fillCategory(articles);
-            articleService.fillUser(articles);
+            articleService.fillArticle(articles);
             map.put("pages", pages);
             map.put("tag", tag);
             return Result.success(map);
@@ -229,9 +231,7 @@ public class ForeController {
             Map<String, Object> map = new HashMap<>();
             PageUtil<Article> pages = articleService.listByTags(user.getId(), start, size, 5, order, sort);
             List<Article> articles = pages.getContent();
-            articleService.fillCategory(articles);
-            articleService.fillUser(articles);
-            pages.setContent(articles);
+            articleService.fillArticle(articles);
             map.put("pages", pages);
             return Result.success(map);
         }catch (Exception e){
@@ -259,8 +259,7 @@ public class ForeController {
             Map<String, Object> map = new HashMap<>();
             PageUtil<Article> pages = articleService.listByUser(user.getId(), true, start, size, 5, order, sort);
             List<Article> articles = pages.getContent();
-            articleService.fillCategory(articles);
-            articleService.fillUser(articles);
+            articleService.fillArticle(articles);
             map.put("pages", pages);
             return Result.success(map);
         }catch (Exception e){

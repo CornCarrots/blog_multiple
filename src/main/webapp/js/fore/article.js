@@ -56,7 +56,9 @@ $(
                         var url = getPath() + this.uri + "/" + id + "?start=" + start + "&timeStamp=" + new Date().getTime();
                         axios.get(url).then(
                             function (value) {
-                                console.log(value);
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 helpVue.has = value.data.has;
                                 helpVue.article = value.data.article;
                                 helpVue.pages = value.data.pages;
@@ -470,24 +472,6 @@ $(
                     upButton:function () {
 
                     }
-
-                    // go: function (s) {
-                    //     if (s == 'pre') {
-                    //         if (helpVue.page1 == -1)
-                    //             return;
-                    //         var param = window.btoa("aid=" + helpVue.page1 + "&timeStamp=" + new Date().getTime());
-                    //         var url = getPath() + "/article?" + param;
-                    //         location.href = url;
-                    //     }
-                    //     else {
-                    //
-                    //          if (helpVue.page2 == -1)
-                    //             return;
-                    //         var param = window.btoa("aid=" + helpVue.page2 + "&timeStamp=" + new Date().getTime());
-                    //         var url = getPath() + "/article?" + param;
-                    //         location.href = url;
-                    //     }
-                    // },
                 }
             });
     }

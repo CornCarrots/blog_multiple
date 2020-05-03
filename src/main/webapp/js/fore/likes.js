@@ -19,7 +19,9 @@ $(function () {
                     var url = getPath() + this.uri + "?start=" + start+"&order="+this.order+"&sort="+count;
                     axios.get(url).then(
                         function (value) {
-
+                            if (value.code != '0') {
+                                location.href = getPath() + "/error";
+                            }
                             if(value.data.pages.content.length>0)
                             {
                                 homeVue.pages = value.data.pages;

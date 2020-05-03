@@ -136,7 +136,8 @@ public class PermissionService {
             // 祖先模块，加上斜杠
             boolean isParent = moduleService.hasChild(module);
             if (isParent) {
-                url = module.getUrl() + (module.getPid() == 0 ? "/" : "");
+                url = module.getUrl();
+                url += module.getPid() == 0 ? "/" : "";
             } else {
                 url = moduleService.getChildURL(module.getUrl());
             }

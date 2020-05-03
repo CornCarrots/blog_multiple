@@ -70,10 +70,10 @@ public class CiLin {
 					sym_class_words.add(strings);
 				}
 			}
-			logger.info("[init words] success!");
+			logger.info("[初始化词林] 成功! 同义词:{},近义词:{}", sym_words.size(), sym_class_words.size());
 			inFile.close();
 		} catch (IOException e) {
-			logger.error("[init words] fail!", e);
+			logger.error("[初始化词林] 失败!", e);
 			throw e;
 		}
 	}

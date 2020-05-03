@@ -7,6 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
@@ -14,6 +15,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @ServletComponentScan
 @EnableCaching
 @EnableRedisHttpSession
+@EnableAspectJAutoProxy(proxyTargetClass=true)
 //@EnableJpaRepositories(basePackages = {"com.lh.blog.dao", "com.lh.blog.bean"})
 public class BlogApplication extends SpringBootServletInitializer {
     static {

@@ -7,32 +7,37 @@ import com.lh.blog.service.LogService;
 import com.lh.blog.service.ModuleService;
 import com.lh.blog.service.OperationService;
 import com.lh.blog.util.SpringContextUtils;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import org.springframework.context.annotation.Configuration;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Auther: linhao
  * @Date: 2020/04/30/18:09
  * @Description:
  */
+
+@Aspect
+@Configuration
 public aspect LogAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
-    public pointcut AddLog(): @annotation(com.lh.blog.annotation);
 
-    void before(): AddLog(){
+    @Pointcut("@annotation(com.lh.blog.annotation.MethodLog)")
+    public void webLog(){}
+
+    @Before("webLog()")
+    public void addLog(JoinPoint joinpoint){
         ModuleService moduleService = SpringContextUtils.getBean(ModuleService.class);
         OperationService operationService = SpringContextUtils.getBean(OperationService.class);
         LogService logService = SpringContextUtils.getBean(LogService.class);
-        Object[] args = thisJoinPoint.getArgs();
+        Object[] args = joinpoint.getArgs();
 //        MethodSignature methodSignature = (MethodSignature) thisJoinPoint.getSignature();
 //        String[] parameterNames = methodSignature.getParameterNames();
         // 获取管理员

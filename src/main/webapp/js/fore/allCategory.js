@@ -21,7 +21,9 @@ $(
                         var url = getPath() + this.uri + "?start=" + start;
                         axios.get(url).then(
                             function (value) {
-                                console.log(value)
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 if (value.data.page.content.length > 0) {
                                     operationVue.pages = value.data.page;
                                     operationVue.categories = value.data.page.content;
@@ -118,6 +120,9 @@ $(
                         var url = getPath() + operationVue.uri + "/search/?key=" + key;
                         axios.post(url).then(
                             function (value) {
+                                if (value.code != '0') {
+                                    location.href = getPath() + "/error";
+                                }
                                 $(".pageDiv").hide();
                                 if (value.data.length > 0) {
                                     operationVue.categories = value.data;
@@ -217,6 +222,9 @@ $(
                     editCategory: function (id) {
                         var url = getPath() + this.uri + "/" + id;
                         axios.get(url).then(function (value) {
+                            if (value.code != '0') {
+                                location.href = getPath() + "/error";
+                            }
                             operationVue.category = value.data;
                             Vue.nextTick(
                                 function () {

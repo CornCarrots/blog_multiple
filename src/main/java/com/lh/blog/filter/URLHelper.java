@@ -20,7 +20,7 @@ public class URLHelper {
 
     private static List<String> urls;
 
-    private static void init(){
+    public static void init(){
         urls = new ArrayList<>();
         try {
             ModuleService moduleService = SpringContextUtils.getBean(ModuleService.class);

@@ -99,7 +99,8 @@ public class RolePermissionService {
 
     @Caching(evict = {
             @CacheEvict(value = "permissions", allEntries = true),
-            @CacheEvict(cacheNames = "rolePermissions", allEntries = true)
+            @CacheEvict(value = "modules", allEntries = true),
+            @CacheEvict(value = "rolePermissions", allEntries = true)
     })
     public void add(RolePermission rolePermission)
     {
@@ -108,7 +109,8 @@ public class RolePermissionService {
 
     @Caching(evict = {
             @CacheEvict(value = "permissions", allEntries = true),
-            @CacheEvict(cacheNames = "rolePermissions", allEntries = true)
+            @CacheEvict(value = "modules", allEntries = true),
+            @CacheEvict(value = "rolePermissions", allEntries = true)
     })
     public void delete(int id)
     {
@@ -117,7 +119,8 @@ public class RolePermissionService {
 
     @Caching(evict = {
             @CacheEvict(value = "permissions", allEntries = true),
-            @CacheEvict(cacheNames = "rolePermissions", allEntries = true)
+            @CacheEvict(value = "modules", allEntries = true),
+            @CacheEvict(value = "rolePermissions", allEntries = true)
     })
     public void delete(int rid,int pid) {
         RolePermission rolePermission = get(rid,pid);
@@ -126,6 +129,7 @@ public class RolePermissionService {
 
     @Caching(evict = {
             @CacheEvict(value = "permissions", allEntries = true),
+            @CacheEvict(value = "modules", allEntries = true),
             @CacheEvict(cacheNames = "rolePermissions", allEntries = true)
     })
     public void deleteByRole(int rid) {
@@ -139,6 +143,7 @@ public class RolePermissionService {
 
     @Caching(evict = {
             @CacheEvict(value = "permissions", allEntries = true),
+            @CacheEvict(value = "modules", allEntries = true),
             @CacheEvict(cacheNames = "rolePermissions", allEntries = true)
     })
     public void update(RolePermission rolePermission)

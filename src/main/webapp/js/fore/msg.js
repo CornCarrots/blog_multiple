@@ -35,15 +35,9 @@ $(function () {
                     var url = getPath() + this.uri + "?start=" + start + "&timeStamp=" + new Date().getTime();
                     axios.get(url).then(
                         function (value) {
-                            console.log(value.data)
-                            // memberVue.map = value.data.msgs;
-                            // console.log(memberVue.map)
-                            // for(var key in memberVue.map){
-                            //     console.log("属性：" + key + ",值：" + memberVue.map[key]);
-                            //     console.log(key.nickName)
-                            // }
-
-
+                            if (value.code != '0') {
+                                location.href = getPath() + "/error";
+                            }
                             // var arr
                             if(value.data.comments.content.length>0)
                             {

@@ -14,11 +14,14 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+
 public class URLPathMatchingFilter extends HttpMethodPermissionFilter {
 
     private static Logger logger = LoggerFactory.getLogger(URLPathMatchingFilter.class);
 
     @Autowired
+    @Lazy
     PermissionService permissionService;
 
     @Override
@@ -54,8 +57,11 @@ public class URLPathMatchingFilter extends HttpMethodPermissionFilter {
             // 看看有没有权限,有则放行
             Manager manager = (Manager) subject.getSession().getAttribute("manager");
             // 进行优化，直接用管理员id就可以，
-            // 不要再通过名字，节省SQL查询的开销 776ms -> 710ms -> 2ms
+            // 不要再通过名字，节省SQL查询的开销 776ms -> 710ms -> 680ms - > 574
+            long start = System.currentTimeMillis();
             boolean hasPermission = permissionService.hasPermission(manager.getId(), requestURI, requestMethod);
+            long end = System.currentTimeMillis();
+            logger.info("时间 {}", (end - start));
 //            boolean hasPermission = permissionService.hasPermission(manager.getId(), requestURI, requestMethod);
             if (hasPermission) {
                 logger.info("[校验权限] uri:{} method:{} manager:{}, success", requestURI, requestMethod, manager.getId());
