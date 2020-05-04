@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RoleDAO extends JpaRepository<Role,Integer> {
-    public List<Role> findAllByNameContaining(String key, Sort sort);
+    public List<Role> findAllByNameLike(String key, Sort sort);
 
 }

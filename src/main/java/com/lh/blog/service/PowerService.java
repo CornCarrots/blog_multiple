@@ -58,6 +58,6 @@ public class PowerService {
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Power> listByMemberAndKey(int mid,String key) {
-        return dao.findAllByMidAndAndTitleContaining(mid,key,sort);
+        return dao.findAllByMidAndAndTitleLike(mid,"%"+key+"%",sort);
     }
 }

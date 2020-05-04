@@ -30,7 +30,7 @@ public interface CommentsDAO extends JpaRepository<Comments,Integer> {
             ,nativeQuery=true)
     int countByUser(@Param("uid")int uid);
 
-    public List<Comments> findAllByTextContaining(String name, Sort sort);
+    public List<Comments> findAllByTextLike(String name, Sort sort);
     public List<Comments> findAllByStatus(int status,Sort sort);
     public List<Comments> findAllByPid(int pid,Sort sort);
     public List<Comments> findAllByStatusIn(List<Integer> status,Sort sort);

@@ -1,20 +1,15 @@
 package com.lh.blog.controller.back;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.lh.blog.annotation.MethodLog;
 import com.lh.blog.bean.Article;
-import com.lh.blog.bean.Category;
 import com.lh.blog.bean.Tag;
 import com.lh.blog.bean.User;
-import com.lh.blog.dao.ArticleDAO;
 import com.lh.blog.service.ArticleService;
 import com.lh.blog.service.CategoryService;
 import com.lh.blog.service.TagArticleService;
 import com.lh.blog.service.TagService;
 import com.lh.blog.util.CalendarRandomUtil;
-import com.lh.blog.util.FtpUtil;
 import com.lh.blog.util.ImageUtil;
 import com.lh.blog.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,44 +120,5 @@ public class ArticleController {
         articleService.fillCategory(articles);
         return articles;
     }
-
-    @PostMapping(value = "/admin/articles/image")
-    public Map<String, Object>  upload(MultipartFile image, HttpServletRequest request)throws Exception
-    {
-        Map<String, Object> msg = new HashMap<>();
-        if(image!=null)
-        {
-            // 当前日期作为文件夹名
-            Date date = new Date();
-            String path=new SimpleDateFormat("yyyy/MM/dd/").format(date);
-            // 使用随机数生成文件名
-            String now = CalendarRandomUtil.getRandom();
-            String name = now+".jpg";
-            File imageFolder= new File(request.getServletContext().getRealPath("image/article/"+path));
-            File file = new File(imageFolder,now+".jpg");
-            String newFileName = request.getContextPath()+"/image/article/"+file.getName();
-            //如果不存在,创建文件夹
-            if(!file.getParentFile().exists())
-                file.getParentFile().mkdirs();
-            image.transferTo(file);
-            BufferedImage img = ImageUtil.change2jpg(file);
-            ImageIO.write(img, "jpg", file);
-            msg.put("error", 0);
-            msg.put("url", "/blog/image/article/"+path+name);
-            //            File f = new File(path);
-//            if(!f.exists()){
-//                f.mkdirs();
-//            }
-            //            FtpUtil ftpUtil = new FtpUtil();
-//            ftpUtil.uploadFile(name,image.getInputStream(),"/home/ftpuser/blog/image/article/"+path);
-        }
-        else {
-            msg.put("error", 1);
-            msg.put("message", "上传失败！");
-        }
-
-        return msg;
-    }
-
 
 }

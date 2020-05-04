@@ -1,5 +1,6 @@
 package com.lh.blog.controller.fore;
 
+import com.lh.blog.annotation.AddScore;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.LikeDAO;
 import com.lh.blog.dao.OptionDAO;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -127,14 +129,16 @@ public class ForeArticleController {
      * 发表评论
      **/
     @PostMapping(value = "/foreCommitComment")
-    public Result commit(@RequestBody Comments comments, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    @AddScore
+    public Result commit(@RequestBody Comments comments,@RequestParam("uid") int uid, HttpSession session) {
+        User user = userService.get(uid);
         try {
             // 当前评论时间
             comments.setCreateDate(new Date());
             // 处理用户逻辑，根据业务规则，评论的用户加积分
             user.setScore(user.getScore() + 2);
             userService.update(user);
+            session.setAttribute("user", userService.get(user.getId()));
             logger.info("[评论文章] 处理用户:{} 逻辑", user.getId());
 
             // 再处理评论，进行持久化
@@ -275,11 +279,18 @@ public class ForeArticleController {
         }
     }
 
+    /**
+     * 赞赏用户
+     * @param uid
+     * @return
+     */
     @PostMapping(value = "/addChicken/{uid}")
-    public Result addChicken(@PathVariable("uid") int uid) {
+    @AddScore
+    public Result addChicken(@PathVariable("uid") int uid, HttpSession session) {
         try {
             User user = userService.get(uid);
-            user.setScore(user.getScore() + 10);
+            user.setScore(user.getScore() + 5);
+            userService.update(user);
             logger.info("[赞赏] 用户:{} 成功", uid);
             return Result.success(CodeMsg.CHICKEN_SUCCESS);
         }catch (Exception e){

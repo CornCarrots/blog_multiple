@@ -44,7 +44,7 @@ public class RoleService {
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Role> listByKey(String key) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        return roleDAO.findAllByNameContaining(key,sort);
+        return roleDAO.findAllByNameLike("%"+key+"%",sort);
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")

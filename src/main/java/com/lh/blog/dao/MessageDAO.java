@@ -11,5 +11,5 @@ import java.util.List;
 public interface MessageDAO extends JpaRepository<Message,Integer> {
     public static String type_complaint = "type_complaint";
     public static String type_suggestion = "type_suggestion";
-    public List<Message> findAllByTextContaining(String name, Sort sort);
+    public List<Message> findAllByTextLike(String name, Sort sort);
 }

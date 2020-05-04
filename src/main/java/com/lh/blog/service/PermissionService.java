@@ -1,14 +1,11 @@
 package com.lh.blog.service;
 
-import cn.hutool.core.util.StrUtil;
-import com.lh.blog.annotation.MethodLog;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.PermissionDAO;
 import com.lh.blog.filter.URLHelper;
 import com.lh.blog.util.PageUtil;
 import com.lh.blog.util.RestPageImpl;
 import com.lh.blog.util.SpringContextUtils;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -35,6 +31,8 @@ public class PermissionService {
     OperationService operationService;
     @Autowired
     RolePermissionService rolePermissionService;
+    @Autowired
+    LogService logService;
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Permission> list() {
@@ -161,14 +159,14 @@ public class PermissionService {
      * @param method 操作
      * @return
      */
-    @Cacheable(keyGenerator = "wiselyKeyGenerator")
-    @MethodLog
+//    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public boolean hasPermission(int mid, String url, String method) {
 //         方案一：获取所有权限，用字符串一一比对
         PermissionService permissionService = SpringContextUtils.getBean(PermissionService.class);
         // 获取权限
         List<Permission> permissions = rolePermissionService.listPermissionByManager(mid);
         HashMap<String, List<Operation>> map = permissionService.formatPermission(permissions);
+        addLog(mid, url, method);
         // 优化代码，去除无关逻辑，直接判断
         for (String key : map.keySet()) {
             // 找到资源
@@ -182,5 +180,21 @@ public class PermissionService {
             }
         }
         return false;
+    }
+    private void addLog(int mid, String url, String fun){
+        // 获取资源
+        url = url.substring(url.lastIndexOf("/"));
+        Module module = moduleService.getByURL(url).get(0);
+
+        // 获取操作
+        Operation operation = operationService.getByName(fun);
+
+        // 添加日志
+        Log log = new Log();
+        log.setMid(mid);
+        log.setCreateDate(new Date());
+        log.setText(operation.getDesc() + " " + module.getDesc());
+        logService.add(log);
+
     }
 }

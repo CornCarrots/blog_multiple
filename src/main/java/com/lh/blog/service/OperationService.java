@@ -31,7 +31,7 @@ public class OperationService {
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Operation> listByKey(String key) {
-        return operationDAO.findAllByNameContaining(key,sort);
+        return operationDAO.findAllByNameLike("%"+key+"%",sort);
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")

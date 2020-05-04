@@ -52,9 +52,11 @@ $(
                                     $(".back_article_list_table").hide();
                                     $(".pageDiv").hide();
                                     if (value.data.issearch) {
+                                        $(".notfound_list").hide();
                                         $(".notfound_list2").show();
 
                                     } else {
+                                        $(".notfound_list2").hide();
                                         $(".notfound_list").show();
                                     }
                                 }
@@ -63,6 +65,10 @@ $(
 
                             }
                         )
+                    },getAllUser:function(){
+                        var param = window.btoa("uid=" + this.uid + "&timeStamp=" + new Date().getTime());
+                        var url = getPath() + "/allUser?" + param;
+                        return url;
                     },
                     getCategoryButton: function (id) {
                         this.cid = id;

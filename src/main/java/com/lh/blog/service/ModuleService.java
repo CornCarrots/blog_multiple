@@ -125,7 +125,7 @@ public class ModuleService {
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Module> listByKey(String key)
     {
-        return moduleDAO.findAllByNameContaining(key,sort);
+        return moduleDAO.findAllByNameLike("%"+key+"%",sort);
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")

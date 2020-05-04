@@ -6,12 +6,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 全局异常处理器
@@ -32,7 +36,7 @@ public class GlobalExceptionHandler {
      * @return 向客户端返回的结果（这里为json数据）
      */
     @ExceptionHandler(value = Exception.class)
-    public Result<String> defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+    public Result defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         logger.error("出现异常", e);
         // 如果所拦截的异常是自定义的全局异常，按自定义异常的处理方式处理，否则按默认方式处理
         if (e instanceof GlobalException) {
@@ -41,7 +45,24 @@ public class GlobalExceptionHandler {
             // 向客户端返回异常信息
             return Result.error(exception.getCodeMsg());
 
-        } else if (e instanceof BindException) {
+        }else if (e instanceof MethodArgumentNotValidException){
+            // 同样是获取BindingResult对象，然后获取其中的错误信息
+            // 如果前面开启了fail_fast，事实上这里只会有一个信息
+            //如果没有，则可能又多个
+            List<String> errorInformation = ((MethodArgumentNotValidException)e).getBindingResult().getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return Result.error(CodeMsg.BIND_ERROR.fillArgs("", errorInformation.toString()));
+        }
+        else if (e instanceof ConstraintViolationException){
+            List<String> errorInformation = ((ConstraintViolationException)e).getConstraintViolations()
+                    .stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.toList());
+            return Result.error(CodeMsg.BIND_ERROR.fillArgs("", errorInformation.toString()));
+        }
+        else if (e instanceof BindException) {
             BindException bindException = (BindException) e;
             List<ObjectError> errors = bindException.getAllErrors();
             // 这里只获取了第一个错误对象

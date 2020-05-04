@@ -135,6 +135,11 @@ axios.interceptors.response.use(
 //搜索
 function search() {
     var key =$("#keyword").val();
+    if (key.length == 0)
+    {
+        $.alert("输入框不能为空");
+        return false;
+    }
     key = encodeURI(key);
     var param = "key="+key+"&timeStamp="+new Date().getTime();
     var url = window.btoa(param);
@@ -456,13 +461,24 @@ function jumpByNumber(start,vue){
         vue.list(start);
 }
 function replace_em(str){
-    str = str.replace(/\</g,'&lt;');
-    str = str.replace(/\>/g,'&gt;');
+    // str = str.replace(/\</g,'&lt;');
+    // str = str.replace(/\>/g,'&gt;');
     str = str.replace(/\n/g,'<br/>');
     str = str.replace(/\[qq_([0-9]*)\]/g,"<img src="+getPath()+"/image/emoji/qq/$1.gif>");
     str = str.replace(/\[emoji_([0-9]*)\]/g,"<img src="+getPath()+"/image/emoji/emoji/$1.png>");
     str = str.replace(/\[tieba_([0-9]*)\]/g,"<img src="+getPath()+"/image/emoji/tieba/$1.jpg>");
     return str;
+}
+
+function format_em(str){
+    // str = str.replace(/\</g,'&lt;');
+    // str = str.replace(/\>/g,'&gt;');
+    var res = str;
+    res = res.replace(/\n/g,'');
+    res = res.replace(/\[qq_([0-9]*)\]/g,"1");
+    res = res.replace(/\[emoji_([0-9]*)\]/g,"1");
+    res = res.replace(/\[tieba_([0-9]*)\]/g,"1");
+    return res;
 }
 
 var controlId = new Array();  //保存验证不通过的控件ID

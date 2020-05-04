@@ -4,12 +4,19 @@ import com.lh.blog.annotation.Check;
 import com.lh.blog.bean.*;
 import com.lh.blog.service.*;
 import com.lh.blog.util.*;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
@@ -72,7 +79,6 @@ public class ForeController {
      * @return
      */
     @GetMapping(value = "/foreSearch")
-    @Check(params = {"key"})
     public Result search(@RequestParam("key") String key, @RequestParam(value = "order", defaultValue = "id") String order, @RequestParam(value = "sort", defaultValue = "false") Boolean sort, @RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "size", defaultValue = "5") int size) {
         try {
             Map<String, Object> map = new HashMap<>();
@@ -98,7 +104,6 @@ public class ForeController {
      * @return
      */
     @GetMapping(value = "/foreCategory/{cid}")
-    @Check(params = {"cid"})
     public Result category(@PathVariable("cid") int cid,
                            @RequestParam(value = "order", defaultValue = "id") String order,
                            @RequestParam(value = "sort", defaultValue = "false") Boolean sort,
@@ -199,7 +204,7 @@ public class ForeController {
      * @throws Exception
      */
     @PostMapping(value = "/foreMessage")
-    public Result addMessage(@RequestBody Message message, HttpSession session) {
+    public Result addMessage(@RequestBody @Valid Message message, HttpSession session) {
         User user = (User) session.getAttribute("user");
         try {
             message.setCreateDate(new Date());

@@ -18,7 +18,7 @@
                 <li role="presentation" v-if="!has"><a href="#no" @click="back()">返回</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/setting}">个人资料</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/publish}">发表博客</a></li>
-                <li role="presentation"><a th:href="@{/allArticle}">所有博客</a></li>
+                <li role="presentation"><a :href="getAllArticle()">所有博客</a></li>
                 <li role="presentation" class="active"><a>圈子</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/allCategory}">管理分类</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/allTag}">管理标签</a></li>

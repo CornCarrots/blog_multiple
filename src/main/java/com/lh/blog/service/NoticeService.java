@@ -58,7 +58,7 @@ public class NoticeService {
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Notice> listByKey(String key){
-        return dao.findAllByTitleContaining(key,sort);
+        return dao.findAllByTitleLike("%"+key+"%",sort);
     }
 
 

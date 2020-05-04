@@ -21,7 +21,6 @@ public class URLPathMatchingFilter extends HttpMethodPermissionFilter {
     private static Logger logger = LoggerFactory.getLogger(URLPathMatchingFilter.class);
 
     @Autowired
-    @Lazy
     PermissionService permissionService;
 
     @Override
@@ -58,11 +57,7 @@ public class URLPathMatchingFilter extends HttpMethodPermissionFilter {
             Manager manager = (Manager) subject.getSession().getAttribute("manager");
             // 进行优化，直接用管理员id就可以，
             // 不要再通过名字，节省SQL查询的开销 776ms -> 710ms -> 680ms - > 574
-            long start = System.currentTimeMillis();
             boolean hasPermission = permissionService.hasPermission(manager.getId(), requestURI, requestMethod);
-            long end = System.currentTimeMillis();
-            logger.info("时间 {}", (end - start));
-//            boolean hasPermission = permissionService.hasPermission(manager.getId(), requestURI, requestMethod);
             if (hasPermission) {
                 logger.info("[校验权限] uri:{} method:{} manager:{}, success", requestURI, requestMethod, manager.getId());
                 return true;

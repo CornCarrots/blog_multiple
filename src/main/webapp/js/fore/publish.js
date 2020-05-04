@@ -20,7 +20,7 @@ $(
                 'insertunorderedlist', '|', 'emoticons', 'image', 'link'
             ],
             filePostName: "image",
-            uploadJson: getPath() + "/admin/articles/image",
+            uploadJson: getPath() + "/user/writing/image",
             dir: "image",
             afterUpload: function (value) {//图片上传后，将上传内容同步到textarea中
                 this.sync();
@@ -382,7 +382,7 @@ $(
                         var url = getPath() + articleVue.uri_tag;
                         axios.post(url, {tag:articleVue.tag,isadd:articleVue.isadd}).then(
                             function (value) {
-                                if (value.data.code == '500704') {
+                                if (value.code == '500704') {
                                     $.alert(
                                         {
                                             title: '抱歉!',
@@ -431,6 +431,10 @@ $(
                                     );
                                 }
                                 else if (value.code == '500706') {
+                                    $.alert({
+                                        title: '恭喜!',
+                                        content: '添加成功'
+                                    });
                                     articleVue.isadd = "no";
                                     articleVue.tag={id:0,name:'',status:0,count:0};
                                     articleVue.search(articleVue.start_search);

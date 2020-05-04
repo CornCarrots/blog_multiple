@@ -5,7 +5,9 @@ import com.lh.blog.bean.Tag;
 import com.lh.blog.dao.OptionDAO;
 import com.lh.blog.service.OptionService;
 import com.lh.blog.service.TagService;
+import com.lh.blog.util.CodeMsg;
 import com.lh.blog.util.PageUtil;
+import com.lh.blog.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,9 @@ public class TagController {
     {
         int count = Integer.parseInt(optionService.getByKey(OptionDAO.TAG_COUNT));
         tag.setCount(count);
+        if (tagService.getByName(tag.getName()) != null) {
+            return;
+        }
         tagService.add(tag);
     }
 

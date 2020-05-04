@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ManagerDAO extends JpaRepository<Manager,Integer> {
 
-    public List<Manager> findAllByNameContaining(String key, Sort sort);
+    public List<Manager> findAllByNameLike(String key, Sort sort);
 
     public List<Manager> findAllByName(String name, Sort sort);
 

@@ -62,7 +62,7 @@ public class MessageService {
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Message> listByKey(String key)
     {
-        return dao.findAllByTextContaining(key,sort);
+        return dao.findAllByTextLike("%"+key+"%",sort);
     }
 
     public void fillUser(Message message){

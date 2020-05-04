@@ -78,7 +78,7 @@ $(function () {
                         alertinfo(0);
                         return false;
                     }
-                    if (!$("#registerForm").validationEngine("validate"))
+                    if (!$("#modifyForm ").validationEngine("validate"))
                         return false;  //验证没有使用ajax验证的控件(不是ajax验证的字段是可以正常验证的, 不通过就返回)
                     var url = getPath() + this.uri + "/" + userVue.user.id + "?timeStamp=" + new Date().getDate();
                     axios.put(url, userVue.user).then(function (value) {

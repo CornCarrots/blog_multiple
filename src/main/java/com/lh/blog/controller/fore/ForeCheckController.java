@@ -16,6 +16,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.hibernate.validator.constraints.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
@@ -110,7 +112,7 @@ public class ForeCheckController {
      * @throws Exception
      */
     @PostMapping(value = "/foreLoginUser")
-    public Result loginUser(@RequestBody User user, HttpServletRequest request) {
+    public Result loginUser(@RequestBody @Valid User user, HttpServletRequest request) {
         try {
             String name = user.getName();
             User trueUser = userService.get(name);
@@ -191,7 +193,7 @@ public class ForeCheckController {
      * @return
      */
     @GetMapping(value = "/forgetUser")
-    public Result forgetUser(@RequestParam("email") String email) {
+    public Result forgetUser(@RequestParam("email") @Email String email) {
         try {
             // 用户不存在
             User user = userService.getByEmail(email);
@@ -265,7 +267,7 @@ public class ForeCheckController {
      * @return
      */
     @GetMapping(value = "/forgetManager")
-    public Result forgetManager(@RequestParam("email") String email) {
+    public Result forgetManager(@RequestParam("email") @Email String email) {
         try {
             Manager manager = managerService.getByEmail(email);
             if (manager == null) {
@@ -332,7 +334,7 @@ public class ForeCheckController {
      * @throws Exception
      */
     @PostMapping(value = "/foreRegister")
-    public Result register(@RequestBody User user) {
+    public Result register(@RequestBody @Valid User user, HttpServletRequest request) {
         try {
             Map<String, Object> map = EncodeUtil.encode(user.getPassword());
             // 加密明文
@@ -341,7 +343,8 @@ public class ForeCheckController {
             // 设置注册时间
             user.setRegisterDate(new Date());
             // 用户头像
-            String folder = userService.getImgPath();
+            String path = request.getServletContext().getRealPath("image/profile_user");
+            String folder = userService.getImgPath(path);
             user.setImg(folder);
             // 初始积分
             user.setScore(10);

@@ -79,7 +79,17 @@ $(
                                 Vue.nextTick(function () {
                                     setTimeout(
                                         function () {
-                                            $("#mycontent").emoji(option);
+                                            var url = getPath() + "/foreLoginCheck" + "?timeStamp=" + new Date().getTime();
+                                            $.ajax({
+                                                type:"GET",
+                                                url:url,
+                                                async:false,
+                                                success:function (value) {
+                                                    if (value.code == '500505') {
+                                                        $("#mycontent").emoji(option);
+                                                    }
+                                                }
+                                            });
                                         }, 500);
                                 });
                             }
@@ -244,20 +254,26 @@ $(
                         var login = checkLogin();
                         if (!login)
                             return;
-                        helpVue.comment.text = $("#mycontent").val();
-                        helpVue.comment.text = replace_em(helpVue.comment.text);
-                        if (helpVue.comment.text.length == 0) {
+                        helpVue.comment.text = $("#mycontent").val().trim();
+                        var temp = format_em(helpVue.comment.text);
+
+                        if (temp.length == 0) {
                             $.alert("评论内容不可为空!");
                             return;
                         }
+                        if (temp.length > 200) {
+                            $.alert("评论内容字数超过200!");
+                            return;
+                        }
+                        helpVue.comment.text = replace_em(helpVue.comment.text);
                         helpVue.comment.pid = $(e.target).attr("pid");
                         helpVue.comment.aid = helpVue.article.id;
-                        var url = getPath() + "/foreCommitComment" + "?timeStamp=" + new Date().getTime();
+                        var url = getPath() + "/foreCommitComment" + "?uid="+ helpVue.user.id +"&timeStamp=" + new Date().getTime();
                         axios.post(url, helpVue.comment).then(
                             function (value) {
                                 helpVue.comment = {id: 0, text: '', createDate: null, status: 0, pid: 0, uid: 0, aid: 0, like: 0};
                                 $("#mycontent").val("");
-                                if (value.code == 0) {
+                                if (value.code == '0') {
                                     $.alert(
                                         {
                                             title: '恭喜你!',
@@ -317,7 +333,7 @@ $(
                             return;
                         }
                         helpVue.addComment.text = replace_em(helpVue.addComment.text);
-                        var url = getPath() + "/foreCommitComment" + "?timeStamp=" + new Date().getTime();
+                        var url = getPath() + "/foreCommitComment" + "?uid="+ helpVue.user.id +"&timeStamp=" + new Date().getTime();
                         axios.post(url, helpVue.addComment).then(
                             function (value) {
                                 helpVue.addComment = {
@@ -330,7 +346,7 @@ $(
                                     aid: 0,
                                     like: 0
                                 };
-                                if (value.status == 0) {
+                                if (value.code == 0) {
                                     $.alert(
                                         {
                                             title: '恭喜你!',

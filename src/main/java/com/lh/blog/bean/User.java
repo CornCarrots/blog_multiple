@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -18,10 +22,16 @@ public class User implements Serializable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotNull
+    @Pattern(regexp = "^[0-9a-zA-Z]+")
+    @Size(max = 10, min = 6)
     private String name;
 
+    @Pattern(regexp = "^[0-9a-zA-Z]+$")
+    @Size(max = 10, min = 1)
     private String nickName;
 
+    @NotNull
     private String password;
 
     private String salt;

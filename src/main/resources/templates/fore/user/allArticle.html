@@ -62,7 +62,7 @@
                 <td v-if="has">{{art.createDate | formatDateFilter}}</td>
                 <td v-if="has">{{art.updateDate | formatDateFilter}}</td>
                 <td><span class="label"
-                          :class="art.status==0?'label-success':'label-danger'">{{art.type|typeFilter}}</span></td>
+                          :class="art.type=='TYPE_PUBLISH'?'label-success':'label-warning'">{{art.type|typeFilter}}</span></td>
                 <td v-if="has"><a :href="getButton(art.id)"><span class="fa fa-edit"></span></a></td>
                 <td v-if="has"><a href="#no" @click="deleteButton(art.id)"><span class="fa fa-trash"></span></a></td>
             </tr>
@@ -72,13 +72,13 @@
     </div>
     <div class="notfound_list">
         <div style="text-align: center">
-            <h1 style="color: #fa5555;margin: 50px auto">您还没有发表过文章呢，先四处逛逛吧！</h1>
+            <h1 style="color: #fa5555;margin: 50px auto">该分类下还没有文章，先四处逛逛吧！</h1>
             <button class="btn btn-success btn-lg" style="width: 200px" @click="getCategoryButton(0)">返回</button>
         </div>
     </div>
     <div class="notfound_list2">
         <div style="text-align: center">
-            <h1 style="color: #fa5555;margin: 50px auto">没有相关的文章，先四处逛逛吧！</h1>
+            <h1 style="color: #fa5555;margin: 50px auto">没有搜索到相关的文章，先四处逛逛吧！</h1>
             <button class="btn btn-success btn-lg" style="width: 200px" @click="getCategoryButton(0)">返回</button>
         </div>
     </div>

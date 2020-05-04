@@ -66,7 +66,7 @@ public class UserService {
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<User> listByKey(String key)
     {
-        return dao.findAllByNameContaining(key,sort);
+        return dao.findAllByNameLike("%"+key+"%",sort);
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
@@ -81,7 +81,13 @@ public class UserService {
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<User> listByKeyAndMember(String key,int mid)
     {
-        return dao.findAllByNameContainingAndMidNot(key,mid,sort);
+        return dao.findAllByNameLikeAndMidNot("%"+key+"%",mid,sort);
+    }
+
+    @Cacheable(keyGenerator = "wiselyKeyGenerator")
+    public List<User> listForShow(){
+        Sort sort = new Sort(Sort.Direction.DESC,"score");
+        return dao.findTop5ByOrderByScoreDesc();
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
@@ -125,16 +131,16 @@ public class UserService {
         return dao.findAllByIdIn(ids, sort);
     }
 
-    public String getImgPath(){
-        File imageFolder = new File("image/profile_user");
+    public String getImgPath(String path){
+        File imageFolder = new File(path);
         String[] files = imageFolder.list();
         int num = Objects.requireNonNull(files).length - 1;
         int imgId = (int) (Math.random() * num) + 1;
         return  "/image/profile_user/" + imgId + ".jpg";
     }
 
-    public int getImgNum(){
-        File imageFolder = new File("image/profile_user");
+    public int getImgNum(String path){
+        File imageFolder = new File(path);
         String[] files = imageFolder.list();
         int num = files.length - 1;
         return num;

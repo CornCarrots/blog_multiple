@@ -42,38 +42,27 @@ public class ForeInterceptor implements HandlerInterceptor {
         List<Category> categories = categoryService.listChild();
         Notice notice = noticeService.list().get(0);
         List<Article> top_articles = articleService.listByComment();
-        List<Comments> top_comments = commentsService.listForShow();
-        commentsService.fillUser(top_comments);
 
-        List<Tag> tags = tagService.list20();
+        List<User> top_users = userService.listForShow();
+        userService.fillMember(top_users);
+
+        List<Tag> tags = tagService.list15();
         context.setAttribute("options", options);
         context.setAttribute("notice", notice);
         context.setAttribute("categories", categories);
         context.setAttribute("parentCategories", parentCategories);
-        context.setAttribute("top_articles", top_articles.size()>5?top_articles.subList(0,5):top_articles);
-        context.setAttribute("top_comments", top_comments.size()>5?top_comments.subList(0,5):top_comments);
+        context.setAttribute("top_articles", top_articles);
+        context.setAttribute("top_users", top_users);
         context.setAttribute("tags", tags);
         HttpSession session = httpServletRequest.getSession();
         int msg = 0;
         User user = (User) session.getAttribute("user");
         if (user != null) {
-            List<Member> members = memberService.list();
-            for (Member member:
-                 members) {
-                if(member.getMin()<=user.getScore()&&member.getMax()>user.getScore())
-                {
-                    user.setMid(member.getId());
-                    userService.update(user);
-                    break;
-                }
-            }
             List<Msg> msgs = msgService.listByUser(user.getId());
             msg = msgs.size();
             msg+=commentsService.countForShow(user.getId());
-            if (user.getMember() == null) {
-                userService.fillMember(user);
-                session.setAttribute("user", user);
-            }
+            userService.fillMember(user);
+            session.setAttribute("user", user);
         }
         session.setAttribute("msg", msg);
         return true;

@@ -11,11 +11,12 @@ import java.util.List;
 
 //@Repository
 public interface UserDAO extends JpaRepository<User,Integer> {
-    public List<User> findAllByNameContaining(String name, Sort sort);
+    public List<User> findAllByNameLike(String name, Sort sort);
+    public List<User> findTop5ByOrderByScoreDesc();
     public User findByName(String name);
     public User findByEmail(String email);
     public Page<User> findAllByMidNot(int mid, Pageable pageable);
     public Page<User> findAllByIdIn(List<Integer> id, Pageable pageable);
     public List<User> findAllByIdIn(List<Integer> id, Sort sort);
-    public List<User> findAllByNameContainingAndMidNot(String name,int mid, Sort sort);
+    public List<User> findAllByNameLikeAndMidNot(String name,int mid, Sort sort);
 }

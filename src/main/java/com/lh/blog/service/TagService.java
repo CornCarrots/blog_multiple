@@ -1,4 +1,5 @@
 package com.lh.blog.service;
+import cn.hutool.core.collection.CollUtil;
 import com.lh.blog.bean.Tag;
 import com.lh.blog.bean.TagArticle;
 import com.lh.blog.bean.UserTag;
@@ -96,7 +97,7 @@ public class TagService {
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
-    public List<Tag> list20(){
+    public List<Tag> list15(){
         int count = Integer.parseInt(optionService.getByKey(OptionDAO.TAG_COUNT));
         return dao.findFirst15ByCountGreaterThanEqual(count,sort);
     }
@@ -131,17 +132,16 @@ public class TagService {
     }
 
     public List<Tag> listByKey(String key){
-        List<Tag> contains = dao.findAllByNameContaining(key,sort);
+        List<Tag> contains = dao.findAllByNameLike("%"+key+"%",sort);
         return contains;
     }
     public PageUtil<Tag> listByKey(int start, int size, int number, String key, List<Tag> likes){
         Pageable pageable = new PageRequest(start, size, sort);
-        List<Integer> liketag = new ArrayList<>();
-        for (Tag tag:
-             likes) {
+        List<Integer> liketag = CollUtil.toList(0);
+        for (Tag tag: likes) {
             liketag.add(tag.getId());
         }
-        Page page = dao.findAllByNameContainingAndIdNotIn(key, liketag, pageable);
+        Page page = dao.findAllByNameLikeAndIdNotIn("%"+key+"%", liketag, pageable);
         page = new RestPageImpl(page.getContent(),pageable,page.getTotalElements());
         return new PageUtil<Tag>(page, number);
     }

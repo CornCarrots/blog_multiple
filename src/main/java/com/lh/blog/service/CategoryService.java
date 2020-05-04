@@ -96,7 +96,7 @@ public class CategoryService {
     }
 
     public List<Category> listByKey(String key){
-        return dao.findAllByNameContaining(key,sort);
+        return dao.findAllByNameLike("%"+key+"%",sort);
     }
 
     public PageUtil<Category> list(int start, int size, int number) {

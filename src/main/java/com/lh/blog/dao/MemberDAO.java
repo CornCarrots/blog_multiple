@@ -9,5 +9,5 @@ import java.util.List;
 
 //@Repository
 public interface MemberDAO extends JpaRepository<Member,Integer> {
-    public List<Member> findAllByNameContaining(String name, Sort sort);
+    public List<Member> findAllByNameLike(String name, Sort sort);
 }

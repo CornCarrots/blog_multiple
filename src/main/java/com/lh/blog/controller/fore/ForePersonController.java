@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +60,7 @@ public class ForePersonController {
      * @throws Exception
      */
     @GetMapping(value = "/foreUser")
-    public Result user(HttpSession session, @RequestParam(value = "uid", defaultValue = "0") int uid, @RequestParam(value = "start_commnet", defaultValue = "0") int start_commnet, @RequestParam(value = "start_tag", defaultValue = "0") int start_tag, @RequestParam(value = "size", defaultValue = "7") int size) {
+    public Result user(HttpSession session, @RequestParam(value = "uid", defaultValue = "0") int uid, @RequestParam(value = "start_commnet", defaultValue = "0") int start_commnet, @RequestParam(value = "start_tag", defaultValue = "0") int start_tag, @RequestParam(value = "size", defaultValue = "5") int size) {
         try {
             User user;
             Map<String, Object> map = new HashMap<>();
@@ -69,10 +70,11 @@ public class ForePersonController {
             // 判断是访问自己的还是别人的
             user = (User) session.getAttribute("user");
             if (uid == 0 || (user!= null && uid == user.getId())) {
-                {
-                    ismyself = true;
-                    uid = user.getId();
+                if (uid == 0 && user == null){
+                    return Result.error(CodeMsg.USER_EMPTY);
                 }
+                ismyself = true;
+                uid = user.getId();
             }
 
             // 访问他人页面，需要处理 关注 逻辑
@@ -80,14 +82,17 @@ public class ForePersonController {
                 user = userService.get(uid);
                 userService.fillMember(user);
                 User me = (User) session.getAttribute("user");
-                if (focusService.isExites(me.getId(), uid)) {
-                    if (focusService.isExites(uid, me.getId())) {
-                        isFollow = FocusDAO.BOTH;
-                    } else {
-                        isFollow = FocusDAO.YES;
+                if (me != null){
+                    if (focusService.isExites(me.getId(), uid)) {
+                        if (focusService.isExites(uid, me.getId())) {
+                            isFollow = FocusDAO.BOTH;
+                        } else {
+                            isFollow = FocusDAO.YES;
+                        }
                     }
+                    logger.info("[访问个人页面] 处理关注逻辑,isFollow:{}", isFollow);
                 }
-                logger.info("[访问个人页面] 处理关注逻辑,isFollow:{}", isFollow);
+
             }
             logger.info("[访问个人页面] uid: {}", uid);
             map.put("isFollow", isFollow);
@@ -99,7 +104,7 @@ public class ForePersonController {
             commentsService.fillComments(comments1);
             commentsService.fillParent(comments1);
             // 处理文章逻辑
-            List<Article> articles = articleService.list5ByStatusAndUser(0, uid);
+            List<Article> articles = articleService.list5ByStatusAndUser(0, uid, ismyself);
             articleService.fillArticle(articles);
             // 处理标签逻辑
             List<Tag> tags = tagService.listByUser(uid);
@@ -177,7 +182,7 @@ public class ForePersonController {
      * @throws Exception
      */
     @PostMapping(value = "/user/msg")
-    public Result addMsg(HttpSession session, @RequestBody Msg msg) {
+    public Result addMsg(HttpSession session, @RequestBody @Valid Msg msg) {
         User user = (User) session.getAttribute("user");
         int sid = user.getId();
         try {

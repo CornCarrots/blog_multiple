@@ -3,6 +3,8 @@ package com.lh.blog.bean;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +19,11 @@ public class Category implements Serializable   {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotNull
+    @Size(max = 10)
     private String name;
 
+    @NotNull
     private int pid;
 
     private String icon;

@@ -3,6 +3,7 @@ package com.lh.blog.bean;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -20,6 +21,7 @@ public class Message  implements Serializable    {
 
     private Date createDate;
 
+    @Size(max = 200)
     private String text;
 
     private String reply;

@@ -46,7 +46,7 @@ public class ManagerService {
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Manager> listByKey(String key) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        return managerDAO.findAllByNameContaining(key,sort);
+        return managerDAO.findAllByNameLike("%"+key+"%",sort);
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")

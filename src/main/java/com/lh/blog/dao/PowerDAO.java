@@ -12,5 +12,5 @@ import java.util.List;
 //@Repository
 public interface PowerDAO extends JpaRepository<Power,Integer> {
     public Page<Power> findAllByMid(int mid, Pageable pageable);
-    public List<Power> findAllByMidAndAndTitleContaining(int mid, String title, Sort sort);
+    public List<Power> findAllByMidAndAndTitleLike(int mid, String title, Sort sort);
 }

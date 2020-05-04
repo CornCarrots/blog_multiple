@@ -20,7 +20,7 @@ $(
                 'insertunorderedlist', '|', 'emoticons', 'image', 'link'
             ],
             filePostName: "image",
-            uploadJson: getPath() + "/admin/articles/image",
+            uploadJson: getPath() + "/user/writing/image",
             dir: "image",
             afterUpload: function (value) {//图片上传后，将上传内容同步到textarea中
                 this.sync();

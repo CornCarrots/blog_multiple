@@ -15,5 +15,5 @@ public @interface Check {
     // 校验的参数名+":"+校验的规则
     String[] params();
     // 校验的参数
-    int[] indexs() default {1};
+    int index() default 0;
 }

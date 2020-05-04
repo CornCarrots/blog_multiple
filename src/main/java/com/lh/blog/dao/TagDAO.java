@@ -11,8 +11,8 @@ import java.util.List;
 //
 //@Repository
 public interface TagDAO extends JpaRepository<Tag,Integer> {
-    public List<Tag> findAllByNameContaining(String name, Sort sort);
-    public Page<Tag> findAllByNameContainingAndIdNotIn(String name, List<Integer> id, Pageable sort);
+    public List<Tag> findAllByNameLike(String name, Sort sort);
+    public Page<Tag> findAllByNameLikeAndIdNotIn(String name, List<Integer> id, Pageable sort);
     public List<Tag> findTagByNameEquals(String name);
     public int countAllByUid(int uid);
     public List<Tag> findAllByCountGreaterThanEqual(int count, Sort sort);

@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.lh.blog.annotation.Check;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.OptionDAO;
 import com.lh.blog.es.CiLin;
@@ -16,10 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -63,12 +69,13 @@ public class ForeUserController {
      * @throws Exception
      */
     @GetMapping(value = "/foreSetting")
-    public Result setting(HttpSession session) {
+    public Result setting(HttpSession session, HttpServletRequest request) {
         // 从session拿用户
         User user = (User) session.getAttribute("user");
         try {
             // 拿图片的数量
-            int num = userService.getImgNum();
+            String path = request.getServletContext().getRealPath("image/profile_user");
+            int num = userService.getImgNum(path);
             Map<String, Object> map = new HashMap<>();
             map.put("user", user);
             map.put("num", num);
@@ -87,7 +94,7 @@ public class ForeUserController {
      * @throws Exception
      */
     @PutMapping(value = "/foreSetting/{id}")
-    public Result modifyUser(HttpSession session, @RequestBody User user) {
+    public Result modifyUser(HttpSession session, @RequestBody @Valid User user) {
         try {
             // 加密
             Map<String, Object> map = EncodeUtil.encode(user.getPassword());
@@ -111,12 +118,14 @@ public class ForeUserController {
      * @throws Exception
      */
     @PostMapping(value = "/foreSetting")
-    public Result uploadUser(HttpSession session, @RequestBody JSONObject object) {
+    @Check(params = "num")
+    public Result uploadUser(@RequestBody JSONObject object,HttpSession session) {
         User user = (User) session.getAttribute("user");
         try {
             String folder = "/image/profile_user/" + Integer.parseInt(object.get("num").toString()) + ".jpg";
             user.setImg(folder);
             userService.update(user);
+            session.setAttribute("user", userService.get(user.getId()));
             logger.info("[设置用户头像成功] uid:{}", user.getId());
             return Result.success(CodeMsg.MODIFY_USER_SUCCESS);
         }catch (Exception e){
@@ -292,7 +301,8 @@ public class ForeUserController {
      * @throws Exception
      */
     @PostMapping(value = "/foreMsg/check/{id}")
-    public Result msg(@PathVariable("id") int id, @RequestBody JSONObject object) {
+    @Check(params = {"type:IsNum","status:IsNum"})
+    public Result msg(@RequestBody JSONObject object, @PathVariable("id") int id) {
         int type = Integer.parseInt(object.get("type").toString());
         int status = Integer.parseInt(object.get("status").toString());
         try {
@@ -380,7 +390,7 @@ public class ForeUserController {
         try {
             User user = (User) session.getAttribute("user");
             Map<String, Object> map = new HashMap<>();
-            // 自定义标签
+            // 感兴趣标签
             List<Tag> all = tagService.listByUser(user.getId());
             // 近义标签
             List<Tag> likes = tagService.listByKeyLike(key);
@@ -402,6 +412,45 @@ public class ForeUserController {
         }
     }
 
+    @PostMapping(value = "/user/writing/image")
+    public Map<String, Object>  upload(MultipartFile image, HttpServletRequest request)throws Exception
+    {
+        Map<String, Object> msg = new HashMap<>();
+        if(image!=null)
+        {
+            // 当前日期作为文件夹名
+            Date date = new Date();
+            String path=new SimpleDateFormat("yyyy/MM/dd/").format(date);
+            // 使用随机数生成文件名
+            String now = CalendarRandomUtil.getRandom();
+            String name = now+".jpg";
+            File imageFolder= new File(request.getServletContext().getRealPath("image/article/"+path));
+            File file = new File(imageFolder,now+".jpg");
+//            String newFileName = request.getContextPath()+"/image/article/"+file.getName();
+            //如果不存在,创建文件夹
+            if(!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            image.transferTo(file);
+            BufferedImage img = ImageUtil.change2jpg(file);
+            ImageIO.write(img, "jpg", file);
+            logger.error("[上传文章图片] 成功，path:{}, name:{}", path, name);
+            msg.put("error", 0);
+            msg.put("url", "/blog/image/article/"+path+name);
+            //            File f = new File(path);
+//            if(!f.exists()){
+//                f.mkdirs();
+//            }
+            //            FtpUtil ftpUtil = new FtpUtil();
+//            ftpUtil.uploadFile(name,image.getInputStream(),"/home/ftpuser/blog/image/article/"+path);
+        }
+        else {
+            logger.error("[上传文章图片] 失败，图片不存在");
+            msg.put("error", 1);
+            msg.put("message", "上传失败！");
+        }
+        return msg;
+    }
 
     /**
      * 创建自定义标签
@@ -440,12 +489,20 @@ public class ForeUserController {
                     return Result.error(CodeMsg.TAG_INSERT_OVER.fillArgs(max));
                 } else {
                     tag.setUid(user.getId());
+                    if (tagService.getByName(tag.getName()) != null) {
+                        logger.info("[自定义标签] 失败 uid:{}, 已存在：{}", user.getId(), tag.getName());
+                        return Result.info(CodeMsg.TAG_INSERT_SYM.fillArgs(tag.getName()));
+                    }
                     tagService.add(tag);
                     logger.info("[自定义标签] 成功 uid:{}, name：{}", user.getId(), tag.getName());
                     return Result.success(CodeMsg.TAG_INSERT_SUCCESS);
                 }
             } else {
                 tag.setUid(user.getId());
+                if (tagService.getByName(tag.getName()) != null) {
+                    logger.info("[自定义标签] 失败 uid:{}, 已存在：{}", user.getId(), tag.getName());
+                    return Result.info(CodeMsg.TAG_INSERT_SYM.fillArgs(tag.getName()));
+                }
                 tagService.add(tag);
                 logger.info("[自定义标签] 成功 uid:{}, name：{}", user.getId(), tag.getName());
                 return Result.success(CodeMsg.TAG_INSERT_SUCCESS);
@@ -523,24 +580,10 @@ public class ForeUserController {
             // 文章逻辑
             start = start < 0 ? 0 : start;
             PageUtil<Article> page;
-            // 非搜索
-            if (StrUtil.isEmpty(key)) {
-                if (cid == 0) {
-                    page = articleService.listByStatusAndUser(start, size, 5, 0, uid);
-                } else {
-                    page = articleService.listByStatusAndUserAndCategory(start, size, 5, 0, uid, cid);
-                }
-                map.put("issearch", false);
-            }
-            // 搜索
-            else {
-                if (cid == 0) {
-                    page = articleService.listByStatusAndUserAndKey(start, size, 5, 0, uid, key);
-                } else {
-                    page = articleService.listByStatusAndUserAndCategoryAndKey(start, size, 5, 0, uid, cid, key);
-                }
-                map.put("issearch", true);
-            }
+            // 是否搜索
+            map.put("issearch", StrUtil.isNotEmpty(key));
+            // 获取文章
+            page = articleService.listByStatusAndUserAndCategory(start, size, 5, 0, uid, cid, key, has);
             List<Article> articles = page.getContent();
             articleService.fillArticle(articles);
             map.put("pages", page);
@@ -676,7 +719,7 @@ public class ForeUserController {
      * @throws Exception
      */
     @PostMapping(value = "/user/categories")
-    public Result addCate(MultipartFile image, Category category, HttpServletRequest request, HttpSession session) {
+    public Result addCate(MultipartFile image,@Valid Category category, HttpServletRequest request, HttpSession session) {
         User user = (User) session.getAttribute("user");
         try {
             // 开启了 分类个数限制 的开关
@@ -751,7 +794,7 @@ public class ForeUserController {
      * @throws Exception
      */
     @PutMapping(value = "/user/categories/{id}")
-    public Result updateCate(@PathVariable("id") int id, MultipartFile image, Category category, HttpServletRequest request) {
+    public Result updateCate(@PathVariable("id") int id, MultipartFile image, @Valid Category category, HttpServletRequest request) {
         try {
             categoryService.update(category);
             if (image != null) {

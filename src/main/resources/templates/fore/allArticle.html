@@ -20,9 +20,9 @@
                 <li role="presentation" v-if="has"><a th:href="@{/setting}">个人资料</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/publish}">发表博客</a></li>
                 <li role="presentation" class="active"><a>所有博客</a></li>
-                <li role="presentation"><a th:href="@{/allUser}">圈子</a></li>
+                <li role="presentation"><a :href="getAllUser()">圈子</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/allCategory}">管理分类</a></li>
-                <li role="presentation"><a th:href="@{/allTag}">管理标签</a></li>
+                <li role="presentation" v-if="has"><a th:href="@{/allTag}">管理标签</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/history}">浏览记录</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/msg}">我的信息</a></li>
                 <li role="presentation" v-if="has"><a th:href="@{/allStart}">我的收藏</a></li>

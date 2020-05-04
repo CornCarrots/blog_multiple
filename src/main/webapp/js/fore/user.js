@@ -37,12 +37,12 @@ $(function () {
                 progress1: function () {
                     var score = this.user.score;
                     var sum = this.user.member.max + 1;
-                    return score / sum * 100;
+                    return Math.floor(score / sum * 100);
                 },
                 progress2: function () {
                     var score = this.user.score;
                     var sum = 50;
-                    return score / sum * 100;
+                    return Math.floor(score / sum * 100);
                 },
                 myScore: function () {
                     var m = this.user.member.max + 1;
@@ -74,7 +74,10 @@ $(function () {
                     var url = getPath() + this.uri + "?start_commnet=" + this.start_comment + "&start_tag=" + this.start_tag + "&uid=" + id + "&timeStamp=" + new Date().getTime();
                     axios.get(url).then(
                         function (value) {
-                            if (value.code != '0') {
+                            if (value.code == '500501') {
+                                location.href = getPath() + "/login";
+                            }
+                            else if (value.code != '0') {
                                 location.href = getPath() + "/error";
                             }
                             if (value.data.comments.content.length > 0) {
@@ -231,7 +234,8 @@ $(function () {
                             title: false,
                             content: '   <div align="center">\n' +
                                 '             <h5>新用户首次开通赠送10积分</h5>\n' +
-                                '            <h5>用户每次评论，赠送2积分</h5>\n' +
+                                '            <h5>用户每次评论，加2分</h5>\n' +
+                                '            <h5>用户每次赞赏，加5分</h5>\n' +
                                 '        </div>',
                             theme: 'material'
                         }
@@ -411,6 +415,7 @@ $(function () {
                     memberVue.issearch = true;
                     var key = this.key;
                     var url = getPath() + memberVue.uri_tag + "/search/?key=" + key + "&start=" + start;
+
                     axios.post(url).then(
                         function (value) {
                             if (value.code != '0') {

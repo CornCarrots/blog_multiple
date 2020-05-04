@@ -44,12 +44,13 @@ public class MemberService {
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Member> list(){
+        Sort sort = new Sort(Sort.Direction.DESC,"id");
         return dao.findAll(sort);
     }
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Member> listByKey(String key) {
-        return dao.findAllByNameContaining(key,sort);
+        return dao.findAllByNameLike("%"+key+"%",sort);
     }
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")

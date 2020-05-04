@@ -111,12 +111,11 @@ public class ParamsAspect {
             // 字段名
             String[] fields = annotation.params();
             // 参数位置
-            int[] indexs = annotation.indexs();
+            Map<String, Object> map = (Map<String, Object>) arguments[annotation.index()];
             // 对参数进行校验
-            int i = 0;
             for (String field : fields) {
                 FieldInfo info = resolveField(field);
-                Object vo = resolveVo(arguments, indexs, i++);
+                Object vo = resolveVo(map, info.field);
                 switch (info.rule){
                     case IsNotNull:
                         if (isNull(vo)){
@@ -200,15 +199,10 @@ public class ParamsAspect {
 
     /**
      * 解析 校验的实参
-     * @param arguments
-     * @param indexs
-     * @param i
      * @return
      */
-    private Object resolveVo(Object[] arguments, int[] indexs, int i) {
-        int index = indexs[i];
-        Object vo = arguments[index];
-        return vo;
+    private Object resolveVo(Map<String, Object> map, String key) {
+        return map.get(key);
     }
 
     // -=================== 对不同类型的值进行校验 起 =======================
@@ -230,8 +224,10 @@ public class ParamsAspect {
             else if (value instanceof String){
                 return StrUtil.isBlankOrUndefined((CharSequence) value);
             }
+            return false;
+        }else {
+            return true;
         }
-        return true;
     }
 
     private boolean isNum(Object value){

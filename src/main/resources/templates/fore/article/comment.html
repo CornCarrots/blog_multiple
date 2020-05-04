@@ -8,8 +8,8 @@
              alt="profile">
         <div class="lead">
             <div class="triangle"></div>
-            <textarea maxlength="200" class="form-control commentContent" contenteditable="true" rows="3" id="mycontent" @focus="checkLogin"></textarea>
-            <p>剩余字数：<span style="color: red">{{200-comment.text.length}}</span>字</p>
+            <textarea class="form-control commentContent" contenteditable="true" rows="3" id="mycontent" @focus="checkLogin"></textarea>
+            <!--<p>剩余字数：<span style="color: red">{{200-comment.text.length}}</span>字</p>-->
             <i class="fa fa-smile-o smile" id="smile1"></i>
             <button class="btn btn-info send" @click="commitButton" pid="0">我也要留言</button>
         </div>
@@ -24,9 +24,9 @@
                 <!--<a :name="'comment_'+com.id"></a>-->
                 <td><a :name="'comment_'+com.id"></a><img :src="getImage(com.user.img)" :alt="'profile_user'+com.uid"></td>
                 <td>
-                    <p class="commentName" v-if="com.uid==1">楼主<span> {{com.createDate | formatDateFilter}} {{comments.length-index1}}楼</span>
+                    <p class="commentName" v-if="com.uid==article.uid">楼主<span> {{com.createDate | formatDateFilter}} {{comments.length-index1}}楼</span>
                     </p>
-                    <p class="commentName" v-if="com.uid!=1">
+                    <p class="commentName" v-if="com.uid!=article.uid">
                         <a :href="getUser(com.uid)">{{com.user.nickName}}</a>
                         <i class="fa fa-superpowers" :style="{'color':com.user.member!=null ? com.user.member.icon:'gray'}">
                             <span v-if="com.user.member==null">普通用户</span>
@@ -58,11 +58,11 @@
                             <td><a :name="cld.id"></a><img :src="getImage(cld.user.img)"
                                                            :alt="'profile_user'+cld.uid"></td>
                             <td>
-                                <p class="commentName" v-if="cld.uid==1">楼主<span> {{cld.createDate | formatDateFilter}} {{com.child.length-index2}}层</span>
+                                <p class="commentName" v-if="cld.uid==article.uid">楼主<span> {{cld.createDate | formatDateFilter}} {{com.child.length-index2}}层</span>
                                 </p>
-                                <p class="commentName" v-if="cld.uid==com.uid&&cld.uid!=1">层主<span> {{cld.createDate | formatDateFilter}} {{com.child.length-index2}}层</span>
+                                <p class="commentName" v-if="cld.uid==com.uid&&cld.uid!=article.uid">层主<span> {{cld.createDate | formatDateFilter}} {{com.child.length-index2}}层</span>
                                 </p>
-                                <p class="commentName" v-if="cld.uid!=com.uid&&cld.uid!=1"><a
+                                <p class="commentName" v-if="cld.uid!=com.uid&&cld.uid!=article.uid"><a
                                         :href="getUser(cld.uid)">{{cld.user.nickName}}</a><span> {{cld.createDate | formatDateFilter}}  {{com.child.length-index2}}层</span>
                                 </p>
                                 <div class="commentContent" style="margin: 15px" v-html="cld.text">

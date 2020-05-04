@@ -3,6 +3,8 @@ package com.lh.blog.bean;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -18,10 +20,14 @@ public class Article implements Serializable   {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotNull
+    @Size(max = 10, message = "标题字数不能超过10位")
     private String title;
 
+    @NotNull
     private String summary;
 
+    @NotNull
     private  String text;
 
     private String secret;

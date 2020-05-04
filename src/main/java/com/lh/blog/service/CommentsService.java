@@ -1,5 +1,6 @@
 package com.lh.blog.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.CommentsDAO;
 import com.lh.blog.dao.CountComment;
@@ -106,9 +107,7 @@ public class CommentsService {
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public PageUtil<Comments> listByParent(int aid,int start,int size, int number)
     {
-        List<Integer> integerList = new ArrayList<>();
-        integerList.add(0);
-        integerList.add(2);
+        List<Integer> integerList = CollUtil.toList(0,2);
         Pageable pageable = new PageRequest(start,size,sort);
         Page<Comments> page = dao.findAllByStatusInAndAidAndPid(integerList,aid,0,pageable);
         page = new RestPageImpl(page.getContent(),pageable,page.getTotalElements());
@@ -118,9 +117,7 @@ public class CommentsService {
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public PageUtil<Comments> listByStatusAndUser(int uid,int start,int size, int number)
     {
-        List<Integer> integerList = new ArrayList<>();
-        integerList.add(0);
-        integerList.add(2);
+        List<Integer> integerList = CollUtil.toList(0,2);
         Pageable pageable = new PageRequest(start,size,sort);
         Page<Comments> page = dao.findAllByStatusInAndUid(integerList,uid,pageable);
         page = new RestPageImpl(page.getContent(),pageable,page.getTotalElements());
@@ -130,7 +127,7 @@ public class CommentsService {
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Comments> listByKey(String key)
     {
-        return dao.findAllByTextContaining(key,sort);
+        return dao.findAllByTextLike("%"+key+"%",sort);
     }
 
 //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
@@ -263,8 +260,8 @@ public class CommentsService {
         Page<Comments> page = null;
         try {
             page = dao.listByUser(uid,pageable);
-        }catch (IllegalArgumentException e){
-            logger.info("分页插件异常",e);
+        }catch (Exception e){
+            logger.info("分页插件异常");
         }
         page = new RestPageImpl(page.getContent(),pageable,page.getTotalElements());
         return new PageUtil<>(page,number);

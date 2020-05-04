@@ -1,5 +1,6 @@
 package com.lh.blog.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.lh.blog.annotation.Check;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.ArticleDAO;
@@ -69,13 +70,12 @@ public class ArticleService {
 
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Article> listByComment() {
-        sort = new Sort(Sort.Direction.DESC, "comment");
-        return dao.findAll(sort);
+        return dao.findTop5ByOrderByCommentDesc();
     }
 
     //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Article> listByKey(String key) {
-        return dao.findAllByStatusAndTitleContaining(0, key, sort);
+        return dao.findAllByStatusAndTitleLike(0, "%"+key+"%", sort);
     }
 
     //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
@@ -93,25 +93,44 @@ public class ArticleService {
         for (Category category : categories) {
             cids.add(category.getId());
         }
-        page = dao.findAllByStatusAndCidIn(0, cids, pageable);
+        page = dao.findAllByStatusAndTypeAndCidIn(0, ArticleDAO.TYPE_PUBLISH, cids, pageable);
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;
     }
 
     //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
-    public PageUtil<Article> listByStatusAndUserAndCategory(int start, int size, int number, int status, int uid, int cid) {
+    public PageUtil<Article> listByStatusAndUserAndCategory(int start, int size, int number, int status, int uid, int cid, String key, boolean has) {
+        ArticleService articleService = SpringContextUtils.getBean(ArticleService.class);
+        if (StrUtil.isNotEmpty(key)) {
+            return articleService.listByStatusAndUserAndCategoryAndKey(start, size, number, status, uid, cid, key, has);
+        }
+        if (cid == 0){
+            return articleService.listByStatusAndUser(start, size, number, status, uid, has);
+        }
         Pageable pageable = new PageRequest(start, size, sort);
         Page page = null;
-        page = dao.findAllByStatusAndUidAndCid(status, uid, cid, pageable);
+        if (has) {
+            page = dao.findAllByStatusAndUidAndCid(status, uid, cid, pageable);
+        }else {
+            page = dao.findAllByStatusAndTypeAndUidAndCid(status, ArticleDAO.TYPE_PUBLISH, uid, cid, pageable);
+        }
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;
     }
-    public PageUtil<Article> listByStatusAndUserAndCategoryAndKey(int start, int size, int number, int status, int uid, int cid, String key) {
+    public PageUtil<Article> listByStatusAndUserAndCategoryAndKey(int start, int size, int number, int status, int uid, int cid, String key, boolean has) {
+        ArticleService articleService = SpringContextUtils.getBean(ArticleService.class);
+        if (cid == 0) {
+            return articleService.listByStatusAndUserAndKey(start, size, number, status, uid, key, has);
+        }
         Pageable pageable = new PageRequest(start, size, sort);
         Page page = null;
-        page = dao.findAllByStatusAndUidAndCidAndTitleContaining(status, uid, cid, key, pageable);
+        if (has) {
+            page = dao.findAllByStatusAndUidAndCidAndTitleLike(status, uid, cid, "%"+key+"%", pageable);
+        }else {
+            page = dao.findAllByStatusAndTypeAndUidAndCidAndTitleLike(status, ArticleDAO.TYPE_PUBLISH, uid, cid, "%"+key+"%", pageable);
+        }
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;
@@ -128,7 +147,7 @@ public class ArticleService {
                 tagArticles) {
             aids.add(tagArticle.getAid());
         }
-        page = dao.findAllByStatusAndIdIn(0, aids, pageable);
+        page = dao.findAllByStatusAndTypeAndIdIn(0, ArticleDAO.TYPE_PUBLISH, aids, pageable);
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;
@@ -149,7 +168,7 @@ public class ArticleService {
                 aids.add(tagArticle.getAid());
             }
         }
-        page = dao.findAllByStatusAndIdIn(0, aids, pageable);
+        page = dao.findAllByStatusAndTypeAndIdIn(0, ArticleDAO.TYPE_PUBLISH, aids, pageable);
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;
@@ -170,7 +189,7 @@ public class ArticleService {
                 aids.add(article.getId());
             }
         }
-        page = dao.findAllByStatusAndIdIn(0, aids, pageable);
+        page = dao.findAllByStatusAndTypeAndIdIn(0, ArticleDAO.TYPE_PUBLISH, aids, pageable);
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;
@@ -186,7 +205,7 @@ public class ArticleService {
             int aid = start1.getAid();
             aids.add(aid);
         }
-        page = dao.findAllByStatusAndIdIn(0, aids, pageable);
+        page = dao.findAllByStatusAndTypeAndIdIn(0, ArticleDAO.TYPE_PUBLISH, aids, pageable);
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;
@@ -196,7 +215,7 @@ public class ArticleService {
     public PageUtil<Article> listByKey(String key, int start, int size, int number, String order, boolean s) {
         sort = new Sort(s ? Sort.Direction.ASC : Sort.Direction.DESC, order);
         Pageable pageable = new PageRequest(start, size, sort);
-        Page page = dao.findAllByStatusAndTitleContaining(0, key, pageable);
+        Page page = dao.findAllByStatusAndTitleLike(0, "%"+key+"%", pageable);
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;
@@ -231,8 +250,12 @@ public class ArticleService {
     }
 
     //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
-    public List<Article> list5ByStatusAndUser(int status, int uid) {
-        return dao.findTop5ByStatusAndUid(status, uid, sort);
+    public List<Article> list5ByStatusAndUser(int status, int uid, boolean has) {
+        if (has) {
+            return dao.findTop5ByStatusAndUid(status, uid, sort);
+        }else {
+            return dao.findTop5ByStatusAndTypeAndUid(status, ArticleDAO.TYPE_PUBLISH, uid, sort);
+        }
     }
 
     //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
@@ -252,15 +275,25 @@ public class ArticleService {
     }
 
     //    @Cacheable(keyGenerator = "wiselyKeyGenerator")
-    public PageUtil<Article> listByStatusAndUser(int start, int size, int number, int status, int uid) {
+    public PageUtil<Article> listByStatusAndUser(int start, int size, int number, int status, int uid, boolean has) {
         Pageable pageable = new PageRequest(start, size, sort);
-        Page page = dao.findAllByStatusAndUid(status, uid, pageable);
+        Page page;
+        if (has) {
+            page = dao.findAllByStatusAndUid(status, uid, pageable);
+        }else {
+            page = dao.findAllByStatusAndTypeAndUid(status, ArticleDAO.TYPE_PUBLISH, uid, pageable);
+        }
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         return new PageUtil<Article>(page, number);
     }
-    public PageUtil<Article> listByStatusAndUserAndKey(int start, int size, int number, int status, int uid, String key) {
+    public PageUtil<Article> listByStatusAndUserAndKey(int start, int size, int number, int status, int uid, String key, boolean has) {
         Pageable pageable = new PageRequest(start, size, sort);
-        Page page = dao.findAllByStatusAndUidAndTitleContaining(status, uid, key, pageable);
+        Page page;
+        if (has){
+            page = dao.findAllByStatusAndUidAndTitleLike(status, uid, "%"+key+"%", pageable);
+        }else {
+            page = dao.findAllByStatusAndTypeAndUidAndTitleLike(status, ArticleDAO.TYPE_PUBLISH, uid, "%"+key+"%", pageable);
+        }
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         return new PageUtil<Article>(page, number);
     }

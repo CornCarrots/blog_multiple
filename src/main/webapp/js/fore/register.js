@@ -29,7 +29,11 @@ $(function () {
                     var url = getPath()+this.uri;
                     console.log(registerVue.user)
                     axios.post(url,registerVue.user).then(function (value) {
+                        if (value.code == '500418'){
                             location.href=getPath()+"/registerSuccess"+"?timeStamp="+new Date().getTime();
+                        } else {
+                            $.alert("抱歉!" + value.msg);
+                        }
                     });
                     return false;
                 },

@@ -18,5 +18,5 @@ public interface CategoryDAO extends JpaRepository<Category,Integer> {
     public List<Category> findAllByPidAndUid(int pid, int uid, Sort sort);
     public List<Category> findAllByPidNot(int pid, Sort sort);
     public List<Category> findAllByPidNotAndUid(int pid, int uid, Sort sort);
-    public List<Category> findAllByNameContaining(String name, Sort sort);
+    public List<Category> findAllByNameLike(String name, Sort sort);
 }

@@ -56,18 +56,22 @@
                 <svg class="ico-cup">
                     <use xlink:href="#cup"></use>
                 </svg>
-                <i class="fa fa-comments"></i>近期评论
+                <i class="fa fa-comments"></i>积分排名
             </h1>
             <ol>
-                <li th:each="com:${application.top_comments}">
+                <li th:each="user:${application.top_users}">
                     <mark style="padding: 10px 50px">
-                        <img width="30px" height="30px" th:src="@{${com.user.img}}" alt="">
-                        <a href="javascript:void(0);" onclick="userClick(this)" th:attr="uid=${com.uid}"
-                           th:text="${com.user.nickName}"></a>:
+                        <img width="30px" height="30px" th:src="@{${user.img}}" alt="">
+                        <a href="javascript:void(0);" onclick="userClick(this)" th:attr="uid=${user.id}"
+                           th:text="${user.nickName}"></a>
+                        <span  th:if="${user.specialty}"><i style="color: burlywood" class="fa fa-address-card" title="专业人士"></i></span>
+                        <span th:if="${!user.specialty}"><i style="color: gray"  class="fa fa-address-card" title="非专业人士"></i></span>
+                        <span ><i class="fa fa-superpowers" th:style="'color:'+ @{ (${user.member!=null} ? ${user.member.icon}: 'gray' )} + ''" th:title="@{( ${user.member==null} ? '普通用户' : ${user.member.name} )}"></i></span>
+                        <span th:text="${'积分：'+user.score}"></span>
                         <!--<a href="javascript:void(0);" onclick="commentClick(this)" th:aid="${com.aid}" th:cid="${com.id}" th:if="${#strings.length(com.text)>8}" th:utext="${#strings.substring(com.text,0,8)}+'...'"></a>-->
                         <!--<a href="javascript:void(0);" onclick="commentClick(this)"   th:attr="aid=${com.aid},cid=${com.id}"  th:if="${#strings.length(com.text)>8}" th:utext="${#strings.substring(com.text,0,20)}"></a>-->
-                        <a href="javascript:void(0);" onclick="commentClick(this)"  th:attr="aid=${com.aid},cid=${com.id}" th:if="${#strings.length(com.text)>8}" th:text="字数过长不予显示"></a>
-                        <a href="javascript:void(0);" onclick="commentClick(this)"   th:attr="aid=${com.aid},cid=${com.id}" th:if="${#strings.length(com.text)<=8}" th:utext="${com.text}"></a>
+                        <!--<a href="javascript:void(0);" onclick="commentClick(this)"  th:attr="aid=${com.aid},cid=${com.id}" th:if="${#strings.length(com.text)>8}" th:text="字数过长不予显示"></a>-->
+                        <!--<a href="javascript:void(0);" onclick="commentClick(this)"   th:attr="aid=${com.aid},cid=${com.id}" th:if="${#strings.length(com.text)<=8}" th:utext="${com.text}"></a>-->
                     </mark>
                     <!--<small>315</small>-->
                 </li>

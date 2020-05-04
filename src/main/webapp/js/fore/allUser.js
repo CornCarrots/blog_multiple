@@ -8,7 +8,8 @@ $(function () {
         followings:[],
         fellows:[],
         tab:0,
-        has:false
+        has:false,
+        uid:0
         // map:[],
         // users:[],
         // msgs:[]
@@ -30,7 +31,7 @@ $(function () {
                     if (uid == undefined) {
                         uid = 0;
                     }
-
+                    this.uid = uid;
                     var url = getPath() + this.uri + "?uid="+ uid +"&start_following=" + this.start_following + "&start_fellow=" + this.start_fellow +"&timeStamp=" + new Date().getTime();
                     axios.get(url).then(
                         function (value) {
@@ -56,7 +57,6 @@ $(function () {
                                 $(".back_message_list_table2").show();
                                 $(".notfound_list2").hide();
                                 $(".pageDiv2").show();
-
                             }
                             else {
                                 $(".back_message_list_table2").hide();
@@ -111,6 +111,11 @@ $(function () {
                     if (img == undefined)
                         return;
                     var url = getPath() + img;
+                    return url;
+                },
+                getAllArticle: function () {
+                    var param = window.btoa("uid=" + this.uid + "&timeStamp=" + new Date().getTime());
+                    var url = getPath() + "/allArticle?" + param;
                     return url;
                 }
             }

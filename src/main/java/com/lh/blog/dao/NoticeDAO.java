@@ -9,6 +9,6 @@ import java.util.List;
 
 //@Repository
 public interface NoticeDAO extends JpaRepository<Notice,Integer> {
-    public List<Notice> findAllByTitleContaining(String title, Sort sort);
+    public List<Notice> findAllByTitleLike(String title, Sort sort);
 
 }
