@@ -3,7 +3,7 @@ package com.lh.blog.controller.back;
 import com.lh.blog.bean.Log;
 import com.lh.blog.bean.Manager;
 import com.lh.blog.bean.Option;
-import com.lh.blog.bean.User;
+import com.lh.blog.enums.PathEnum;
 import com.lh.blog.service.LogService;
 import com.lh.blog.service.ManagerService;
 import com.lh.blog.service.OptionService;
@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class SystemController {
@@ -45,18 +44,11 @@ public class SystemController {
     }
 
     @PutMapping(value = "/admin/options/image")
-    public void updateImage(MultipartFile image, HttpServletRequest request)throws Exception
+    public void updateImage(MultipartFile image)throws Exception
     {
-        String name = "option.jpg";
         if(image!=null)
         {
-            File imageFolder= new File(request.getServletContext().getRealPath("image/option"));
-            File file = new File(imageFolder,name);
-            if(!file.getParentFile().exists())
-                file.getParentFile().mkdirs();
-            image.transferTo(file);
-            BufferedImage img = ImageUtil.change2jpg(file);
-            ImageIO.write(img, "jpg", file);
+            ImageUtil.uploadImg("option",-1, image, PathEnum.Option);
         }
 
     }

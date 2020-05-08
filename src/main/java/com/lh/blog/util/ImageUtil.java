@@ -1,4 +1,8 @@
 package com.lh.blog.util;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import com.lh.blog.enums.PathEnum;
+import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -15,8 +19,17 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ImageUtil {
+
+    private static String path;
+
+    static {
+        Environment env = SpringContextUtils.getBean(Environment.class);
+        path = env.getProperty("upload-path");
+    }
 
     public static BufferedImage change2jpg(File f) {
         try {
@@ -65,26 +78,78 @@ public class ImageUtil {
         return null;
     }
 
-    public static void uploadCate(int id, String path, MultipartFile image) throws IOException {
-        File imageFolder= new File(path);
-        File file = new File(imageFolder,id+".jpg");
-        if(!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
+    public static String getPath(){
+        return path;
+    }
+
+    public static String getPath(PathEnum type){
+        File imageFolder= FileUtil.file(path, type.path);
+        return imageFolder.getPath();
+    }
+
+    public static void uploadImg(String id, int uid, MultipartFile image, PathEnum type) throws IOException {
+        String fileName = id+".jpg";
+        // 文件夹
+        File imageFolder= FileUtil.file(path, type.path);
+        if (uid >= 0){
+            imageFolder = FileUtil.file(imageFolder,  uid + "/");
         }
+        if(!FileUtil.exist(imageFolder)) {
+            FileUtil.mkdir(imageFolder);
+        }
+        // 文件
+        File file = FileUtil.file(imageFolder,fileName);
         image.transferTo(file);
         BufferedImage img = ImageUtil.change2jpg(file);
         ImageIO.write(img, "jpg", file);
-//            String name = id+".jpg";
-//            FtpUtil ftpUtil = new FtpUtil();
-//            ftpUtil.uploadFile(name,image.getInputStream(),"/home/ftpuser/blog/image/category");
     }
 
-    public static void deleteCate(int id, String path){
-        String name = id+".jpg";
-        File imageFolder = new File(path);
-        File file = new File(imageFolder, name);
-        file.delete();
-        //        FtpUtil ftpUtil = new FtpUtil();
-        //        ftpUtil.deleteFile("/home/ftpuser/blog/image/category",name);
+    public static void deleteImg(String id, int uid, PathEnum type){
+        String fileName = id+".jpg";
+        // 文件夹
+        File imageFolder= FileUtil.file(path, type.path);
+        if (uid >= 0){
+            imageFolder = FileUtil.file(imageFolder, uid + "/");
+        }
+        // 文件
+        File file = FileUtil.file(imageFolder,fileName);
+        FileUtil.del(file);
+    }
+
+    public static int getUserImg(){
+        File imageFolder= FileUtil.file(path, PathEnum.USER_PROFILE.path);
+        File[] files = imageFolder.listFiles();
+        return (files != null ? files.length : 1) - 1;
+    }
+
+    public static String setUserImg(int num){
+        // 初始化头像
+        if (num == 0) {
+            num = (int) (Math.random() * getUserImg()) + 1;
+        }
+        File imageFolder= FileUtil.file(path, PathEnum.USER_PROFILE.path);
+        String fileName = num + ".jpg";
+        File file = FileUtil.file(imageFolder, fileName);
+        String subPath = FileUtil.subPath(path, file.getAbsolutePath());
+        return "/image/" + subPath;
+    }
+
+    public static String uploadArticle(MultipartFile image, PathEnum type) throws IOException {
+
+        // 使用随机数生成文件名
+        String fileName = CalendarRandomUtil.getRandom() + ".jpg";
+        // 当前日期作为文件夹名
+        String subPath = DateUtil.format(new Date(), "yyyy/MM/dd/");
+
+        File imageFolder= FileUtil.file(path, type.path, subPath);
+        //如果不存在,创建文件夹
+        if(!FileUtil.exist(imageFolder)) {
+            FileUtil.mkdir(imageFolder);
+        }
+        File file = new File(imageFolder,fileName);
+        image.transferTo(file);
+        BufferedImage img = ImageUtil.change2jpg(file);
+        ImageIO.write(img, "jpg", file);
+        return FileUtil.subPath(path, file);
     }
 }

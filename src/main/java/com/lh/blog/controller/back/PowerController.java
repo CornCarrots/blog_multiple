@@ -2,6 +2,7 @@ package com.lh.blog.controller.back;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lh.blog.bean.Power;
+import com.lh.blog.enums.PathEnum;
 import com.lh.blog.service.PowerService;
 import com.lh.blog.util.ImageUtil;
 import com.lh.blog.util.PageUtil;
@@ -14,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class PowerController {
@@ -31,19 +30,14 @@ public class PowerController {
     }
 
     @PostMapping(value = "/admin/scores/{mid}/powers")
-    public void addPower(MultipartFile image, Power power, HttpServletRequest request)throws Exception
+    public void addPower(MultipartFile image, Power power)throws Exception
     {
         powerService.add(power);
-        if(image==null)
+        if(image==null) {
             return;
+        }
         int id = power.getId();
-        File imageFolder= new File(request.getServletContext().getRealPath("image/power"));
-        File file = new File(imageFolder,id+".jpg");
-        if(!file.getParentFile().exists())
-            file.getParentFile().mkdirs();
-        image.transferTo(file);
-        BufferedImage img = ImageUtil.change2jpg(file);
-        ImageIO.write(img, "jpg", file);
+        ImageUtil.uploadImg(String.valueOf(id), -1, image, PathEnum.Power);
     }
     @PostMapping(value = "/admin/scores/{mid}/powers/search")
     public List<Power> search(@RequestParam("key")String key,@PathVariable("mid")int mid)
@@ -56,7 +50,7 @@ public class PowerController {
     public String deletePower(@PathVariable("id")int id,HttpServletRequest request)throws Exception
     {
         powerService.delete(id);
-        File imageFolder= new File(request.getServletContext().getRealPath("image/power"));
+        File imageFolder= new File(request.getServletContext().getRealPath("static/image/power"));
         File file = new File(imageFolder,id+".jpg");
         file.delete();
         return null;
@@ -75,7 +69,7 @@ public class PowerController {
         if(image==null)
             return;
         int id = power.getId();
-        File imageFolder= new File(request.getServletContext().getRealPath("image/power"));
+        File imageFolder= new File(request.getServletContext().getRealPath("static/image/power"));
         File file = new File(imageFolder,id+".jpg");
         if(!file.getParentFile().exists())
             file.getParentFile().mkdirs();
@@ -94,9 +88,9 @@ public class PowerController {
         String now = String.valueOf(intYear) + "-" + String.valueOf(intMonth) + "-" +
                 String.valueOf(intDay) + "_";
         now +=System.currentTimeMillis();
-        File imageFolder= new File(request.getServletContext().getRealPath("image/power_article"));
+        File imageFolder= new File(request.getServletContext().getRealPath("static/image/power_article"));
         File file = new File(imageFolder,now+".jpg");
-        String newFileName = request.getContextPath()+"/image/power_article/"+file.getName();
+        String newFileName = request.getContextPath()+ "/static/image/power_article/" +file.getName();
         if(!file.getParentFile().exists())
             file.getParentFile().mkdirs();
         image.transferTo(file);

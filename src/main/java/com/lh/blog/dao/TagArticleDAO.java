@@ -11,4 +11,6 @@ import java.util.List;
 public interface TagArticleDAO extends JpaRepository<TagArticle,Integer> {
     public List<TagArticle> findAllByAid(int aid, Sort sort);
     public List<TagArticle> findAllByTid(int tid, Sort sort);
+    public void deleteAllByTid(int tid);
+    public void deleteAllByAid(int aid);
 }

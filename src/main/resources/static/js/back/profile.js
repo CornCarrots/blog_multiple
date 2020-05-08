@@ -28,6 +28,7 @@ $(
                         );
                     },
                     getImage: function (id) {
+                        console.log(id)
                         if (id == 0)
                             return;
                         var url = getPath() + "/image/profile_user/" + id + ".jpg";

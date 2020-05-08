@@ -57,8 +57,8 @@ $(
                     jumpByNumber:function (start) {
                         jumpByNumber(start,userVue);
                     },
-                    getImage: function (img) {
-                        var url= getPath() + "/image/authorized/" + img + ".jpg";
+                    getImage: function (img, uid) {
+                        var url= getPath() + "/image/authorized/" + uid + "/" + img + ".jpg";
                         return url;
                     },
                     editButton:function (id) {

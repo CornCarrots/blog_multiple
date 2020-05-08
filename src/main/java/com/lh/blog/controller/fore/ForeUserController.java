@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.lh.blog.annotation.Check;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.OptionDAO;
+import com.lh.blog.enums.PathEnum;
 import com.lh.blog.es.CiLin;
 import com.lh.blog.service.*;
 import com.lh.blog.util.*;
@@ -56,6 +57,8 @@ public class ForeUserController {
     @Autowired
     StartService startService;
     @Autowired
+    LikeService likeService;
+    @Autowired
     UserTagService userTagService;
     @Autowired
     OptionService optionService;
@@ -69,13 +72,13 @@ public class ForeUserController {
      * @throws Exception
      */
     @GetMapping(value = "/foreSetting")
-    public Result setting(HttpSession session, HttpServletRequest request) {
+    public Result setting(HttpSession session) {
         // 从session拿用户
         User user = (User) session.getAttribute("user");
         try {
             // 拿图片的数量
-            String path = request.getServletContext().getRealPath("image/profile_user");
-            int num = userService.getImgNum(path);
+//            String path = request.getServletContext().getRealPath("static/image/profile_user");
+            int num = ImageUtil.getUserImg();
             Map<String, Object> map = new HashMap<>();
             map.put("user", user);
             map.put("num", num);
@@ -122,7 +125,8 @@ public class ForeUserController {
     public Result uploadUser(@RequestBody JSONObject object,HttpSession session) {
         User user = (User) session.getAttribute("user");
         try {
-            String folder = "/image/profile_user/" + Integer.parseInt(object.get("num").toString()) + ".jpg";
+            int num = Integer.parseInt(object.get("num").toString());
+            String folder = ImageUtil.setUserImg(num);
             user.setImg(folder);
             userService.update(user);
             session.setAttribute("user", userService.get(user.getId()));
@@ -413,36 +417,16 @@ public class ForeUserController {
     }
 
     @PostMapping(value = "/user/writing/image")
-    public Map<String, Object>  upload(MultipartFile image, HttpServletRequest request)throws Exception
+    public Map<String, Object>  uploadArticle(MultipartFile image)throws Exception
     {
         Map<String, Object> msg = new HashMap<>();
         if(image!=null)
         {
-            // 当前日期作为文件夹名
-            Date date = new Date();
-            String path=new SimpleDateFormat("yyyy/MM/dd/").format(date);
-            // 使用随机数生成文件名
-            String now = CalendarRandomUtil.getRandom();
-            String name = now+".jpg";
-            File imageFolder= new File(request.getServletContext().getRealPath("image/article/"+path));
-            File file = new File(imageFolder,now+".jpg");
-//            String newFileName = request.getContextPath()+"/image/article/"+file.getName();
-            //如果不存在,创建文件夹
-            if(!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            image.transferTo(file);
-            BufferedImage img = ImageUtil.change2jpg(file);
-            ImageIO.write(img, "jpg", file);
-            logger.error("[上传文章图片] 成功，path:{}, name:{}", path, name);
+//            path = request.getServletContext().getRealPath("static/image/article/") +path;
+            String path = ImageUtil.uploadArticle(image, PathEnum.Article);
+            logger.error("[上传文章图片] 成功，path:{}, name:{}", path);
             msg.put("error", 0);
-            msg.put("url", "/blog/image/article/"+path+name);
-            //            File f = new File(path);
-//            if(!f.exists()){
-//                f.mkdirs();
-//            }
-            //            FtpUtil ftpUtil = new FtpUtil();
-//            ftpUtil.uploadFile(name,image.getInputStream(),"/home/ftpuser/blog/image/article/"+path);
+            msg.put("url", "/blog/image/" + path);
         }
         else {
             logger.error("[上传文章图片] 失败，图片不存在");
@@ -488,29 +472,26 @@ public class ForeUserController {
                     logger.info("[自定义标签] 失败 uid:{}, 个数:{}, 限制:{}", user.getId(), count, max);
                     return Result.error(CodeMsg.TAG_INSERT_OVER.fillArgs(max));
                 } else {
-                    tag.setUid(user.getId());
-                    if (tagService.getByName(tag.getName()) != null) {
-                        logger.info("[自定义标签] 失败 uid:{}, 已存在：{}", user.getId(), tag.getName());
-                        return Result.info(CodeMsg.TAG_INSERT_SYM.fillArgs(tag.getName()));
-                    }
-                    tagService.add(tag);
-                    logger.info("[自定义标签] 成功 uid:{}, name：{}", user.getId(), tag.getName());
-                    return Result.success(CodeMsg.TAG_INSERT_SUCCESS);
+                    return addTag(tag, user);
                 }
             } else {
-                tag.setUid(user.getId());
-                if (tagService.getByName(tag.getName()) != null) {
-                    logger.info("[自定义标签] 失败 uid:{}, 已存在：{}", user.getId(), tag.getName());
-                    return Result.info(CodeMsg.TAG_INSERT_SYM.fillArgs(tag.getName()));
-                }
-                tagService.add(tag);
-                logger.info("[自定义标签] 成功 uid:{}, name：{}", user.getId(), tag.getName());
-                return Result.success(CodeMsg.TAG_INSERT_SUCCESS);
+                return addTag(tag, user);
             }
         }catch (Exception e){
             logger.error("[自定义标签] 异常", e);
             return Result.error(CodeMsg.TAG_INSERT_ERROR);
         }
+    }
+
+    private Result addTag(Tag tag, User user){
+        tag.setUid(user.getId());
+        if (tagService.getByName(tag.getName()) != null) {
+            logger.info("[自定义标签] 失败 uid:{}, 已存在：{}", user.getId(), tag.getName());
+            return Result.info(CodeMsg.TAG_INSERT_SYM.fillArgs(tag.getName()));
+        }
+        tagService.add(tag);
+        logger.info("[自定义标签] 成功 uid:{}, name：{}", user.getId(), tag.getName());
+        return Result.success(CodeMsg.TAG_INSERT_SUCCESS);
     }
 
     /**
@@ -632,6 +613,10 @@ public class ForeUserController {
     public Result deleteArticle(@PathVariable("aid") int aid) {
         try {
             articleService.delete(aid);
+            // 级联删除
+            tagArticleService.deleteByAid(aid);
+            startService.deleteByAid(aid);
+            likeService.deleteByAid(aid);
             logger.info("[删除文章]成功 aid:{}", aid);
             return Result.error(CodeMsg.ARTICLE_DELETE_SUCCESS);
         }catch (Exception e){
@@ -713,13 +698,12 @@ public class ForeUserController {
      * 创建个人分类
      * @param image
      * @param category
-     * @param request
      * @param session
      * @return
      * @throws Exception
      */
     @PostMapping(value = "/user/categories")
-    public Result addCate(MultipartFile image,@Valid Category category, HttpServletRequest request, HttpSession session) {
+    public Result addCate(MultipartFile image,@Valid Category category, HttpSession session) {
         User user = (User) session.getAttribute("user");
         try {
             // 开启了 分类个数限制 的开关
@@ -733,26 +717,10 @@ public class ForeUserController {
                     return Result.error(CodeMsg.CATE_INSERT_OVER.fillArgs(max));
                 } else {
                     // 可以创建
-                    category.setUid(user.getId());
-                    categoryService.add(category);
-                    if (image != null) {
-                        // 上传分类图片，以分类id为图片名
-                        String path = request.getServletContext().getRealPath("image/category");
-                        ImageUtil.uploadCate(category.getId(), path, image);
-                    }
-                    logger.info("[创建分类] 成功 uid:{} cid:{}", user.getId(), category.getId());
-                    return Result.success(CodeMsg.CATE_INSERT_SUCCESS);
+                    return addCate(image, category, user);
                 }
             } else {
-                category.setUid(user.getId());
-                categoryService.add(category);
-                if (image != null) {
-                    int id = category.getId();
-                    String path = request.getServletContext().getRealPath("image/category");
-                    ImageUtil.uploadCate(id, path, image);
-                }
-                logger.info("[创建分类] 成功 uid:{} cid:{}", user.getId(), category.getId());
-                return Result.success(CodeMsg.CATE_INSERT_SUCCESS);
+                return addCate(image, category, user);
             }
         }catch (IOException e){
             logger.error("[创建分类] 图片异常 ", e);
@@ -763,20 +731,30 @@ public class ForeUserController {
         }
     }
 
+    private Result addCate(MultipartFile image, Category category, User user) throws IOException {
+        category.setUid(user.getId());
+        categoryService.add(category);
+        if (image != null) {
+            ImageUtil.uploadImg(String.valueOf(category.getId()), user.getId(), image, PathEnum.Category);
+        }
+        logger.info("[创建分类] 成功 uid:{} cid:{}", user.getId(), category.getId());
+        return Result.success(CodeMsg.CATE_INSERT_SUCCESS);
+    }
+
     /**
      * 删除个人分类
      * @param id
-     * @param request
      * @return
      * @throws Exception
      */
     @DeleteMapping(value = "/user/categories/{id}")
-    public Result deleteCate(@PathVariable("id") int id, HttpServletRequest request) {
+    public Result deleteCate(@PathVariable("id") int id) {
         try {
+            Category category = categoryService.get(id);
+            int uid = category.getUid();
             categoryService.delete(id);
             // 删除分类图片
-            String path = request.getServletContext().getRealPath("image/category");
-            ImageUtil.deleteCate(id, path);
+            ImageUtil.deleteImg(String.valueOf(id), uid, PathEnum.Category);
             logger.info("[删除分类] 成功 id:{}", id);
             return Result.error(CodeMsg.CATE_DELETE_SUCCESS);
 
@@ -790,16 +768,15 @@ public class ForeUserController {
      * 更新分类
      * @param image
      * @param category
-     * @param request
      * @throws Exception
      */
     @PutMapping(value = "/user/categories/{id}")
-    public Result updateCate(@PathVariable("id") int id, MultipartFile image, @Valid Category category, HttpServletRequest request) {
+    public Result updateCate(@PathVariable("id") int id, MultipartFile image, @Valid Category category, HttpSession session) {
+        User user = (User) session.getAttribute("user");
         try {
             categoryService.update(category);
             if (image != null) {
-                String path = request.getServletContext().getRealPath("image/category");
-                ImageUtil.uploadCate(category.getId(), path, image);
+                ImageUtil.uploadImg(String.valueOf(category.getId()), user.getId(), image, PathEnum.Category);
             }
             logger.info("[更新分类] 成功 id:{}", id);
             return Result.success(CodeMsg.CATE_UPDATE_SUCCESS);
@@ -843,6 +820,9 @@ public class ForeUserController {
     public Result deleteTag(@PathVariable("id") int id) {
         try {
             tagService.delete(id);
+            // 级联删除
+            tagArticleService.deleteByTag(id);
+            userTagService.deleteByTag(id);
             logger.info("[删除标签] 成功 id:{}", id);
             return Result.success(CodeMsg.TAG_DELETE_SUCCESS);
         }catch (Exception e){

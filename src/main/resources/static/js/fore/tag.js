@@ -2,11 +2,11 @@
 $(function () {
     var count = true;
     var bean = {
-        uri:"/foreSearch",
+        uri:"/foreTag",
         pages: [],
         articles: [{user:{nickName:''}, category:{name:''}}],
         order:'title',
-        key:''
+        tag:{id:0,name:''}
     };
     var homeVue = new Vue(
         {
@@ -17,26 +17,26 @@ $(function () {
             },
             methods:{
                 list: function (start) {
-                    var key = getUrlParms("key");
-                    var url = getPath() + this.uri + "?key="+key+ "&start=" + start+"&order="+this.order+"&sort="+count;
+                    var id = getUrlParms("tid");
+                    var url = getPath() + this.uri + "/"+id+ "?start=" + start+"&order="+this.order+"&sort="+count;
                     axios.get(url).then(
                         function (value) {
                             if (value.code != '0') {
                                 location.href = getPath() + "/error";
                             }
-                            homeVue.pages = value.data.pages;
-                            homeVue.articles = value.data.pages.content;
-                            homeVue.key = value.data.key;
+                            homeVue.tag = value.data.tag;
                             if(value.data.pages.content.length>0)
                             {
-                                $(".notfound_list").hide();
+                                homeVue.pages = value.data.pages;
+                                homeVue.articles = value.data.pages.content;
                                 $(".myarticle").show();
+                                $(".notfound_list").hide();
                             }
-                            else {
-                                $(".notfound_list").show();
+                            else
+                            {
                                 $(".myarticle").hide();
+                                $(".notfound_list").show();
                             }
-
                         }
                     )
                 },
@@ -56,11 +56,10 @@ $(function () {
                     var url = getPath()+"/article?"+param;
                     return url;
                 },
-                getImage: function (type,id) {
-                    if(id==null||id==0)
+                getImage: function (id, uid) {
+                    if(id==null||id==0 || uid == null)
                         return;
-                    var url = getPath() + "/image/"+type+"/" + id + ".jpg";
-                    return url;
+                    return getPath() + "/image/category/"+ uid +"/" +  id + ".jpg";
                 },
                 sort: function (order, e) {
                     $(".category_sort").removeClass("active");

@@ -62,10 +62,10 @@ $(
                     jumpByNumber: function (start) {
                         jumpByNumber(start, operationVue);
                     },
-                    getImage: function (id) {
-                        if (id == null || id == 0)
+                    getImage: function (id, uid) {
+                        if (id == null || id == 0 || uid == null || uid == 0)
                             return;
-                        var url = getPath() + "/image/category/" + id + ".jpg";
+                        var url = getPath() + "/image/category/" + uid + "/" + id + ".jpg";
                         return url;
                     },
                     setFile: function (e) {

@@ -1,7 +1,5 @@
 $(
     function () {
-
-
         $(".categoryButton").click(
             function () {
                 var cid = $(this).attr("cid");

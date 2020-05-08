@@ -6,7 +6,7 @@
         <div class="context_category">
             <a :href="getCategory(art.cid)">{{art.category.name}}</a>
         </div>
-        <a href="javascript:void(0)" @click="checkArticle(art.id)"><img :src="getImage('category',art.cid)" :alt="'article_'+art.id" class="pull-left"></a>
+        <a href="javascript:void(0)" @click="checkArticle(art.id)"><img :src="getImage(art.cid, art.uid)" :alt="'article_'+art.id" class="pull-left"></a>
         <div class="context_title"><a href="javascript:void(0)" @click="checkArticle(art.id)">{{art.title}}</a></div>
         <div class="context_text">简介：{{art.summary}}</div>
         <div class="context_info">

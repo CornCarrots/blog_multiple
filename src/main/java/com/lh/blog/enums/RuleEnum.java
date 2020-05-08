@@ -9,13 +9,21 @@ package com.lh.blog.enums;
  */
 public enum RuleEnum {
 
+    /**
+     * 值不为空
+     */
     IsNotNull("值不为空"),
+
+
+    /**
+     * 值为数字
+     */
     IsNum("值为数字");
 
     /**
      * 规则名称
      */
-    public String rule;
+    private String rule;
 
     RuleEnum(String rule){
         this.rule = rule;

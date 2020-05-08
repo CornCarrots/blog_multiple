@@ -3,6 +3,7 @@ package com.lh.blog.controller.fore;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.FocusDAO;
 import com.lh.blog.dao.OptionDAO;
+import com.lh.blog.enums.PathEnum;
 import com.lh.blog.service.*;
 import com.lh.blog.util.CodeMsg;
 import com.lh.blog.util.ImageUtil;
@@ -262,8 +263,8 @@ public class ForePersonController {
             authorizedService.add(authorized);
             if (image != null) {
                 int id = authorized.getId();
-                String path = request.getServletContext().getRealPath("image/authorized");
-                ImageUtil.uploadCate(id, path, image);
+//                String path = request.getServletContext().getRealPath("static/image/authorized");
+                ImageUtil.uploadImg(String.valueOf(id), user.getId(), image, PathEnum.Authorized);
                 authorizedService.update(authorized);
             }
             logger.info("[申请认证] 成功 uid:{}", user.getId());

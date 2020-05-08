@@ -12,4 +12,5 @@ public interface UserTagDAO extends JpaRepository<UserTag,Integer> {
     public int countAllByUid(int uid, Sort sort);
     public List<UserTag> findAllByTid(int tid, Sort sort);
     public List<UserTag> findAllByTidAndUid(int tid, int uid, Sort sort);
+    public void deleteAllByTid(int tid);
 }

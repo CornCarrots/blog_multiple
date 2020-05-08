@@ -1,6 +1,7 @@
 package com.lh.blog.controller.back;
 
 import com.lh.blog.bean.Manager;
+import com.lh.blog.enums.PathEnum;
 import com.lh.blog.service.ManagerService;
 import com.lh.blog.util.EncodeUtil;
 import com.lh.blog.util.ImageUtil;
@@ -30,17 +31,9 @@ public class PersonController {
     }
 
     @PostMapping(value = "/admin/persons/image")
-    public void upload(Manager manager, MultipartFile image, HttpServletRequest request) throws Exception
-    {
+    public void upload(Manager manager, MultipartFile image) throws Exception {
         int id = manager.getId();
-        File imageFolder= new File(request.getServletContext().getRealPath("image/profile_manager"));
-        File file = new File(imageFolder,id+".jpg");
-        if(!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        image.transferTo(file);
-        BufferedImage img = ImageUtil.change2jpg(file);
-        ImageIO.write(img, "jpg", file);
+        ImageUtil.uploadImg(String.valueOf(id), -1, image, PathEnum.MANAGER_PROFILE);
     }
 
     @PutMapping(value = "/admin/persons/{id}")

@@ -9,4 +9,5 @@ public interface LikeDAO extends JpaRepository<Like,Integer> {
     String TYPE_ARTICLE = "type_article";
     String TYPE_COMMENT = "type_comment";
     Like findAllByAcidAndUidAndType(int aid,int uid,String type);
+    public void deleteAllByAcidAndType(int aid, String type);
 }

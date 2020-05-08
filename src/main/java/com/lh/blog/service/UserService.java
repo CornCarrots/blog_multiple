@@ -131,18 +131,4 @@ public class UserService {
         return dao.findAllByIdIn(ids, sort);
     }
 
-    public String getImgPath(String path){
-        File imageFolder = new File(path);
-        String[] files = imageFolder.list();
-        int num = Objects.requireNonNull(files).length - 1;
-        int imgId = (int) (Math.random() * num) + 1;
-        return  "/image/profile_user/" + imgId + ".jpg";
-    }
-
-    public int getImgNum(String path){
-        File imageFolder = new File(path);
-        String[] files = imageFolder.list();
-        int num = files.length - 1;
-        return num;
-    }
 }

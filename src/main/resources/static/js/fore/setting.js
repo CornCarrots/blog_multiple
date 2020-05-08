@@ -20,7 +20,7 @@ $(function () {
         },
         image: 0,
         password: '',
-        imgs: []
+        imgs: [],
     };
     var userVue = new Vue(
         {

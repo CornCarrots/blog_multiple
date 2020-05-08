@@ -11,5 +11,6 @@ import java.util.List;
 public interface StartDAO extends JpaRepository<Start,Integer> {
     public Start findAllByAidAndUid(int aid,int uid);
     public List<Start> findAllByUid(int uid, Sort sort);
+    public void deleteAllByAid(int aid);
 
 }

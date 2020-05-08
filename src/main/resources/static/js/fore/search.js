@@ -2,10 +2,11 @@
 $(function () {
     var count = true;
     var bean = {
-        uri:"/foreFocus",
+        uri:"/foreSearch",
         pages: [],
         articles: [{user:{nickName:''}, category:{name:''}}],
-        order:'title'
+        order:'title',
+        key:''
     };
     var homeVue = new Vue(
         {
@@ -16,24 +17,26 @@ $(function () {
             },
             methods:{
                 list: function (start) {
-                    var url = getPath() + this.uri + "?start=" + start+"&order="+this.order+"&sort="+count;
+                    var key = getUrlParms("key");
+                    var url = getPath() + this.uri + "?key="+key+ "&start=" + start+"&order="+this.order+"&sort="+count;
                     axios.get(url).then(
                         function (value) {
                             if (value.code != '0') {
                                 location.href = getPath() + "/error";
                             }
+                            homeVue.pages = value.data.pages;
+                            homeVue.articles = value.data.pages.content;
+                            homeVue.key = value.data.key;
                             if(value.data.pages.content.length>0)
                             {
-                                homeVue.pages = value.data.pages;
-                                homeVue.articles = value.data.pages.content;
-                                $(".myarticle").show();
                                 $(".notfound_list").hide();
+                                $(".myarticle").show();
                             }
-                            else
-                            {
-                                $(".myarticle").hide();
+                            else {
                                 $(".notfound_list").show();
+                                $(".myarticle").hide();
                             }
+
                         }
                     )
                 },
@@ -53,11 +56,10 @@ $(function () {
                     var url = getPath()+"/article?"+param;
                     return url;
                 },
-                getImage: function (type,id) {
-                    if(id==null||id==0)
+                getImage: function (id, uid) {
+                    if(id==null||id==0 || uid == null)
                         return;
-                    var url = getPath() + "/image/"+type+"/" + id + ".jpg";
-                    return url;
+                    return getPath() + "/image/category/"+ uid +"/" +  id + ".jpg";
                 },
                 sort: function (order, e) {
                     $(".category_sort").removeClass("active");

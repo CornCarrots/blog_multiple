@@ -1,6 +1,7 @@
 package com.lh.blog.controller.back;
 import com.alibaba.fastjson.JSONObject;
 import com.lh.blog.bean.Notice;
+import com.lh.blog.enums.PathEnum;
 import com.lh.blog.service.NoticeService;
 import com.lh.blog.util.CalendarRandomUtil;
 import com.lh.blog.util.ImageUtil;
@@ -37,20 +38,12 @@ public class NoticeController {
     }
 
     @PostMapping(value = "/admin/notices/image")
-    public String upload(MultipartFile image, HttpServletRequest request)throws Exception
+    public String upload(MultipartFile image)throws Exception
     {
-        String now = CalendarRandomUtil.getRandom();
-        File imageFolder= new File(request.getServletContext().getRealPath("image/notice"));
-        File file = new File(imageFolder,now+".jpg");
-        String newFileName = request.getContextPath()+"/image/notice/"+file.getName();
-        if(!file.getParentFile().exists())
-            file.getParentFile().mkdirs();
-        image.transferTo(file);
-        BufferedImage img = ImageUtil.change2jpg(file);
-        ImageIO.write(img, "jpg", file);
+        String path = ImageUtil.uploadArticle(image, PathEnum.Notice);
         JSONObject obj = new JSONObject();
         obj.put("error", 0);
-        obj.put("url", newFileName);
+        obj.put("url", "/blog/image/" + path);
         return obj.toString();
     }
 

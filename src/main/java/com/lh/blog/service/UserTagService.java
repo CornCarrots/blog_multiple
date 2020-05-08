@@ -73,6 +73,14 @@ public class UserTagService {
         return dao.findAllByTid(tid, sort);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "tags", key = "'listByUser '+ #bean.uid"),
+            @CacheEvict(cacheNames = "userTags", allEntries = true)
+    })
+    public void deleteByTag(int tid){
+        dao.deleteAllByTid(tid);
+    }
+
     public boolean isExites(int tid, int uid) {
         List<UserTag> list = dao.findAllByTidAndUid(tid, uid, sort);
         return list != null && list.size() > 0;

@@ -43,6 +43,13 @@ public class StartService {
         StartService startService = SpringContextUtils.getBean(StartService.class);
         startService.delete(startService.get(aid,uid).getId());
     }
+    @Caching(evict = {
+            @CacheEvict(value = "articles", allEntries = true),
+            @CacheEvict(cacheNames = "starts", allEntries = true)
+    })
+    public void deleteByAid(int aid){
+        dao.deleteAllByAid(aid);
+    }
 
     @Caching(evict = {
             @CacheEvict(value = "articles", allEntries = true),

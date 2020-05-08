@@ -29,7 +29,7 @@
                 <td>{{authorized.user.name}}</td>
                 <td>{{authorized.name}}</td>
                 <td>{{authorized.email}}</td>
-                <td><img :src="getImage(authorized.id)" :alt="'authorized'+authorized.id" width="140px" height="105px"></td>
+                <td><img :src="getImage(authorized.id,authorized.uid)" :alt="'authorized'+authorized.id" width="140px" height="105px"></td>
                 <td><span class="label" :class="authorized.status==0?'label-danger':'label-success'">{{authorized.status | statusFilter}}</span></td>
                 <td><a href="#no" @click="editButton(authorized.id)"><span class="fa fa-edit"></span></a></td>
             </tr>

@@ -54,7 +54,7 @@
                 <td>{{cat.name}}</td>
                 <td v-if="cat.pid==0">无</td>
                 <td v-if="cat.pid!=0">{{cat.parent.name}}</td>
-                <td><img :src="getImage(cat.id)" :alt="'category'+cat.id" width="140px" height="105px"></td>
+                <td><img :src="getImage(cat.id, cat.uid)" :alt="'category'+cat.id" width="140px" height="105px"></td>
                 <td><a href="#no" @click="editCategory(cat.id,cat.pid)" :class="{ disabled: cat.pid!=0 }"><span class="fa fa-edit"></span></a></td>
                 <td><a href="#no" @click="deleteCategory(cat.id,cat.pid)" :class="{ disabled: cat.pid!=0 }"><span class="fa fa-trash"></span></a></td>
             </tr>

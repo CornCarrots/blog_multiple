@@ -4,6 +4,7 @@ import com.lh.blog.annotation.AddScore;
 import com.lh.blog.bean.*;
 import com.lh.blog.dao.LikeDAO;
 import com.lh.blog.dao.OptionDAO;
+import com.lh.blog.exception.GlobalException;
 import com.lh.blog.service.*;
 import com.lh.blog.util.CodeMsg;
 import com.lh.blog.util.PageUtil;
@@ -269,12 +270,12 @@ public class ForeArticleController {
                 return Result.success(CodeMsg.LIKE_COMMENT_SUCCESS);
             }
         }catch (Exception e){
-            logger.info("[点赞评论] 用户：{}，点赞评论状态：{} 失败", user.getId(), isLike, e);
+            logger.info("[点赞评论] 用户：{}，点赞评论状态：{} 失败", user.getId(), isLike);
             if (!isLike) {
-                return Result.error(CodeMsg.LIKE_COMMENT_ERROR);
+                throw new GlobalException(CodeMsg.LIKE_COMMENT_ERROR);
             }
             else {
-                return Result.error(CodeMsg.UNLIKE_COMMENT_ERROR);
+                throw new GlobalException(CodeMsg.UNLIKE_COMMENT_ERROR);
             }
         }
     }
@@ -294,8 +295,8 @@ public class ForeArticleController {
             logger.info("[赞赏] 用户:{} 成功", uid);
             return Result.success(CodeMsg.CHICKEN_SUCCESS);
         }catch (Exception e){
-            logger.error("[赞赏] 用户:{} 失败", uid, e);
-            return Result.error(CodeMsg.CHICKEN_ERROR);
+            logger.info("[赞赏] 用户:{} 失败", uid);
+            throw new GlobalException(CodeMsg.CHICKEN_ERROR);
         }
     }
 }

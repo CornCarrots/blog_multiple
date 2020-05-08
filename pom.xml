@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.lh</groupId>
     <artifactId>blog</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>2.0.0</version>
     <!--<packaging>war</packaging>-->
     <name>blog</name>
     <description>Demo Blog for Spring Boot</description>
@@ -244,6 +244,37 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-    </build>
 
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>src/main/java</directory>-->
+                <!--<includes>-->
+                    <!--<include>**/*.properties</include>-->
+                    <!--<include>**/*.xml</include>-->
+                <!--</includes>-->
+                <!--<filtering>false</filtering>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>src/main/resources</directory>-->
+                <!--<includes>-->
+                    <!--<include>**/*.properties</include>-->
+                    <!--<include>**/*.xml</include>-->
+                    <!--<include>**/*.html</include>-->
+                    <!--<include>**/*.txt</include>-->
+                <!--</includes>-->
+                <!--<filtering>false</filtering>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>src/main/webapp</directory>-->
+                <!--<includes>-->
+                    <!--<include>**/*.js</include>-->
+                    <!--<include>**/*.css</include>-->
+                    <!--<include>**/*.jpg</include>-->
+                    <!--<include>**/*.png</include>-->
+                <!--</includes>-->
+                <!--<filtering>false</filtering>-->
+            <!--</resource>-->
+        <!--</resources>-->
+
+    </build>
 </project>

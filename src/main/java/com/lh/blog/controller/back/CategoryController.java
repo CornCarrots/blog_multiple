@@ -1,19 +1,15 @@
 package com.lh.blog.controller.back;
 
 import com.lh.blog.bean.Category;
+import com.lh.blog.enums.PathEnum;
 import com.lh.blog.service.CategoryService;
-import com.lh.blog.util.FtpUtil;
 import com.lh.blog.util.ImageUtil;
 import com.lh.blog.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +45,8 @@ public class CategoryController {
         if(image!=null)
         {
             int id = category.getId();
-            String path = request.getServletContext().getRealPath("image/category");
-            ImageUtil.uploadCate(id, path, image);
+//            String path = request.getServletContext().getRealPath("static/image/category");
+            ImageUtil.uploadImg(String.valueOf(id), 0, image, PathEnum.Category);
         }
     }
 
@@ -58,8 +54,7 @@ public class CategoryController {
     public String delete(@PathVariable("id") int id,HttpServletRequest request) throws Exception
     {
         categoryService.delete(id);
-        String path = request.getServletContext().getRealPath("image/category");
-        ImageUtil.deleteCate(id, path);
+        ImageUtil.deleteImg(String.valueOf(id), 0, PathEnum.Category);
         return null;
     }
 
@@ -70,8 +65,9 @@ public class CategoryController {
         categoryService.update(category);
         if(image!=null)
         {
-            String path = request.getServletContext().getRealPath("image/category");
-            ImageUtil.uploadCate(category.getId(), path, image);
+//            String path = request.getServletContext().getRealPath("static/image/category");
+//            ImageUtil.uploadCate(category.getId(), path, image);
+            ImageUtil.uploadImg(String.valueOf(category.getId()), category.getUid(), image, PathEnum.Category);
         }
     }
 

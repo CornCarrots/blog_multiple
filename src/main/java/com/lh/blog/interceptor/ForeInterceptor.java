@@ -1,7 +1,9 @@
 package com.lh.blog.interceptor;
 
 import com.lh.blog.bean.*;
+import com.lh.blog.enums.PathEnum;
 import com.lh.blog.service.*;
+import com.lh.blog.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,6 +49,8 @@ public class ForeInterceptor implements HandlerInterceptor {
         userService.fillMember(top_users);
 
         List<Tag> tags = tagService.list15();
+
+
         context.setAttribute("options", options);
         context.setAttribute("notice", notice);
         context.setAttribute("categories", categories);
@@ -54,6 +58,7 @@ public class ForeInterceptor implements HandlerInterceptor {
         context.setAttribute("top_articles", top_articles);
         context.setAttribute("top_users", top_users);
         context.setAttribute("tags", tags);
+
         HttpSession session = httpServletRequest.getSession();
         int msg = 0;
         User user = (User) session.getAttribute("user");

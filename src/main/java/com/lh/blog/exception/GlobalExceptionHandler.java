@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
      * @return 向客户端返回的结果（这里为json数据）
      */
     @ExceptionHandler(value = Exception.class)
-    public Result defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+    public Result defaultErrorHandler(HttpServletRequest req, Exception e) {
         logger.error("出现异常", e);
         // 如果所拦截的异常是自定义的全局异常，按自定义异常的处理方式处理，否则按默认方式处理
         if (e instanceof GlobalException) {

@@ -45,6 +45,10 @@ public class LikeService {
         likeService.delete(likeService.getArticle(aid,uid).getId());
     }
 
+    public void deleteByAid(int aid){
+        dao.deleteAllByAcidAndType(aid, LikeDAO.TYPE_ARTICLE);
+    }
+
     public void deleteComment(int cid,int uid){
         LikeService likeService = SpringContextUtils.getBean(LikeService.class);
         likeService.delete(likeService.getComment(cid,uid).getId());

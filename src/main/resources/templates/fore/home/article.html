@@ -5,7 +5,7 @@
             <div class='post-module'>
                 <!--缩略图-->
                 <div class='thumbnail'>
-                    <a href="javascript:void(0)" @click="checkArticle(art.id)"><img :src="getImage('category',art.cid)" :alt="'article_'+art.id" class="pull-left"></a>
+                    <a href="javascript:void(0)" @click="checkArticle(art.id)"><img :src="getImage(art.cid, art.uid)" :alt="'article_'+art.id" class="pull-left"></a>
                 </div>
                 <div class='post-content'>
                     <a :href="getCategory(art.cid)"><div class='category'>{{art.category.name}}</div></a>

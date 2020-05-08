@@ -10,6 +10,7 @@ import com.lh.blog.cache.UserKey;
 import com.lh.blog.service.*;
 import com.lh.blog.util.CodeMsg;
 import com.lh.blog.util.EncodeUtil;
+import com.lh.blog.util.ImageUtil;
 import com.lh.blog.util.Result;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -26,9 +27,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.File;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -343,9 +342,9 @@ public class ForeCheckController {
             // 设置注册时间
             user.setRegisterDate(new Date());
             // 用户头像
-            String path = request.getServletContext().getRealPath("image/profile_user");
-            String folder = userService.getImgPath(path);
-            user.setImg(folder);
+
+            String path = ImageUtil.setUserImg(0);
+            user.setImg(path);
             // 初始积分
             user.setScore(10);
             userService.add(user);

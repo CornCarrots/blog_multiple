@@ -65,10 +65,10 @@ $(
                     jumpByNumber:function (start) {
                         jumpByNumber(start,vue);
                     },
-                    getImage: function (id) {
-                        if(id==null||id==0)
+                    getImage: function (id, uid) {
+                        if(id==null||id==0 || uid ==null)
                             return;
-                        var url = getPath() + "/image/category/" + id + ".jpg";
+                        return getPath() + "/image/category/"+ uid +"/" +  id + ".jpg";
                         return url;
                     },
                     setFile: function (e) {

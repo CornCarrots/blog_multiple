@@ -258,11 +258,7 @@ public class CommentsService {
     public PageUtil<Comments> listByUser(int uid,int start,int size, int number){
         Pageable pageable = new PageRequest(start,size,sort);
         Page<Comments> page = null;
-        try {
-            page = dao.listByUser(uid,pageable);
-        }catch (Exception e){
-            logger.info("分页插件异常");
-        }
+        page = dao.listByUser(uid,pageable);
         page = new RestPageImpl(page.getContent(),pageable,page.getTotalElements());
         return new PageUtil<>(page,number);
     }

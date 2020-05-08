@@ -60,11 +60,10 @@ $(function () {
                     var url = getPath()+"/article?"+param+"#comment";
                     return url;
                 },
-                getImage: function (type,id) {
-                    if(id==null||id==0)
+                getImage: function (id, uid) {
+                    if(id==null||id==0 || uid == null)
                         return;
-                    var url = getPath() + "/image/"+type+"/" + id + ".jpg";
-                    return url;
+                    return getPath() + "/image/category/"+ uid +"/" +  id + ".jpg";
                 }
             }
         }

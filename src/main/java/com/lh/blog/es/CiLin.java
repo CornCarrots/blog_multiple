@@ -1,11 +1,11 @@
 package com.lh.blog.es;
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CiLin {
 
@@ -52,7 +52,8 @@ public class CiLin {
 			String str;
 			String[] strs;
 			String filename = "cilin/synonyms.txt";
-			BufferedReader inFile = new BufferedReader(FileUtil.getReader(filename, "utf-8"));
+//			BufferedReader inFile = new BufferedReader(FileUtil.getReader(filename, "utf-8"));
+			BufferedReader inFile = ResourceUtil.getReader(filename, Charset.forName("utf-8"));
 			while ((str = inFile.readLine()) != null) {
 				strs = str.split(" ");
 				String first = strs[0];

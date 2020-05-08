@@ -45,6 +45,24 @@ public class TagArticleService {
             @CacheEvict(value = "tags", allEntries = true),
             @CacheEvict(cacheNames = "tagArticles", allEntries = true)
     })
+    public void deleteByTag(int tid){
+        dao.deleteAllByTid(tid);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "articles", allEntries = true),
+            @CacheEvict(value = "tags", allEntries = true),
+            @CacheEvict(cacheNames = "tagArticles", allEntries = true)
+    })
+    public void deleteByAid(int aid){
+        dao.deleteAllByAid(aid);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "articles", allEntries = true),
+            @CacheEvict(value = "tags", allEntries = true),
+            @CacheEvict(cacheNames = "tagArticles", allEntries = true)
+    })
     public void update(TagArticle bean){
         dao.save(bean);
     }

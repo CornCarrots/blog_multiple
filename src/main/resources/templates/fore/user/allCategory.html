@@ -2,7 +2,7 @@
     <div style="margin-bottom: 10px;width: 100%">
         <button class="btn btn-warning" @click="addCategoryButton"><i class="fa fa-plus" style="color: black"> 增加分类</i></button>
     </div>
-    <table class="table table-striped table-bordered table-hover  table-condensed historyTable">
+    <table class="table table-striped table-bordered table-hover  table-condensed historyTable list_table">
         <thead>
         <tr>
             <th>分类名称</th>
@@ -17,7 +17,7 @@
             <td>{{cat.name}}</td>
             <td v-if="cat.pid==0">无</td>
             <td v-if="cat.pid!=0">{{cat.parent.name}}</td>
-            <td><img :src="getImage(cat.id)" :alt="'category'+cat.id" width="140px" height="105px"></td>
+            <td><img :src="getImage(cat.id,cat.uid)" :alt="'category'+cat.id" width="140px" height="105px"></td>
             <td><a href="#no" @click="editCategory(cat.id)"><span class="fa fa-edit"></span></a></td>
             <td><a href="#no" @click="deleteCategory(cat.id)"><span class="fa fa-trash"></span></a></td>
         </tr>

@@ -2,10 +2,11 @@
 $(function () {
     var count = true;
     var bean = {
-        uri:"/foreLikes",
+        uri:"/foreCategory",
         pages: [],
         articles: [{user:{nickName:''}, category:{name:''}}],
-        order:'title'
+        order:'title',
+        category:{id:0,name:'',parent:{name:'',id:0}}
     };
     var homeVue = new Vue(
         {
@@ -16,12 +17,15 @@ $(function () {
             },
             methods:{
                 list: function (start) {
-                    var url = getPath() + this.uri + "?start=" + start+"&order="+this.order+"&sort="+count;
+                    var id = getUrlParms("cid");
+                    var url = getPath() + this.uri + "/"+id+ "?start=" + start+"&order="+this.order+"&sort="+count;
                     axios.get(url).then(
                         function (value) {
                             if (value.code != '0') {
                                 location.href = getPath() + "/error";
                             }
+                            homeVue.category = value.data.category;
+
                             if(value.data.pages.content.length>0)
                             {
                                 homeVue.pages = value.data.pages;
@@ -34,6 +38,7 @@ $(function () {
                                 $(".myarticle").hide();
                                 $(".notfound_list").show();
                             }
+
                         }
                     )
                 },
@@ -53,11 +58,10 @@ $(function () {
                     var url = getPath()+"/article?"+param;
                     return url;
                 },
-                getImage: function (type,id) {
-                    if(id==null||id==0)
+                getImage: function (id, uid) {
+                    if(id==null||id==0 || uid == null)
                         return;
-                    var url = getPath() + "/image/"+type+"/" + id + ".jpg";
-                    return url;
+                    return getPath() + "/image/category/"+ uid +"/" +  id + ".jpg";
                 },
                 sort: function (order, e) {
                     $(".category_sort").removeClass("active");
