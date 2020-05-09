@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -45,8 +46,9 @@ public class LikeService {
         likeService.delete(likeService.getArticle(aid,uid).getId());
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByAid(int aid){
-        dao.deleteAllByAcidAndType(aid, LikeDAO.TYPE_ARTICLE);
+        dao.deleteByAcidAndType(aid, LikeDAO.TYPE_ARTICLE);
     }
 
     public void deleteComment(int cid,int uid){

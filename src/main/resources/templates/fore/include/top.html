@@ -29,7 +29,8 @@
                 <div class="input-group">
                     <div class="dropdown bootstrap-select input-group-btn">
                         <select class="selectpicker" data-style="btn-default" tabindex="-98" id="categorySelect">
-                            <option th:each="cat:${application.categories}" th:value="${cat.id}"
+                            <option value="0">所有分类</option>
+                            <option th:each="cat:${application.parentCategories}" th:value="${cat.id}"
                                     th:text="${cat.name}"></option>
                         </select>
                     </div>

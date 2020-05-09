@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
@@ -47,8 +48,9 @@ public class StartService {
             @CacheEvict(value = "articles", allEntries = true),
             @CacheEvict(cacheNames = "starts", allEntries = true)
     })
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByAid(int aid){
-        dao.deleteAllByAid(aid);
+        dao.deleteByAid(aid);
     }
 
     @Caching(evict = {

@@ -79,11 +79,11 @@ public class ForeController {
      * @return
      */
     @GetMapping(value = "/foreSearch")
-    public Result search(@RequestParam("key") String key, @RequestParam(value = "order", defaultValue = "id") String order, @RequestParam(value = "sort", defaultValue = "false") Boolean sort, @RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "size", defaultValue = "5") int size) {
+    public Result search(@RequestParam("cid") int cid, @RequestParam("key") String key, @RequestParam(value = "order", defaultValue = "id") String order, @RequestParam(value = "sort", defaultValue = "false") Boolean sort, @RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "size", defaultValue = "5") int size) {
         try {
             Map<String, Object> map = new HashMap<>();
             // 搜索文章
-            PageUtil<Article> pages = articleService.listByKey(key, start, size, 5, order, sort);
+            PageUtil<Article> pages = articleService.listByKeyAndCategory(key, cid, start, size, 5, order, sort);
             List<Article> articles = pages.getContent();
             articleService.fillArticle(articles);
             map.put("pages", pages);

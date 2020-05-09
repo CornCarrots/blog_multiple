@@ -132,6 +132,7 @@ axios.interceptors.response.use(
 );
 //搜索
 function search() {
+    var cid = $('#categorySelect option:selected') .val();
     var key =$("#keyword").val();
     if (key.length == 0)
     {
@@ -139,7 +140,7 @@ function search() {
         return false;
     }
     key = encodeURI(key);
-    var param = "key="+key+"&timeStamp="+new Date().getTime();
+    var param = "cid="+ cid + "&key="+key+"&timeStamp="+new Date().getTime();
     var url = window.btoa(param);
     location.href = getPath()+"/search?"+url;
 }

@@ -1,5 +1,6 @@
 package com.lh.blog.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.lh.blog.annotation.Check;
 import com.lh.blog.bean.*;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @CacheConfig(cacheNames = "articles")
@@ -216,6 +218,22 @@ public class ArticleService {
         sort = new Sort(s ? Sort.Direction.ASC : Sort.Direction.DESC, order);
         Pageable pageable = new PageRequest(start, size, sort);
         Page page = dao.findAllByStatusAndTitleLike(0, "%"+key+"%", pageable);
+        page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
+        PageUtil<Article> pages = new PageUtil<Article>(page, number);
+        return pages;
+    }
+    public PageUtil<Article> listByKeyAndCategory(String key, int cid, int start, int size, int number, String order, boolean s) {
+        sort = new Sort(s ? Sort.Direction.ASC : Sort.Direction.DESC, order);
+        Pageable pageable = new PageRequest(start, size, sort);
+        Page page;
+        if (cid == 0)
+        {
+            page = dao.findAllByStatusAndTitleLike(0, "%"+key+"%", pageable);
+        }else {
+            List<Category> categories = categoryService.listByParent(cid);
+            List<Integer> ids = categories.stream().map(category -> {return category.getId();}).collect(Collectors.toList());
+            page = dao.findAllByStatusAndCidInAndTitleLike(0, ids, "%"+key+"%", pageable);
+        }
         page = new RestPageImpl(page.getContent(), pageable, page.getTotalElements());
         PageUtil<Article> pages = new PageUtil<Article>(page, number);
         return pages;

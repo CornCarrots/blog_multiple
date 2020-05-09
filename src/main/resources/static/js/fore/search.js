@@ -18,7 +18,8 @@ $(function () {
             methods:{
                 list: function (start) {
                     var key = getUrlParms("key");
-                    var url = getPath() + this.uri + "?key="+key+ "&start=" + start+"&order="+this.order+"&sort="+count;
+                    var cid = getUrlParms("cid");
+                    var url = getPath() + this.uri + "?key="+key+ "&cid="+ cid + "&start=" + start+"&order="+this.order+"&sort="+count;
                     axios.get(url).then(
                         function (value) {
                             if (value.code != '0') {

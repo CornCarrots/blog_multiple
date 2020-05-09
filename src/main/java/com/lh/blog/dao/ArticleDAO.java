@@ -38,5 +38,6 @@ public interface ArticleDAO extends JpaRepository<Article, Integer> {
     public Page<Article> findAllByStatusAndTypeAndIdIn(int status, String type, List<Integer> id,Pageable pageable);
     public List<Article> findAllByIdIn(List<Integer> id);
     public Page<Article> findAllByStatusAndTitleLike(int status,String title,Pageable pageable);
+    public Page<Article> findAllByStatusAndCidInAndTitleLike(int status, List<Integer> cid, String title,Pageable pageable);
 
 }

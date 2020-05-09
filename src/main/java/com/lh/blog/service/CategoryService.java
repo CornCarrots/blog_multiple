@@ -61,6 +61,13 @@ public class CategoryService {
         return dao.findOne(id);
     }
 
+    public Category getByChild(int cid){
+        CategoryService categoryService = SpringContextUtils.getBean(CategoryService.class);
+        Category category = categoryService.get(cid);
+        int pid = category.getPid();
+        return categoryService.get(pid);
+    }
+
     @Cacheable(keyGenerator = "wiselyKeyGenerator")
     public List<Category> list(){
         return dao.findAll(sort);

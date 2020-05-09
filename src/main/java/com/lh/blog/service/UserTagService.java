@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -74,11 +75,12 @@ public class UserTagService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "tags", key = "'listByUser '+ #bean.uid"),
+            @CacheEvict(value = "tags", allEntries = true),
             @CacheEvict(cacheNames = "userTags", allEntries = true)
     })
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByTag(int tid){
-        dao.deleteAllByTid(tid);
+        dao.deleteByTid(tid);
     }
 
     public boolean isExites(int tid, int uid) {
